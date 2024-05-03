@@ -123,23 +123,44 @@
           <thead>
             <tr>
               <th>Level</th>
-              <th>Approved through</th>
               <th>User Name</th>
               <th>Login Name</th>
               <th>Designation</th>
               <th>Mail id</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <tr>
+              <th>{{HOD.user_name}}</th>
+              <th>{{HOD.staff_id}}</th>
+              <th>{{HOD.role}}</th>
+              <th>{{HOD.email}}</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th>{{gm_user.user_name}}</th>
+              <th>{{gm_user.staff_id}}</th>
+              <th>{{gm_user.role}}</th>
+              <th>{{gm_user.email}}</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th>{{vise_principal_user.user_name}}</th>
+              <th>{{vise_principal_user.staff_id}}</th>
+              <th>{{vise_principal_user.role}}</th>
+              <th>{{vise_principal_user.email}}</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th>{{principal_user.user_name}}</th>
+              <th>{{principal_user.staff_id}}</th>
+              <th>{{principal_user.role}}</th>
+              <th>{{principal_user.email}}</th>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
-    <footer>
-      <button>Create</button>
-      <button>Edit</button>
-      <button>Submit</button>
-      <button>Delete</button>
-      <button>Search</button>
-    </footer></div>
+  </div>
   </body>
 </html>

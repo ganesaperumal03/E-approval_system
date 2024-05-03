@@ -23,7 +23,7 @@ urlpatterns = [
     path('create_form/<str:name>/<str:staff_id>/', views.create_form, name="create_form"),
     path('signup', views.signup, name="signup"),
     path('login', views.login, name="login"),
-    path('authorize_e_approval', views.authorize_e_approval, name="authorize_e_approval")
+    # path('authorize_e_approval', views.authorize_e_approval, name="authorize_e_approval")
 
 
 

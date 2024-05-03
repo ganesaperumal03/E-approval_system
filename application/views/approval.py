@@ -15,48 +15,76 @@ from application.models import e_approval
 
 
 
-def create_form(request,name,staff_id):
+def create_form(request, name, staff_id):
     if request.method == 'POST':
         form = EApprovalForm(request.POST)
         if form.is_valid():
             staff = User.objects.get(staff_id=staff_id)
-            user = form.save(commit=False)  # Don't save the form yet
-            role=staff
+            user = form.save(commit=False)
+            role = staff.role
             user.staff_id = staff_id
-            if role=='Technician':
+
+            # Set approval status based on role
+            if role == 'Technician':
                 user.Technician = None
                 user.HOD = 'Pending'
                 user.GM = 'Pending'
                 user.vise_principal = 'Pending'
                 user.principal = 'Pending'
-            elif role=='HOD':
+            elif role == 'HOD':
                 user.Technician = None
                 user.HOD = None
                 user.GM = 'Pending'
                 user.vise_principal = 'Pending'
                 user.principal = 'Pending'
-            elif role=='GM':
+            elif role == 'GM':
                 user.Technician = None
                 user.HOD = None
                 user.GM = None
                 user.vise_principal = 'Pending'
                 user.principal = 'Pending'
-            elif role=='vise_principal':
+            elif role == 'vice_principal':
                 user.Technician = None
                 user.HOD = None
                 user.GM = None
-                user.vise_principal = 'Pending'
+                user.vise_principal = None
                 user.principal = 'Pending'
-            form.save()
+
+            user.save()  # Save the user with updated fields
+            return redirect('create_form',name,staff_id)  # Redirect to a success page
         else:
             return render(request, "e-approval/error.html", {'form': form})
     else:
         form = EApprovalForm()
         staff_user = User.objects.get(staff_id=staff_id)
-        staff_approval = e_approval.objects.get(staff_id=staff_id)
-        if staff_user.GM=='Pending':
-            gm_user = User.objects.get(role='GM')
-    return render(request, "e-approval/index.html", {'form': form})
+        department=staff_user.Department
+        staff_approval_exists = e_approval.objects.filter(staff_id=staff_id).exists()
+        if staff_approval_exists:
+            staff_approval = e_approval.objects.get(staff_id=staff_id)
+            gm_user, vise_principal_user, principal_user = None, None, None
+            if staff_approval.GM == 'Pending':
+                gm_user = User.objects.get(role='GM')
+            else:
+                gm_user='Null'
+            if staff_approval.vise_principal == 'Pending':
+                vise_principal_user = User.objects.get(role='vise_principal')
+            else:
+                vise_principal_user='Null'
+            if staff_approval.principal == 'Pending':
+                principal_user = User.objects.get(role='principal')
+            else:
+                principal_user='Null'
+            if staff_approval.HOD == 'Pending':
+                HOD_user = User.objects.get(role='HOD',Department=department)
+            else:
+                HOD_user='Null'
+            return render(request, "e-approval/index.html", {'form': form, 'gm_user': gm_user, 'vise_principal_user': vise_principal_user,
+                                                            'principal_user': principal_user, 'HOD': HOD_user
+                                                         })
+        return render(request, "e-approval/index.html", {'form': form,
+                                                        })
+
+
 
 
 def encrypt_password(raw_password):
@@ -123,6 +151,13 @@ def login(request):
     else:
         return render(request, "auth/login.html")
 
-def authorize_e_approval(request):
+# def authorize_e_approval(request,staff_id):
+#     form = User.objects.filter(staff_id=staff_id).first()
 
-    return render(request, "e-approval/auth_approval.html")
+#     if form is None:  # Form not found, render personal.html with Aadhaar_Number
+#         return render(request, "form/personal.html", {'Aadhaar_Number': Aadhaar_Number})
+#     else:
+#         return render(request, "form/recheck_personal.html", {'form': form})
+
+#     return render(request, "form/aadhar.html")
+#     return render(request, "e-approval/auth_approval.html")

@@ -21,9 +21,17 @@ class e_approval(models.Model):
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)
     HOD = models.CharField(max_length=100,blank=True,null=True)
+    HOD_date = models.CharField(max_length=100,blank=True,null=True)
+
     GM = models.CharField(max_length=100,blank=True,null=True)
+    GM_date = models.CharField(max_length=100,blank=True,null=True)
+
     vise_principal = models.CharField(max_length=100,blank=True,null=True)
+    vise_principal_date = models.CharField(max_length=100,blank=True,null=True)
+
     principal = models.CharField(max_length=100,blank=True,null=True)
+    principal_date = models.CharField(max_length=100,blank=True,null=True)
+
 
     def __str__(self):
         return self.Document_no

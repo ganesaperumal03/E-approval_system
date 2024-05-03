@@ -1,0 +1,390 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Approval System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"></head>
+    <style>
+        /* Global styles */
+body {
+    line-height: 1;
+    margin: 0; /* Reset default margin */
+    padding: 0; /* Reset default padding */
+}
+.document-details{
+    line-height: 3;
+}
+.container{
+    line-height: 1.5;
+}
+.document-details label {
+    margin-right: 100px; 
+}
+.document-details label[for="document-no"] {
+    margin-right: 0; 
+}
+.document-details label[for="Status"] {
+    margin-right: 200px; 
+}
+.document-details label[for="refdocdetails"] {
+    margin-left: 590px; 
+}
+.document-details label[for="SubCategory"] {
+    margin-right: 285px; 
+}
+.document-details label[for="basetranscreation"] {
+    margin-right: 0px; 
+}
+
+.main-content,
+.financial-details,
+.document-details,
+.regards 
+.table{
+    border: 2px solid #e2dfdf;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+#document-no {
+    font-size: 16px;
+    width: 200px; /* Adjust width as needed */
+    margin-right: 50px;
+}
+#basetranscreation {
+    font-size: 16px;
+    width: 200px;
+    margin-right: 50px;
+}
+
+#view,
+#Approve,
+#rejectreturn,
+#clarification {
+    font-size: 16px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+
+
+
+#clarification {
+    font-size: 14px; /* Reduce font size */
+    padding: 6px 12px; /* Adjust padding */
+    background-color: #ffc107;
+    color: #000;
+    border:#000;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* CSS styles for table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+/* Table header styles */
+th {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    background-color: #0b27c7;
+    color: #e9e9e9;
+}
+
+
+td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+
+tr:hover {
+    background-color: #e9e9e9;
+}
+.regards,
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+.regards input[type="text"],
+.regards textarea {
+    width: 90%; 
+    max-width: 400px;
+    padding: 8px; 
+    box-sizing: border-box; 
+}
+button {
+    margin-top: 0px;
+}
+
+
+.side-panel {
+    width: 180px; 
+    min-width: 50px; 
+    position: fixed;
+    top: 0px;
+    left: 0;
+    bottom: 0;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto; 
+}
+
+
+.main-content {
+    flex: 1; 
+    margin-left: 200px; 
+    padding: 20px; 
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .side-panel {
+        width: 100px; 
+        position: static; 
+        border-right: none; 
+        margin-bottom: 10px;
+    }
+
+    .main-content {
+        margin-left: 0; /* No margin on small screens */
+    }
+}
+/* Style for buttons */
+#view,
+#clarification {
+    font-size: 16px;
+    padding: 8px 16px;
+    cursor: pointer;
+   
+}
+
+/* Default button colors */
+#view {
+    background-color: #007bff; /* Blue */
+    color: #fff; /* White text color */
+}
+
+
+#clarification {
+    width: 120px;
+    margin-left: 85%;
+    background-color: #ffc107; 
+    color: #000; 
+}
+
+/* Hover effect for buttons */
+#view:hover,
+#Approve:hover,
+#rejectreturn:hover,
+#clarification:hover {
+    opacity: 0.8;
+}
+
+.financial-row {
+    margin-bottom: 200px; 
+}
+
+.financial-details label {
+    width: 150px; 
+    display: inline-block;
+    margin-right: 10px;
+}
+.container {
+    width: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.financial-details,
+.regards {
+    flex: 1;
+    width: fit-content;
+    margin-right: 60px;
+    margin-bottom: 0px; 
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .financial-details,
+    .regards {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
+
+
+.regards {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.financial-details{
+    line-height: 3;
+}
+
+
+
+.container {
+    width:fit-content;
+    border: #000;
+    display: flex;
+    flex-direction:row;
+}
+.container input {
+    margin-bottom: 20px;
+}
+.container button {
+    width:150px;
+    margin-left: 400px;
+    margin-top:10px;
+
+    margin-right: 25px;
+    padding-top: 100px;
+    color: white;
+}
+.form-container {
+    position: relative;
+    margin-bottom: 10px;
+}
+.reject button{
+    background-color: red;
+    margin-top: 50px;
+    position:relative;
+    left: 50px;
+    bottom: 100px;
+
+}
+.approved button{
+    background-color: green;
+    position:relative;
+    left: 50px;
+    bottom: 50px;
+
+}
+
+    </style>
+<body>
+    <nav>
+    </nav>
+    <div class="side-panel">
+        <label for="to-approve">To Approve:</label>
+        <select id="to-approve" name="to-approve" required>
+        </select>
+    </div>
+    <section class="main-content">
+        <div class="document-details">
+            <label for ="docdetail">Document Details <button type="button" id="view">View</button></label>
+            <label for ="refdocdetails">Ref Document Details</label><br>
+            <label for="document-no">Document No:</label>
+            <select id="document-no" name="document-no" required>
+            </select>
+            <label for="date">Date</label>
+            <label for="Priority">Priority</label>
+            <label for="Status">Status</label>
+            <label for="FinCommitment">FinCommitment</label>
+            <label for="Doctype">DocType</label><br>
+            <label for="OrgUnit">Org.Unit</label>
+            <label for="Department">Department</label>
+            <label for="Category">Category</label>
+            <label for="SubCategory">Sub Category</label>
+            <label for="basetranscreation">Base Trans Creation </label>
+            <select id="Basetranscreation" name="basetranscreation" required>
+            </select>
+            <label for="TransNo">Trans No</label>
+        </div>
+        <div class="document-remarks">
+            <h2>Document Remarks</h2>
+            <form>
+              <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+              </div>
+              <div class="form-group">
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" name="remarks" required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="attachment">Attachment:</label>
+                <input type="text" id="attachment" name="attachment" readonly>
+              </div>
+              <div class="form-group">
+                <button type="button" id="clarification">Clarification</button>
+              </div>
+            </form>
+        </div>
+        <div class="container">
+            <div class="financial-details">
+                <h2>Financial Details</h2>
+                <label for="Value">Value</label>
+                <label for="Tolerance">Tolerance</label><br>
+                <label for="Value +">Value +</label><br>
+                <label for="Total">Total</label>
+            </div>
+            <div class="regards">
+                <div class="approved">
+                    <form>
+                        <div class="form-group">
+                            <label for="remarks">Remarks</label>
+                            <textarea id="remarks" name="remarks" required></textarea>
+                        </div>
+                    </form>
+                    <button type="button" id="Approve">Approve</button>
+                </div>
+                <div class="reject">
+                    <form>
+                        <div class="form-group">
+                            <label for="remarksReject">Reject/Return</label>
+                            <textarea id="remarksReject" name="remarksReject" required></textarea>
+                        </div>
+                    </form>
+                    <button type="button" id="rejectreturn">Reject/Return</button>
+                </div>
+            </div>
+
+        </div>
+
+        <table class="table">
+            <thead class="thead">
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Authorization Date</th>
+                    <th>Approver Remarks</th>
+                    <th>Return Reason</th>
+                    <th>Return Clarification</th>
+                </tr>
+            </thead>
+            <tbody id="approvalTableBody">
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </section>
+
+</body>
+</html>

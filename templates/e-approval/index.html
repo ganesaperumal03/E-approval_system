@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <title>Ramco Institute of Technology</title>
+    <style>
+
+
+    </style>
+    <header>
+      <h1>/E-Approval / Document Approval System /</h1>
+      <div class="header"> <p>Ramco Institute of Technology</p> </div>
+    </header>
+    <div>
+      <form  method="POST"  id='create_form'  autocomplete="off">
+        {% csrf_token %}
+
+      <div class="container1">
+        <div class="document-container">
+          <div class="heading"><h3>Document Detail</h3></div>
+          <div class="document-details">
+            <div class="detail-section">
+              <span class="detail-label">Department</span>
+              <select class="detail-value" name="Department">
+                <option value="" disabled selected></option>
+                <option value="cse">CSE</option>
+                <option value="it">IT</option>
+                <option value="aids">AIDS</option>
+                <option value="civil">Civil</option>
+                <option value="mechanical">Mechanical</option>
+                <option value="eee">EEE</option>
+                <option value="ece">ECE</option>
+                <option value="csbs">CSBS</option>
+              </select>
+            </div>
+            <div class="detail-section">
+              <span class="detail-label">Org Unit</span>
+              <input type="text" name='Org_Unit'class="detail-value"  required/>
+            </div>
+            <div class="detail-section">
+              <span class="detail-label">Category</span>
+              <input type="text" name='Category'class="detail-value" required/>
+            </div>
+            <div class="detail-section">
+              <span class="detail-label">Sub Category</span>
+              <input type="text" name='Sub_Category'class="detail-value" required/>
+            </div>
+            <div class="detail-section">
+              <span class="detail-label">Document No</span>
+              <input type="text" name='Document_no'class="detail-value" required/>
+            </div>
+            <div class="detail-section">
+              <span class="detail-label">Date</span>
+              <input type="date" name='date'class="detail-value" required/>
+            </div>
+          </div>
+        </div>
+        <div class="document-remarks">
+          <div class="heading">
+          <h3>Document remarks</h3></div>
+          <div class="detail-section">
+            <span class="detail-label">Subject</span>
+            <input type="text" name="remarks_Subject" class="detail-value" required/>
+          </div>
+          <div class="detail-section">
+            <span class="detail-label">Priority</span>
+            <input type="text" name='Priority'class="detail-value" required/>
+          </div>
+        </div>
+      </div>
+      <div class="container2">
+        <div class="financial-details">
+          <div class="heading">
+          <h3>Financial Details</h3></div>
+          <div class="detail-section">
+            <span class="detail-label">Tran No</span>
+            <input type="text" name='Tran_No' class="detail-value" required/>
+          </div>
+          <div class="detail-section">
+            <span class="detail-label">Fin.Commitment</span>
+            <input type="text" name='fin_commit'class="detail-value" required/>
+          </div>
+
+          <div class="detail-section">
+            <span class="detail-label">Tolerance</span>
+            <input type="text" name='Tolerance'class="detail-value" required/>
+          </div>
+          <div class="detail-section">
+            <span class="detail-label">Total Value</span>
+            <input type="text" name="Total_Value" class="detail-value" required/>
+          </div>
+        </div>
+
+        <div class="attachment-details">
+          <div class="heading">
+          <h3>Attachment Details</h3></div>
+          <!-- <div class="detail-section">
+            <span class="detail-label">Attachment</span>
+            <input type="file" name='Attachment'class="detail-value" />
+          </div> -->
+          <div class="detail-section">
+            <span class="detail-label">Attachment-details</span>
+            <input type="text" name='Attachment_details'class="detail-value" required/>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">submit</button>
+
+    </form>
+      <div class="footer">
+      <div class="approve-list">
+        <div class="heading">
+        <h3>Approve List</h></div>
+        <p>No rows to display!!!</p>
+        <table class="approval-table">
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Approved through</th>
+              <th>User Name</th>
+              <th>Login Name</th>
+              <th>Designation</th>
+              <th>Mail id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <footer>
+      <button>Create</button>
+      <button>Edit</button>
+      <button>Submit</button>
+      <button>Delete</button>
+      <button>Search</button>
+    </footer></div>
+  </body>
+</html>

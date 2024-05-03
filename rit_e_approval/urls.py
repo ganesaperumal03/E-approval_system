@@ -16,7 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from application import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('create_form/<str:name>/<str:staff_id>/', views.create_form, name="create_form"),
+    path('signup', views.signup, name="signup"),
+    path('login', views.login, name="login"),
+    path('authorize_e_approval', views.authorize_e_approval, name="authorize_e_approval")
+
+
+
 ]

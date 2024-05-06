@@ -26,8 +26,8 @@ class e_approval(models.Model):
     GM = models.CharField(max_length=100,blank=True,null=True)
     GM_date = models.CharField(max_length=100,blank=True,null=True)
 
-    vise_principal = models.CharField(max_length=100,blank=True,null=True)
-    vise_principal_date = models.CharField(max_length=100,blank=True,null=True)
+    vice_principal = models.CharField(max_length=100,blank=True,null=True)
+    vice_principal_date = models.CharField(max_length=100,blank=True,null=True)
 
     principal = models.CharField(max_length=100,blank=True,null=True)
     principal_date = models.CharField(max_length=100,blank=True,null=True)
@@ -46,3 +46,32 @@ class User(models.Model):
     role = models.CharField(max_length=100)
     Password = models.CharField(max_length=100)
     conform_Password = models.CharField(max_length=100)
+
+class auth_list(models.Model):
+    Document_no = models.CharField(max_length=20, primary_key=True)
+
+    hod = models.CharField(max_length=100, blank=True, null=True)
+    hod_date = models.CharField(max_length=100, blank=True, null=True)
+    hod_remarks = models.CharField(max_length=100, blank=True, null=True)
+    hod_reason = models.CharField(max_length=100, blank=True, null=True)
+    hod_clarification = models.CharField(max_length=100, blank=True, null=True)
+    
+    gm = models.CharField(max_length=100, blank=True, null=True)
+    gm_date = models.CharField(max_length=100, blank=True, null=True)
+    gm_remarks = models.CharField(max_length=100, blank=True, null=True)
+    gm_reason = models.CharField(max_length=100, blank=True, null=True)
+    gm_clarification = models.CharField(max_length=100, blank=True, null=True)
+    
+    vice_principal = models.CharField(max_length=100, blank=True, null=True)
+    vice_principal_date = models.CharField(max_length=100, blank=True, null=True)
+    vice_principal_remarks = models.CharField(max_length=100, blank=True, null=True)
+    vice_principal_reason = models.CharField(max_length=100, blank=True, null=True)
+    vice_principal_clarification = models.CharField(max_length=100, blank=True, null=True)
+    
+    principal = models.CharField(max_length=100, blank=True, null=True)
+    principal_date = models.CharField(max_length=100, blank=True, null=True)
+    principal_remarks = models.CharField(max_length=100, blank=True, null=True)
+    principal_reason = models.CharField(max_length=100, blank=True, null=True)
+    principal_clarification = models.CharField(max_length=100, blank=True, null=True)
+
+ 

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+       .body {
+  margin: 3px;
+  border: 1px solid #5c5c5c;
+}
+
+.container {
+  display: flex;
+  background: white;
+  height: 700px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  flex: 1;
+  flex-direction: column;
+  width: 99%;
+
+  margin: 6px;
+  margin-left: 3px;
+  padding: 6px;
+  font-family: sans-serif;
+}
+.document {
+  width: 100%;
+  display: flex;
+  background: white;
+  align-items: flex-start;
+  flex-direction: column;
+
+  height: 100%;
+}
+#tags {
+  color: #565555;
+}
+#tag-ans {
+  font-size: small;
+}
+
+.document-clarification {
+  display: flex;
+  width: 100%;
+
+  border: 1px solid lightgray;
+  height: 30%;
+  border-radius: 4px;
+
+  flex-direction: column;
+
+  background-color: white;
+}
+
+.document-head {
+  display: flex;
+  padding: 8px;
+  font-size: small;
+}
+
+.document-body {
+  flex-wrap: wrap;
+  margin: 2px;
+  justify-content: space-between;
+  padding: 3px;
+  font-size: smaller;
+}
+
+.doc-row {
+  display: flex;
+  height: 37%;
+  align-items: center;
+  width: 100%;
+}
+
+.doc-con {
+  flex: 1;
+  padding: 2px;
+}
+.second-sec {
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+  border: 1px solid lightgray;
+  height: 30%;
+  border-radius: 4px;
+  flex-direction: row;
+  background-color: white;
+}
+.document-remarks,
+.responsibe-user,
+.reroute-comments {
+  flex: 1;
+  width: 33.33%;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  margin: 4px;
+  height: 90%;
+}
+
+.remarks-body,
+.responsibe-body,
+.comments-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 60%;
+
+  margin: 2px;
+  justify-content: space-around;
+  padding: 7px;
+  font-size: smaller;
+}
+
+.remarks,
+.subject {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
+.body-response {
+  flex: 75%;
+  display: flex;
+  align-items: center;
+}
+
+.remarks-text {
+  flex: 25%;
+}
+.remarks-input {
+  height: 100%;
+  resize: none;
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.reroutes-text {
+  flex: 25%;
+}
+.reroutes-input {
+  height: 100%;
+  resize: none;
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.third-sec {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 15%;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+.click-head {
+  padding: 8px;
+  font-size: small;
+}
+
+.click-body {
+  flex: 1; /* Take up remaining space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: smaller; /* Center content vertically */
+}
+.click {
+  width: 20%;
+}
+.reroute-tag {
+  width: 20%;
+}
+.rerotute.text {
+  height: 100%;
+  resize: none;
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.submit {
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  width: 100%;
+  height: 10%;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.submit button {
+  background-color: rgb(52, 240, 52); /* Set button background color to green */
+  color: rgb(0, 0, 0); /* Set button text color to white */
+  padding: 10px 20px; /* Add padding to the button */
+  border: none; /* Remove button border */
+  border-radius: 4px; /* Add border radius to button */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+.data {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  height: 10%;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  margin-top: 2px;
+  font-size: smaller;
+}
+.left {
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 100%;
+  padding-left: 40px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.right {
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 100%;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+      </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="document">
+        <div class="document-clarification">
+          <div class="document-head">
+            <span class="doc-1">Document Clarificaton</span>
+          </div>
+          <div class="document-body">
+            <div class="doc-row">
+              <div class="doc-con">
+                <span id="tags">Document no</span>
+                <select>
+                  <option>document 1</option>
+                  <option>document 2</option>
+                  <option>document 3</option>
+                </select>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Date-</span>
+                <span id="tag-ans"> date1</span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Priority-</span>
+                <span id="tag-ans"> High</span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Status-</span>
+                <span id="tag-ans">pending</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-con">
+                <span id="tags">Department-</span>
+                <span id="tag-ans">AD</span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Category-</span>
+                <span id="tag-ans">Category here</span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Sub category-</span>
+                <span id="tag-ans">Sub category </span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Trans no-</span>
+                <span id="tag-ans">R1234123/1324/</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-con">
+                <span id="tags">Doc type-</span>
+                <span id="tag-ans">345f34</span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Currency-</span>
+                <span id="tag-ans">INR</span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Fin commitment-</span>
+                <span id="tag-ans">No </span>
+              </div>
+              <div class="doc-con">
+                <span id="tags">Total value-</span>
+                <span id="tag-ans">200000/</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-con">
+                <span id="tags">Attached document-</span>
+                <span id="tag-ans">document.pdf </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end of document clarificaiton-->
+        <div class="second-sec">
+          <div class="document-remarks">
+            <div class="document-head">
+              <span class="doc-1">Document remarks</span>
+            </div>
+            <div class="remarks-body">
+              <div class="remarks">
+                <div id="tags" class="remarks-text">Remarks</div>
+                <div class="body-response">
+                  <textarea class="remarks-input"></textarea>
+                </div>
+              </div>
+              <div class="subject">
+                <div id="tags" class="remarks-text">Subject</div>
+                <div class="body-response">
+                  <span class="subject-input">Academics regarding</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="responsibe-user">
+            <div class="document-head">
+              <span class="doc-1">Responsibe user</span>
+            </div>
+            <div class="responsibe-body">
+              <div class="subject">
+                <div id="tags" class="remarks-text">Full name</div>
+                <div class="body-response">
+                  <span>Academics regarding</span>
+                </div>
+              </div>
+              <div class="subject">
+                <div id="tags" class="remarks-text">Designation</div>
+                <div class="body-response">
+                  <span> Chief financial officer </span>
+                </div>
+              </div>
+              <div class="subject">
+                <div id="tags" class="remarks-text">User name</div>
+                <div class="body-response">
+                  <span>RMLAPP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="reroute-comments">
+            <div class="comments-body">
+              <div class="reroutes-text">Reroute comments</div>
+              <div class="body-response">
+                <textarea class="reroutes-input"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end of second sec-->
+        <div class="third-sec">
+          <div class="click-head">
+            <span class="doc-1">Clarification given</span>
+          </div>
+          <div class="click-body">
+            <div class="click">
+              <label for="myCheckbox" id="tags">click</label>
+              <input type="checkbox" id="myCheckbox" />
+            </div>
+            <div class="reroute-tag">
+              <span id="tags">Reroute Clarification</span>
+            </div>
+
+            <div class="reroute-text">
+              <textarea class="reroutes-input"></textarea>
+            </div>
+          </div>
+        </div>
+        <!-- end of clarificaition given-->
+        <div class="submit">
+          <button>Submit</button>
+        </div>
+        <!--end of click-->
+        <div class="data">
+          <div class="left">
+            <div class="doc-row">
+              <div id="tags">Created by:</div>
+              <div id="tags">ramkumar</div>
+            </div>
+            <div class="doc-row">
+              <div id="tags">Created date:</div>
+              <div id="tags">11-11-2023</div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="doc-row">
+              <div id="tags">Modified by:</div>
+              <div id="tags">jayaraj</div>
+            </div>
+            <div class="doc-row">
+              <div id="tags">Modified date:</div>
+              <div id="tags">12-11-2023</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

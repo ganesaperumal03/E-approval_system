@@ -23,8 +23,9 @@ urlpatterns = [
     path('create_form/<str:name>/<str:staff_id>/', views.create_form, name="create_form"),
     path('signup', views.signup, name="signup"),
     path('login', views.login, name="login"),
-    # path('authorize_e_approval', views.authorize_e_approval, name="authorize_e_approval")
-
+    path('view_approval', views.view_approval, name="view_approval"),
+    path('auth_approval', views.auth_approval, name="auth_approval"),
+    path('clarification', views.clarification, name="clarification")
 
 
 ]

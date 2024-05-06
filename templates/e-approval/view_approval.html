@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="view_authorize_approval.css">
+</head>
+<style>
+
+    body {
+        line-height: 1;
+        margin: 0; 
+        padding: 0; 
+    }
+    .header{
+        line-height: 3;
+    }
+    .container{
+        line-height: 1.5;
+    }
+    .header label {
+        margin-right: 200px; 
+    }
+    .header label[for="search"] {
+        margin-right:0px; 
+    }
+    .header label[for ="date"]{
+        margin-left:200px;
+        margin-right:300px;
+    }
+    .header label[for="Category"]{
+        margin-right:270px;
+    }
+    .header label[for="department"]{
+        margin-right:470px;
+    }
+    .header label[for="priority"]{
+        margin-right:500px;
+    }
+    .header label[for="tranno"]{
+        margin-left:60px;
+    }
+    .header label[for="headersec"] {
+        font-size:larger;
+        font-weight:bold;
+    }
+    .header label[for="Status"] {
+        margin-right: 200px; 
+    }
+    .header label[for="refdocdetails"] {
+        margin-left: 590px;
+        font-size:larger;
+        font-weight:bold; 
+    }
+    .header label[for="SubCategory"] {
+        margin-right: 285px; 
+    }
+    
+    .details{
+        line-height: 4;
+    }
+    .details label[for="subject"]{
+        margin-right:100px;
+    }
+    .details label[for="attachmentre"]{
+        margin-right:10px;
+    }
+    .details label[for="attachmentdoc"]{
+            margin-left:85px;
+    }
+    .details input[id="attachmentre"]{
+        width:450px;
+        height:50px;
+        margin-right: 10px;
+        border-radius:10px;
+    }
+    .details input[id="subject"]{
+        width:450px;
+        height:50px;
+        margin-right: 90px;
+        border-radius:10px;
+    }
+    .details input[id="remarks"]{
+        width:450px;
+        height:50px;
+        margin-left: 100px;
+        border-radius:10px;
+    }
+    .return label[for="rereason"]{
+        margin-right:100px;
+    }
+    .return input[id="rereason"]{
+        width:450px;
+        height:50px;
+        margin-right: 100px;
+        margin-left: -50px;
+        border-radius:10px;
+    }
+    .return input[id="reclarification"]{
+        width:450px;
+        height:50px;
+        margin-left: 30px;
+        border-radius:10px;
+    }
+    .main-content,
+    .header,
+    .details,
+    .return, 
+    .approvallist{
+        border: 2px solid #e2dfdf;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    
+    /* CSS styles for table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    /* Table header styles */
+    th {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+        background-color: #0b27c7;
+        color: #e9e9e9;
+    }
+    
+    
+    td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    
+    tr:hover {
+        background-color: #e9e9e9;
+    }
+</style>
+<body>
+    <nav>
+    </nav>
+
+    <section class="main-content">
+        <div class="header">
+            <label for ="headersec">Headersec</label><br>
+            <form action="{% url 'view_approval' %}"method="get">
+                <label for="search">Transaction No:</label>
+                <input type="text" id="search" name="search"  placeholder="Enter search keywords">
+                <button type="submit" id="submit">Search</button>
+            </form>
+                <label for="date">Date</label>
+                <label for="Status">Status</label>
+            </form>
+            <label for="department">Department</label>
+            <label for="Category">Category</label>
+            <label for="SubCategory">Sub Category</label><br>
+            <label for="priority">Priority</label>
+            <label for="doctype">Doc Type</label>
+            <label for="tranno">Trans No</label>
+        </div>
+        <div class="details">
+            <div class="data">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+                <label for="remarks">Remarks:</label>
+                <input type="text" id="remarks" name="remarks" required><br>
+                <label for="attachmentre">Attachment Remarks:</label>
+                <input type="text" id="attachmentre" name="attachmentre" required>
+                <label for="attachmentdoc">Attachment Document</label>
+            </div>
+
+        </div>
+         <div class="return">
+                <label for="rereason">Return Reason:</label>
+                <input type="text" id="rereason" name="rereason" required>
+                <label for="reclarification">Return Clarification:</label>
+                <input type="text" id="reclarification" name="reclarification" required>
+        </div>
+        </div>
+        <div class="approvallist">
+            <h1>Approval list</h1>    
+            <table class="table">
+                <thead class="thead">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Authorization Date</th>
+                        <th>Approver Remarks</th>
+                        <th>Return Reason</th>
+                        <th>Return Clarification</th>
+                    </tr>
+                </thead>
+                <tbody id="approvalTableBody">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</body>
+</html>

@@ -54,7 +54,7 @@
             </div>
             <div class="detail-section">
               <span class="detail-label">Document No</span>
-              <input type="text" name='Document_no'class="detail-value" required/>
+              <input type="text" name='Document_no'class="detail-value" readonly/>
             </div>
             <div class="detail-section">
               <span class="detail-label">Date</span>
@@ -81,7 +81,7 @@
           <h3>Financial Details</h3></div>
           <div class="detail-section">
             <span class="detail-label">Tran No</span>
-            <input type="text" name='Tran_No' class="detail-value" required/>
+            <input type="text" name='Tran_No' class="detail-value" readonly/>
           </div>
           <div class="detail-section">
             <span class="detail-label">Fin.Commitment</span>
@@ -130,13 +130,17 @@
             </tr>
           </thead>
           <tbody>
+            {% for p in appruval_user%}
             <tr>
-              <th>{{HOD.user_name}}</th>
-              <th>{{HOD.staff_id}}</th>
-              <th>{{HOD.role}}</th>
-              <th>{{HOD.email}}</th>
+              <th></th>
+
+              <th>{{p.user_name}}</th>
+              <th>{{p.staff_id}}</th>
+              <th>{{p.role}}</th>
+              <th>{{p.email}}</th>
             </tr>
-            <tr>
+            {% endfor %}
+            <!-- <tr>
               <th></th>
               <th>{{gm_user.user_name}}</th>
               <th>{{gm_user.staff_id}}</th>
@@ -156,7 +160,7 @@
               <th>{{principal_user.staff_id}}</th>
               <th>{{principal_user.role}}</th>
               <th>{{principal_user.email}}</th>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </div>

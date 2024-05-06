@@ -1,390 +1,609 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Approval System</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"></head>
-    <style>
-        /* Global styles */
-body {
-    line-height: 1;
-    margin: 0; /* Reset default margin */
-    padding: 0; /* Reset default padding */
-}
-.document-details{
-    line-height: 3;
-}
-.container{
-    line-height: 1.5;
-}
-.document-details label {
-    margin-right: 100px; 
-}
-.document-details label[for="document-no"] {
-    margin-right: 0; 
-}
-.document-details label[for="Status"] {
-    margin-right: 200px; 
-}
-.document-details label[for="refdocdetails"] {
-    margin-left: 590px; 
-}
-.document-details label[for="SubCategory"] {
-    margin-right: 285px; 
-}
-.document-details label[for="basetranscreation"] {
-    margin-right: 0px; 
-}
-
-.main-content,
-.financial-details,
-.document-details,
-.regards 
-.table{
-    border: 2px solid #e2dfdf;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-#document-no {
-    font-size: 16px;
-    width: 200px; /* Adjust width as needed */
-    margin-right: 50px;
-}
-#basetranscreation {
-    font-size: 16px;
-    width: 200px;
-    margin-right: 50px;
-}
-
-#view,
-#Approve,
-#rejectreturn,
-#clarification {
-    font-size: 16px;
-    padding: 8px 16px;
-    cursor: pointer;
-}
-
-
-
-
-#clarification {
-    font-size: 14px; /* Reduce font size */
-    padding: 6px 12px; /* Adjust padding */
-    background-color: #ffc107;
-    color: #000;
-    border:#000;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-/* CSS styles for table */
-table {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+<style>
+  .body {
+    margin: 3px;
+    border: 1px solid #5c5c5c;
+  }
+  .over-all {
+    display: flex;
+    background: white;
+    height: 800px;
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+  
+  .side-panel {
+    width: 15%;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 96%;
+    margin: 6px;
+    margin-right: 3px;
+    padding: 5px;
+  }
+  .label {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+  }
+  
+  #to-approve {
+    min-width: 40px;
+  }
+  .container {
+    flex: 1;
+    flex-direction: column;
+    width: 85%;
+    border: 1px solid gray;
+    background-color: white;
+    border-radius: 5px;
+    height: 96%;
+    margin: 6px;
+    margin-left: 3px;
+    padding: 6px;
+    font-family: sans-serif;
+  }
+  .document {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-/* Table header styles */
-th {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-    background-color: #0b27c7;
-    color: #e9e9e9;
-}
-
-
-td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-}
-
-
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-
-tr:hover {
-    background-color: #e9e9e9;
-}
-.regards,
-.form-group {
+    display: flex;
+    background: white;
+    border: 1px solid lightgray;
+    height: 20%;
+    border-radius: 4px;
+    align-items: flex-start;
+  }
+  #tags {
+    color: #878484;
+  }
+  #tag-ans {
+    font-size: small;
+  }
+  .doc-1,
+  .doc-2 {
+    padding: 4px;
+  }
+  .document-details,
+  .ref-document-details {
     display: flex;
     flex-direction: column;
-    margin-bottom: 5px;
-}
-.regards input[type="text"],
-.regards textarea {
-    width: 90%; 
-    max-width: 400px;
-    padding: 8px; 
-    box-sizing: border-box; 
-}
-button {
-    margin-top: 0px;
-}
-
-
-.side-panel {
-    width: 180px; 
-    min-width: 50px; 
-    position: fixed;
-    top: 0px;
-    left: 0;
-    bottom: 0;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-right: 1px solid #ccc;
-    overflow-y: auto; 
-}
-
-
-.main-content {
-    flex: 1; 
-    margin-left: 200px; 
-    padding: 20px; 
-}
-
-@media screen and (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .side-panel {
-        width: 100px; 
-        position: static; 
-        border-right: none; 
-        margin-bottom: 10px;
-    }
-
-    .main-content {
-        margin-left: 0; /* No margin on small screens */
-    }
-}
-/* Style for buttons */
-#view,
-#clarification {
-    font-size: 16px;
-    padding: 8px 16px;
-    cursor: pointer;
-   
-}
-
-/* Default button colors */
-#view {
-    background-color: #007bff; /* Blue */
-    color: #fff; /* White text color */
-}
-
-
-#clarification {
-    width: 120px;
-    margin-left: 85%;
-    background-color: #ffc107; 
-    color: #000; 
-}
-
-/* Hover effect for buttons */
-#view:hover,
-#Approve:hover,
-#rejectreturn:hover,
-#clarification:hover {
-    opacity: 0.8;
-}
-
-.financial-row {
-    margin-bottom: 200px; 
-}
-
-.financial-details label {
-    width: 150px; 
-    display: inline-block;
-    margin-right: 10px;
-}
-.container {
-    width: fit-content;
+  
+    background-color: white;
+    height: 100%;
+  }
+  
+  .document-details {
+    width: 70%;
+  }
+  
+  .ref-document-details {
+    width: 30%;
+  }
+  
+  .document-head,
+  .ref-document-head {
+    display: flex;
+    padding: 8px;
+    font-size: small;
+  }
+  
+  .document-body,
+  .ref-document-body {
+    flex-wrap: wrap;
+    margin: 2px;
+    justify-content: space-between;
+    padding: 3px;
+    font-size: smaller;
+  }
+  
+  .doc-row,
+  .ref-doc-row {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+  
+  .doc-con,
+  .ref-doc-con {
+    flex: 1;
+    padding: 2px;
+  }
+  
+  .text-approve {
+    font-size: smaller;
+    font-family: sans-serif;
+  }
+  
+  .doc-remarks {
+    width: 100%;
+    display: flex;
+    background: white;
+    border: 1px solid lightgray;
+    font-size: smaller;
+    height: 18%;
+    border-radius: 4px;
+    align-items: flex-start;
+    margin-top: 3px;
+  }
+  
+  .doc-remarks-details {
+    width: 88%;
+  }
+  #view-button {
+    background-color: rgb(24, 212, 24);
+    border: 0px;
+    border-radius: 4px;
+    width: 10%;
+    height: 80%;
+  }
+  .doc-remarks-head {
+    display: flex;
+    padding: 8px;
+  }
+  
+  .doc-remarks-body {
     display: flex;
     flex-wrap: wrap;
-}
-
-.financial-details,
-.regards {
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px;
+    height: 100%;
+  }
+  
+  .doc-remarks-row {
+    display: flex;
     flex: 1;
-    width: fit-content;
-    margin-right: 60px;
-    margin-bottom: 0px; 
-}
-
-@media screen and (max-width: 600px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .financial-details,
-    .regards {
-        margin-right: 0;
-        margin-bottom: 20px;
-    }
-}
-
-
-.regards {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    width: 50%;
+  }
+  
+  .doc-remarks-con {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+  }
+  .subject,
+  .remarks,
+  .attachment {
+    width: 20%;
+  }
+  
+  .remarks-subject {
+    height: 40%;
+  }
+  .remarks-remarks {
+    height: 40%;
+  }
+  .remarks-attachment {
+    height: 20%;
+  }
+  .remarks-subject,
+  .remarks-remarks,
+  .remarks-attachment {
+    flex: 1;
+    display: flex;
+  }
+  
+  .remarks-subject input,
+  .remarks-remarks input,
+  .remarks-attachment input {
+    flex: 1;
+    width: auto;
+  
+    border: 1px solid rgb(173, 171, 171);
+    border-radius: 3px;
+    padding: 5px;
+  }
+  
+  .clarification {
+    width: 12%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-right: 5px;
+  }
+  .clarification-button {
+    background-color: orange;
+    border: 0px;
+    border-radius: 3px;
+    height: 25%;
+    width: 100%;
+  }
+  
+  .finance {
+    width: 100%;
+    display: flex;
+    background: white;
+    border: 1px solid lightgray;
+    font-size: small;
+    height: 18%;
+    border-radius: 4px;
+    align-items: flex-start;
+    margin-top: 3px;
+  }
+  .finance-details {
+    width: 88%;
+  }
+  .finance-head {
+    display: flex;
+    padding: 8px;
+  }
+  .finance-body {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px;
+    height: 100%;
+  }
+  .approve-reject {
+    width: 100%;
+    display: flex;
+    background: white;
+    border: 1px solid lightgray;
+    font-size: small;
+    border-radius: 4px;
+    align-items: flex-start;
+    margin-top: 3px;
+    height: 10%;
+    border: 1px solid lightgray;
+  }
+  
+  .approve-body {
+    display: flex;
+    flex: 1;
+    width: 100%;
+  }
+  
+  .approve-row {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    padding: 7px;
+    height: 100%;
+  }
+  
+  .approve-con {
     display: flex;
     flex-direction: column;
-    margin-bottom: 5px;
-    position: relative;
-}
+    width: 100%;
+  }
+  
+  .approve-con button {
+    width: 20%;
+  
+    margin-bottom: 3px;
+    height: 100%;
+    padding: 4px;
+    border: 0px;
+    border-radius: 3px;
+  }
+  #approvement {
+    background-color: rgb(24, 212, 24);
+  }
+  #rejection {
+    background-color: rgb(233, 39, 9);
+  }
+  .approve-con input {
+    width: 90%;
+    margin: 1px;
+    padding: 2px;
+    height: 100%;
+    border-color: lightgray;
+    border-radius: 3px;
+  }
+  .table-section {
+    margin: 1px;
+    padding: 2px;
+    font-size: small;
+  }
+  .table-list {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-list th,
+  .table-list td {
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+  @media only screen and (max-width: 768px) {
+    .over-all {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .side-panel,
+    .container {
+      width: 100%;
+      margin: 6px 0;
+    }
+  
+    .document,
+    .doc-remarks,
+    .finance,
+    .approve-reject,
+    .table-section {
+      flex-direction: column;
+      height: auto;
+      margin-top: 10px;
+    }
+  
+    .document-details,
+    .ref-document-details,
+    .doc-remarks-details,
+    .finance-details {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  
+    .document-head,
+    .ref-document-head,
+    .doc-remarks-head,
+    .finance-head {
+      justify-content: space-between;
+    }
+  
+    .doc-remarks-row {
+      width: 100%;
+    }
+  
+    .doc-remarks-con {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  
+    .approve-body,
+    .approve-row {
+      flex-direction: column;
+    }
+  
+    .approve-con button,
+    .approve-con input {
+      width: 100%;
+    }
+  }
+  
+  @media only screen and (max-width: 480px) {
+    /* Adjust styles for smaller mobile screens if needed */
+  }
+  
+</style> </head>
+  <body>
+    <div class="over-all">
+      <div class="side-panel">
+        <label for="to-approve">
+          <span class="text-approve">To Approve:</span>
+        </label>
+        <select class="select-box" id="to-approve" name="to-approve" required>
+          <option value="" hidden>select id</option>
+          {% for d in  doc_data %}
+          <option value="{{ d.Document_no }}">{{ d.staff_name }}</option>
 
-.financial-details{
-    line-height: 3;
-}
-
-
-
-.container {
-    width:fit-content;
-    border: #000;
-    display: flex;
-    flex-direction:row;
-}
-.container input {
-    margin-bottom: 20px;
-}
-.container button {
-    width:150px;
-    margin-left: 400px;
-    margin-top:10px;
-
-    margin-right: 25px;
-    padding-top: 100px;
-    color: white;
-}
-.form-container {
-    position: relative;
-    margin-bottom: 10px;
-}
-.reject button{
-    background-color: red;
-    margin-top: 50px;
-    position:relative;
-    left: 50px;
-    bottom: 100px;
-
-}
-.approved button{
-    background-color: green;
-    position:relative;
-    left: 50px;
-    bottom: 50px;
-
-}
-
-    </style>
-<body>
-    <nav>
-    </nav>
-    <div class="side-panel">
-        <label for="to-approve">To Approve:</label>
-        <select id="to-approve" name="to-approve" required>
+          {% endfor %}
         </select>
-    </div>
-    <section class="main-content">
-        <div class="document-details">
-            <label for ="docdetail">Document Details <button type="button" id="view">View</button></label>
-            <label for ="refdocdetails">Ref Document Details</label><br>
-            <label for="document-no">Document No:</label>
-            <select id="document-no" name="document-no" required>
-            </select>
-            <label for="date">Date</label>
-            <label for="Priority">Priority</label>
-            <label for="Status">Status</label>
-            <label for="FinCommitment">FinCommitment</label>
-            <label for="Doctype">DocType</label><br>
-            <label for="OrgUnit">Org.Unit</label>
-            <label for="Department">Department</label>
-            <label for="Category">Category</label>
-            <label for="SubCategory">Sub Category</label>
-            <label for="basetranscreation">Base Trans Creation </label>
-            <select id="Basetranscreation" name="basetranscreation" required>
-            </select>
-            <label for="TransNo">Trans No</label>
-        </div>
-        <div class="document-remarks">
-            <h2>Document Remarks</h2>
-            <form>
-              <div class="form-group">
-                <label for="subject">Subject:</label>
-                <input type="text" id="subject" name="subject" required>
-              </div>
-              <div class="form-group">
-                <label for="remarks">Remarks:</label>
-                <textarea id="remarks" name="remarks" required></textarea>
-              </div>
-              <div class="form-group">
-                <label for="attachment">Attachment:</label>
-                <input type="text" id="attachment" name="attachment" readonly>
-              </div>
-              <div class="form-group">
-                <button type="button" id="clarification">Clarification</button>
-              </div>
-            </form>
-        </div>
-        <div class="container">
-            <div class="financial-details">
-                <h2>Financial Details</h2>
-                <label for="Value">Value</label>
-                <label for="Tolerance">Tolerance</label><br>
-                <label for="Value +">Value +</label><br>
-                <label for="Total">Total</label>
-            </div>
-            <div class="regards">
-                <div class="approved">
-                    <form>
-                        <div class="form-group">
-                            <label for="remarks">Remarks</label>
-                            <textarea id="remarks" name="remarks" required></textarea>
-                        </div>
-                    </form>
-                    <button type="button" id="Approve">Approve</button>
-                </div>
-                <div class="reject">
-                    <form>
-                        <div class="form-group">
-                            <label for="remarksReject">Reject/Return</label>
-                            <textarea id="remarksReject" name="remarksReject" required></textarea>
-                        </div>
-                    </form>
-                    <button type="button" id="rejectreturn">Reject/Return</button>
-                </div>
-            </div>
+        <br>
 
-        </div>
+      </div>
+      <div class="container">
+        <div class="document">
+          <div class="document-details">
+            <div class="document-head">
+              <span class="doc-1">Document</span>
+              <button id="view-button">View</button>
+            </div>
+            <div class="document-body">
+              <div class="doc-row">
+                <div class="doc-con">
+                  <span id="tags">Document no</span>
+                  <form action="{% url 'auth_approval' %}"method="get">
+                  <select  name="Document_no" >
+                    <option value="" hidden>select Document</option>
+                    {% for d in doc_data %}
+                    <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" id="view-button">submit</button>
 
-        <table class="table">
-            <thead class="thead">
+                </form>
+
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Date-</span>
+                  <span id="tag-ans">   {{ Document_no.date }} </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Priority-</span>
+                  <span id="tag-ans"> {{ Document_no.Priority }}</span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Status-</span>
+                  <span id="tag-ans">   {{ Document_no.date }} </span>
+                </div>
+              </div>
+              <div class="doc-row">
+                <div class="doc-con">
+                  <span id="tags">Org.Unit-</span>
+                  <span id="tag-ans">   {{ Document_no.Org_Unit }} </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Department-</span>
+                  <span id="tag-ans">   {{ Document_no.Department }} </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Category-</span>
+                  <span id="tag-ans">   {{ Document_no.Category }} </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Sub category-</span>
+                  <span id="tag-ans">   {{ Document_no.Sub_Category }} </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ref-document-details">
+            <div class="ref-document-head">
+                <span id="tag-ans">   {{ Document_no.date }} </span>
+            </div>
+            <div class="ref-document-body">
+              <div class="doc-row">
+                <div class="doc-con">
+                  <span id="tags">Fin commitment-</span>
+                  <span id="tag-ans">   {{ Document_no.fin_commit }} </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Doc Type-</span>
+                  <span id="tag-ans">   {{ Document_no.date }} </span>
+                </div>
+              </div>
+              <div class="ref-doc-row">
+                <div class="doc-con">
+                  <span id="tags">Base Tran creation-</span>
+                  <select>
+                    <option>datedmothnn</option>
+                  </select>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Transaction No-</span>
+                  <span id="tag-ans">   {{ Document_no.Tran_No }} </span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end of the document-->
+        <div class="doc-remarks">
+          <div class="doc-remarks-details">
+            <div class="doc-remarks-head">
+              <span class="doc-remarks-1">Document Remarks</span>
+            </div>
+            <div class="doc-remarks-body">
+              <div class="doc-remarks-con">
+                <div class="subject" id="tags">Subject</div>
+                <div class="remarks-subject">
+                  <input />
+                </div>
+              </div>
+              <div class="doc-remarks-con">
+                <div class="remarks" id="tags">Remarks</div>
+                <div class="remarks-remarks">
+                  <input />
+                </div>
+              </div>
+              <div class="doc-remarks-con">
+                <div class="attachment" id="tags">Attachment</div>
+                <div class="remarks-attachment">
+                  <input />
+                </div>
+              </div>
+            </div>
+          </div>=
+          <div class="clarification">
+            <div class="doc-row">
+              <button class="clarification-button">Clarification</button>
+            </div>
+          </div>
+        </div>
+        <!-- end of document remarks-->
+        <div class="finance">
+          <div class="finance-details">
+            <div class="finance-head">
+              <span class="finance-doc-1">Financial details</span>
+            </div>
+            <div class="finance-body">
+              <div class="doc-row">
+                <div class="doc-con">
+                  <span id="tags">Spend Type-</span>
+                  <span id="tag-ans">cash </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Currency-</span>
+                  <span id="tag-ans">INR </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Value-</span> <span id="tag-ans"> {{ Document_no.Total_Value }}  </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">Tolerance-</span>
+                  <span id="tag-ans">   {{ Document_no.Tolerance }} </span>
+                </div>
+              </div>
+              <div class="doc-row">
+                <div class="doc-con">
+                  <span id="tags">Value+ -</span>
+                  <span id="tag-ans">10000 </span>
+                </div>
+                <div class="doc-con">
+                  <span id="tags">In Words-</span>
+                  <span id="tag-ans">Thirdy thousand rupees </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="approve-reject">
+          <div class="approve-body">
+            <div class="approve-row">
+              <div class="approve-con">
+                <div class="approvement">
+                </div>
+                <form  method="POST"  id='auth_approval'  autocomplete="off">
+                  {% csrf_token %}
+
+                <div><input type='text' name="Approve_remarks" placeholder="Remarks" /></div>
+                <button id="submit">Approve</button>
+              </form>
+
+              </div>
+              <div class="approve-con">
+                <div class="rejection">
+                  <button id="rejection">Return/Reject</button>
+                </div>
+                <div><input type='text'   name="Reason_Return"  placeholder="Reason" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end of approve reject-->
+        <div class="table-section">
+          <table class="table-list">
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Authoriztion Date</th>
+                <th>Approver Remarks</th>
+                <th>Return Reason</th>
+                <th>Return clafrification</th>
+              </tr>
+            </thead>
+            <tbody>
                 <tr>
-                    <th>#</th>
-                    <th>Username</th>
-                    <th>Authorization Date</th>
+                  <th>{{vise_principal.user_name}}</th>
+                  <th>Authoriztion Date</th>
+                  <th>Approver Remarks</th>
+                  <th>Return Reason</th>
+                  <th>Return clafrification</th>
+                  </tr>
+                  <tr>
+                    <th>{{vise_principal.user_name}}</th>
+                    <th>Authoriztion Date</th>
                     <th>Approver Remarks</th>
                     <th>Return Reason</th>
-                    <th>Return Clarification</th>
-                </tr>
-            </thead>
-            <tbody id="approvalTableBody">
-                <!-- Table rows will be dynamically added here -->
+                    <th>Return clafrification</th>
+                    </tr>
             </tbody>
-        </table>
-    </section>
-
-</body>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  </body>
 </html>

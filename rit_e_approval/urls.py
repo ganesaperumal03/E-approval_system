@@ -22,10 +22,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('create_form/<str:name>/<str:staff_id>/', views.create_form, name="create_form"),
     path('signup', views.signup, name="signup"),
-    path('login', views.login, name="login"),
+    path('', views.login, name="login"),
     path('view_approval', views.view_approval, name="view_approval"),
     path('auth_approval', views.auth_approval, name="auth_approval"),
-    path('clarification', views.clarification, name="clarification")
+    path('clarification', views.clarification, name="clarification"),
+    path('approval_user_details',views.approval_user_details,name="approval_user_details")
 
 
 ]

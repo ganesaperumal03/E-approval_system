@@ -4,7 +4,8 @@ from application.views.approval import (
     login,
     view_approval,
     auth_approval,
-    clarification
+    clarification,
+    approval_user_details
     
 )
 
@@ -14,7 +15,8 @@ __all__ = [
     login,
     view_approval,
     auth_approval,
-    clarification
+    clarification,
+    approval_user_details
     
     
 ]

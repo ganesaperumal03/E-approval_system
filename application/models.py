@@ -74,4 +74,11 @@ class auth_list(models.Model):
     principal_reason = models.CharField(max_length=100, blank=True, null=True)
     principal_clarification = models.CharField(max_length=100, blank=True, null=True)
 
- 
+class clarification(models.Model):
+    Document_no = models.CharField(max_length=20, primary_key=True)
+
+    remarks = models.CharField(max_length=500, blank=True, null=True)
+    reroute_comments = models.CharField(max_length=500, blank=True, null=True)
+    reroute_clarification = models.CharField(max_length=500, blank=True, null=True)
+
+    

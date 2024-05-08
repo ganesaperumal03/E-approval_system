@@ -64,7 +64,7 @@ def create_form(request,name, staff_id):
                 user.principal = 'Pending'
 
             user.save()  # Save the user with updated fields
-            return redirect('page',name,staff_id)  # Redirect to a success page
+            return redirect('create_form',name,staff_id)  # Redirect to a success page
         else:
             return render(request, "e-approval/error.html", {'form': form})
     else:
@@ -216,14 +216,19 @@ def auth_approval(request):
         return render(request, "e-approval/auth_approval.html",{"Document_no":document_data})
 
     staff_id = e_approval.objects.filter(staff_id=567654)
+    print(staff_id)
     user_data=request.session.get('user_data', {})
+    print('yhjgjhghj',user_data['role'])
     doc_data=[]
     if user_data['role'] == 'HOD':
+        print('hojkkhjjhj')
         technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
         for technician in technicians:
             approvals = e_approval.objects.filter(staff_id=technician.staff_id ,HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
 
             if  approvals:
+                print('hojkkhjjhj')
+
                 for approval in approvals:  # Iterate through the queryset
                     staff = User.objects.filter(staff_id=approval.staff_id).first()
                     approval.staff_name = staff.Name
@@ -278,4 +283,7 @@ def auth_approval(request):
 
 
 def clarification(request):
+
     return render(request, "e-approval/clarification.html")
+def approval_user_details(request):
+    return render(request, "e-approval/approval_user_details.html")

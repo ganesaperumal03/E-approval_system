@@ -1,4 +1,4 @@
-from django import forms
+from django import forms  # type: ignore
 from .models import e_approval,User,auth_list
 # forms.py
 class EApprovalForm(forms.ModelForm):

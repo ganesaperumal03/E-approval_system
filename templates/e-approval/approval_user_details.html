@@ -53,6 +53,7 @@
             text-align: center;
             margin-top: auto;
             display: flex;
+            border: none;
             justify-content: space-around;
         }
         .buttons button {
@@ -137,7 +138,7 @@
     </header>
     <div class="nav-bar active" id="nav">
         <a href="login.html">Home</a>
-        <a href="#">Create E approval</a>
+        <a href="{% url 'create_form' %}">Create E approval</a>
         <a  href="{% url 'auth_approval' %}">Authorize E approval</a>
         <a href="{% url 'clarification' %}">Clarification</a>
         <a href="{% url 'view_approval' %}">View Appoval</a>

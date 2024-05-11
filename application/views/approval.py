@@ -11,9 +11,15 @@ from django.conf import settings
 from application.form import EApprovalForm,userform,auth_form
 from application.models import e_approval,User
 from django.contrib import messages
+import inflect
+def in_words(Total_Value):
+    p = inflect.engine()
+    In_words= p.number_to_words(Total_Value)
+def create_form(request):
+    user_data=request.session.get('user_data', {})
+    name=user_data["name"]
+    staff_id=user_data["staff_id"]
 
-
-def create_form(request,name, staff_id):
     if request.method == 'POST':
         form = EApprovalForm(request.POST)
         if form.is_valid():
@@ -29,13 +35,14 @@ def create_form(request,name, staff_id):
             # Construct document and transaction numbers
             doc_no = f'rit/ac{Department}/{Category}/{Sub_Category}/{count_no}'
             tran_no = f'rit/ac{Department}/{Category}/{Sub_Category}/{tran_count_no}'
-
+            
             staff = User.objects.get(staff_id=staff_id)
             user = form.save(commit=False)
             role = staff.role
             user.staff_id = staff_id
             user.Document_no = doc_no
             user.Tran_No = tran_no
+            
 
             # Set approval status based on role
             if role == 'Technician':
@@ -64,7 +71,7 @@ def create_form(request,name, staff_id):
                 user.principal = 'Pending'
 
             user.save()  # Save the user with updated fields
-            return redirect('create_form',name,staff_id)  # Redirect to a success page
+            return redirect('create_form')  # Redirect to a success page
         else:
             return render(request, "e-approval/error.html", {'form': form})
     else:
@@ -157,7 +164,6 @@ def login(request):
             'staff_id': user.staff_id,
             'name': user.Name,
             'user_name': user.user_name,
-            'staff_id' : user.staff_id,
             'Department' : user.Department,
             'email' : user.email,
             'role' : user.role,
@@ -165,7 +171,7 @@ def login(request):
             'conform_Password' : user.conform_Password           }
             request.session['user_data'] = user_dict
 
-            return redirect('create_form',name, staff_id)
+            return redirect('create_form')
         else:
             # Passwords don't match, show an error message
             error_message = 'Invalid username or password.'
@@ -209,7 +215,8 @@ def view_approval(request):
 #         return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
 #     return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
 
-def auth_approval(request):
+def auth_approval(request):    
+
     Document_no = request.GET.get('Document_no')
     if Document_no:
         document_data = e_approval.objects.get(Document_no=Document_no)
@@ -283,6 +290,7 @@ def auth_approval(request):
 
 
 def clarification(request):
+    Document_no = request.GET.get('Document_no')
 
     return render(request, "e-approval/clarification.html")
 def approval_user_details(request):

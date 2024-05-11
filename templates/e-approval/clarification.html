@@ -318,7 +318,7 @@
     </header>
     <div class="nav-bar active" id="nav">
       <a href="login.html">Home</a>
-      <a href="#">Create E approval</a>
+      <a href="{% url 'create_form' %}">Create E approval</a>
       <a href="{% url 'auth_approval' %}">Authorize E approval</a>
       <a class="active" href="{% url 'clarification' %}">Clarification</a>
       <a href="{% url 'view_approval' %}">View Appoval</a>
@@ -335,9 +335,7 @@
               <div class="doc-con">
                 <span id="tags">Document no</span>
                 <select>
-                  <option>document 1</option>
-                  <option>document 2</option>
-                  <option>document 3</option>
+                  <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
                 </select>
               </div>
               <div class="doc-con">

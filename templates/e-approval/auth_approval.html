@@ -480,8 +480,8 @@
       </div>
     </header>
     <div class="nav-bar active" id="nav">
-      <a href="login.html">Home</a>
-      <a href="#">Create E approval</a>
+      <a href="#">Home</a>
+      <a href="{% url 'create_form' %}">Create E approval</a>
       <a class="active" href="{% url 'auth_approval' %}">Authorize E approval</a>
       <a href="{% url 'clarification' %}">Clarification</a>
       <a href="{% url 'view_approval' %}">View Appoval</a>
@@ -630,7 +630,7 @@
                 <div class="doc-row">
                   <div class="doc-con">
                     <span id="tags">Spend Type-</span>
-                    <span id="tag-ans">cash </span>
+                    <span id="tag-ans">{{ Document_no.Spend_type}} </span>
                   </div>
                   <div class="doc-con">
                     <span id="tags">Currency-</span>
@@ -652,7 +652,7 @@
                   </div>
                   <div class="doc-con">
                     <span id="tags">In Words-</span>
-                    <span id="tag-ans">Thirdy thousand rupees </span>
+                    <!-- <span id="tag-ans">{{ Document_no.Tran_No }}</span> -->
                   </div>
                 </div>
               </div>

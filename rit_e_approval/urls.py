@@ -20,7 +20,7 @@ from application import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('create_form/<str:name>/<str:staff_id>/', views.create_form, name="create_form"),
+    path('create_form', views.create_form, name="create_form"),
     path('signup', views.signup, name="signup"),
     path('', views.login, name="login"),
     path('view_approval', views.view_approval, name="view_approval"),

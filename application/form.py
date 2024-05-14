@@ -1,5 +1,5 @@
 from django import forms
-from .models import e_approval,User,auth_list
+from .models import e_approval,User,auth_list,doc_remarks
 # forms.py
 class EApprovalForm(forms.ModelForm):
     class Meta:
@@ -9,7 +9,7 @@ class EApprovalForm(forms.ModelForm):
             'remarks_Subject', 'Priority', 'Tolerance', 'Attachment_details', 'Total_Value',"date","Tran_No","fin_commit","Spend_type","Technician","HOD","HOD_date","GM",
             "GM_date","vice_principal","vice_principal_date","principal","principal_date"
  ]
-        exclude=['Document_no',"Tran_No"]
+        exclude=['Document_no',"Tran_No",'Org_Unit','remarks_Subject',"Spend_type","Tolerance"]
 
 class userform(forms.ModelForm):
     class Meta:
@@ -29,4 +29,27 @@ class auth_form(forms.ModelForm):
             'gm_clarification', 'vice_principal', 'vice_principal_date', 'vice_principal_remarks', 'vice_principal_reason',
             'vice_principal_clarification', 'principal', 'principal_date', 'principal_remarks', 'principal_reason',
             'principal_clarification',
+        ]
+
+
+class doc_remarks_form(forms.ModelForm):
+    class Meta:
+        model = doc_remarks
+        fields = [
+            "Document_no","doc_subject","doc_remarks","doc_attachment","doc_approval_id","doc_applied_staff_id"
+ ]
+
+class ClarificationUpdateForm(forms.ModelForm):
+    class Meta:
+        model = e_approval
+        fields = [
+            'Category', 'Sub_Category',
+            'Priority', 'Total_Value', 'fin_commit'
+        ]
+
+class DocRemarksUpdateForm(forms.ModelForm):
+    class Meta:
+        model = doc_remarks
+        fields = [
+            'doc_clarification_status'
         ]

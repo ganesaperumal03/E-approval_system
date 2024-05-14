@@ -26,7 +26,8 @@ urlpatterns = [
     path('view_approval', views.view_approval, name="view_approval"),
     path('auth_approval', views.auth_approval, name="auth_approval"),
     path('clarification', views.clarification, name="clarification"),
-    path('approval_user_details',views.approval_user_details,name="approval_user_details")
-
+    path('approval_user_details',views.approval_user_details,name="approval_user_details"),
+    path('updateapproval',views.updateapproval,name="updateapproval"),
+    path('form_approval',views.form_approval,name="form_approval")
 
 ]

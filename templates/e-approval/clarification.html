@@ -333,58 +333,78 @@
           <div class="document-body">
             <div class="doc-row">
               <div class="doc-con">
-                <span id="tags">Document no</span>
-                <select>
-                  <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
+                <form id="clarificationForm" action="{% url 'clarification' %}" method="get">
+                  <span id="document_data_label">Document no</span>
+                  <select id="document_data_select" name="document_data_value" onchange="handleSelectChange()">
+                    {% for key, value in document_data_value.items %}
+                    <option value="{{ key }}|{{ value }}">{{ value }}</option>
+                    {% endfor %}
                 </select>
+
+                  <button type="submit" id="submit-button">submit</button>
+
+              </form>
+              <a href="{% url 'clarification' %}" class="btn btn-outline-danger ">Delete</a>
+
+
               </div>
+
+              <form  method="POST" action="{% url 'updateapproval' %}" autocomplete="off">
+                {% csrf_token %}
+
               <div class="doc-con">
                 <span id="tags">Date-</span>
-                <span id="tag-ans"> date1</span>
+                <input type="text"   value="{{document_data.date}}">
               </div>
               <div class="doc-con">
                 <span id="tags">Priority-</span>
-                <span id="tag-ans"> High</span>
+                <input type="text" name="Priority"  value="{{document_data.Priority}}">
               </div>
               <div class="doc-con">
                 <span id="tags">Status-</span>
-                <span id="tag-ans">pending</span>
+                <input type="text" name="doc_subject"  value="{{document_data.date}}">
               </div>
             </div>
             <div class="doc-row">
               <div class="doc-con">
                 <span id="tags">Department-</span>
-                <span id="tag-ans">AD</span>
+                <input type="text"  value="{{document_data.Department}}">
               </div>
               <div class="doc-con">
                 <span id="tags">Category-</span>
-                <span id="tag-ans">Category here</span>
+                <input type="text" name="Category"  value="{{document_data.Category}}">
               </div>
               <div class="doc-con">
                 <span id="tags">Sub category-</span>
-                <span id="tag-ans">Sub category </span>
+                <input type="text" name="Sub_Category"  value="{{document_data.Sub_Category}}">
               </div>
               <div class="doc-con">
                 <span id="tags">Trans no-</span>
-                <span id="tag-ans">R1234123/1324/</span>
+                <input type="text"  value="{{document_data.Tran_No}}">
               </div>
             </div>
             <div class="doc-row">
               <div class="doc-con">
                 <span id="tags">Doc type-</span>
-                <span id="tag-ans">345f34</span>
+                <input type="text" name="doc_subject"  value="{{document_data.date}}">
+                <input type="text" hidden name="Document_no"  value="{{document_data.Document_no}}">
+                <input type="text" hidden name="remarks_document_data"  value="{{remarks_document_data.Document_no}}">
+
+                <input class="reroutes-input"> {{remarks_document_data.doc_remarks}}</input>
+
+
               </div>
               <div class="doc-con">
                 <span id="tags">Currency-</span>
-                <span id="tag-ans">INR</span>
+                <input type="text"  value="INR">
               </div>
               <div class="doc-con">
                 <span id="tags">Fin commitment-</span>
-                <span id="tag-ans">No </span>
+                <input type="text" name="fin_commit"  value="{{document_data.fin_commit}}">
               </div>
               <div class="doc-con">
                 <span id="tags">Total value-</span>
-                <span id="tag-ans">200000/</span>
+                <input type="text" name="Total_Value"  value="{{document_data.Total_Value}}">
               </div>
             </div>
             <div class="doc-row">
@@ -446,7 +466,7 @@
             <div class="comments-body">
               <div class="reroutes-text">Reroute comments</div>
               <div class="body-response">
-                <textarea class="reroutes-input"></textarea>
+                <textarea class="reroutes-input"> {{remarks_document_data.doc_remarks}}</textarea>
               </div>
             </div>
           </div>
@@ -463,17 +483,19 @@
             </div>
             <div class="reroute-tag">
               <span id="tags">Reroute Clarification</span>
+              <input type="text" name='doc_clarifictaions_reason'/>
+
             </div>
 
-            <div class="reroute-text">
-              <textarea class="reroutes-input"></textarea>
-            </div>
+           
           </div>
         </div>
         <!-- end of clarificaition given-->
         <div class="submit">
-          <button>Submit</button>
+          <button type="submit" >Submit</button>
         </div>
+        </div>
+      </form>
         <!--end of click-->
         <div class="data">
           <div class="left">
@@ -504,6 +526,8 @@
         var nav = document.getElementById("nav");
         nav.classList.toggle("active");
       }
-  </script>
+
+    </script>
+  
   </body>
 </html>

@@ -588,38 +588,44 @@
           </div>
         </div>
         <!--end of the document-->
+        <form  method="POST"  id='auth_approval'  autocomplete="off">
+          {% csrf_token %}
         <div class="doc-remarks">
           <div class="doc-remarks-details">
             <div class="doc-remarks-head">
               <span class="doc-remarks-1">Document Remarks</span>
+              <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
+              <input type="text" hidden name="doc_applied_staff_id" value="{{Document_no.staff_id}}" >
+
             </div>
             <div class="doc-remarks-body">
               <div class="doc-remarks-con">
                 <div class="subject" id="tags">Subject</div>
                 <div class="remarks-subject">
-                  <input />
+                  <input type="text" name="doc_subject"  >
                 </div>
               </div>
               <div class="doc-remarks-con">
                 <div class="remarks" id="tags">Remarks</div>
                 <div class="remarks-remarks">
-                  <input />
+                  <input type="text" name="doc_remarks">
                 </div>
               </div>
               <div class="doc-remarks-con">
                 <div class="attachment" id="tags">Attachment</div>
-                <div class="remarks-attachment">
-                  <input />
+                <div class="remarks-attachment" >
+                  <input type="text"  name="doc_attachment" >
                 </div>
               </div>
             </div>
           </div>
           <div class="clarification">
             <div class="doc-row">
-              <button class="clarification-button">Clarification</button>
+              <button type="submit"  class="clarification-button">Clarification</button>
             </div>
           </div>
         </div>
+      </form>
         <div class="same-div">
           <div class="finance">
             <div class="finance-details">
@@ -662,20 +668,31 @@
             <div class="approve-body">
               <div class="approve-row">
                 <div class="approve-con">
+                  <form action="{% url 'form_approval' %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="apr-text">
+                      <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
+                    <textarea type='text' name='approval_Remarks' placeholder="Remarks"></textarea>
+                  </div>
                   <div class="approvement">
                     <button id="approvement">Approve</button>
                   </div>
-                  <div class="apr-text">
-                    <textarea placeholder="Remarks"></textarea>
-                  </div>
                 </div>
+              </form>
+              <form action="{% url 'form_approval' %}" method="POST">
+                {% csrf_token %}
+
                 <div class="approve-con">
+                  <div class="rea-text">
+                    <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
+                    <textarea type='text' name='approval_Reason' placeholder="Reason"></textarea>
+                  </div>
                   <div class="rejection">
                     <button id="rejection">Return/Reject</button>
                   </div>
-                  <div class="rea-text">
-                    <textarea placeholder="Reason"></textarea>
-                  </div>
+                </form>
+
                 </div>
               </div>
             </div>

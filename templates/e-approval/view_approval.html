@@ -13,7 +13,6 @@
     />
 </head>
 <style>
-    
     body {
     line-height: 1;
     margin: 0; 
@@ -184,54 +183,57 @@
         <a href="{% url 'approval_user_details' %}">E approval user details </a>
       </div>
     </header>
-    
     <div class="header1">
         <h3>Headersec</h3>
-        <form action="/search" method="get" class="form-group">
+        <div class="form-group">
+            <form  method="GET"  id='view_approval'  autocomplete="off">
+
             <div class="form-row align-items-center justify-content-between">
+
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="search" class="mr-2">Transaction No:</label>
-                    <input type="text" id="search" name="q" class="form-control" placeholder="Enter Transaction No" aria-label="Transaction No" aria-describedby="search-addon" style="width: 60%;">
+                    <input type="text" id="search" name="Tran_No" class="form-control" placeholder="Enter Transaction No" aria-label="Transaction No" aria-describedby="search-addon" style="width: 60%;">
                     <button type="submit" class="btn btn-outline-secondary ml-2"><i class="fas fa-search"></i></button>
                 </div>
+            </form>
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="date" class="mr-2">Date</label>
-                    <input type="date" id="date" name="date" readonly class="form-control" aria-label="Date" aria-describedby="date-addon" style="width: 60%;">
+                    <input type="text" id="date" name="date" value="{{Tran_No.date}}" readonly class="form-control" aria-label="Date" aria-describedby="date-addon" style="width: 60%;">
                 </div>
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="status" class="mr-2">Status</label>
-                    <input type="text" id="status" name="status" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="status" name="status" value="{{Tran_No}}" readonly class="form-control" style="width: 60%;">
                 </div>
             </div>
             <div class="form-row align-items-center justify-content-between">
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="department" class="mr-2">Department</label>
-                    <input type="text" id="department" name="department" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="department" name="department" value={{Tran_No.Department}}  readonly class="form-control" style="width: 60%;">
                 </div>
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="Category" class="mr-2">Category</label>
-                    <input type="text" id="catagory" name="catagory" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="catagory" name="catagory" value={{Tran_No.Category}}  readonly class="form-control" style="width: 60%;">
                 </div>
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="SubCategory" class="mr-2">Sub Category</label>
-                    <input type="text" id="subcatagory" name="subcatagory" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="subcatagory" name="subcatagory"  value={{Tran_No.Sub_Category}} readonly class="form-control" style="width: 60%;">
                 </div>
             </div>
             <div class="form-row align-items-center justify-content-between">
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="priority" class="mr-2">Priority</label>
-                    <input type="text" id="priority" name="priority" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="priority" name="priority" value={{Tran_No.Priority}} readonly class="form-control" style="width: 60%;">
                 </div>
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="doctype" class="mr-2">Doc Type</label>
-                    <input type="text" id="doctype" name="doctype" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="doctype" name="doctype" value={{Tran_No}} readonly class="form-control" style="width: 60%;">
                 </div>
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="tranno" class="mr-2">Trans No</label>
-                    <input type="text" id="transno" name="transno" readonly class="form-control" style="width: 60%;">
+                    <input type="text" id="transno" name="transno" value={{Tran_No.Tran_No}} readonly class="form-control" style="width: 60%;">
                 </div>
             </div>
-        </form>
+        </div>
         <form class="form-group1">
             <div class="form-row align-items-center justify-content-between">
                 <div class="col-md-6 d-flex align-items-center justify-content-between">
@@ -304,15 +306,19 @@
                             </tr>
                         </thead>
                         <tbody id="approvalTableBody">
+                            {% for value in approval_user%}
                             <tr>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
+                            <th></th>
+                            <th></th>
+
+                            <th>{{value.user.user_name}}</th>
+                            <th>{{value.user.Name}}</th>
+                            <th>{{value.user.role}}</th>
+                            <th>{{value.user.email}}</th>
+                            <th>{{value.approvals}}</th>
+
                             </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div> <!-- End of div -->

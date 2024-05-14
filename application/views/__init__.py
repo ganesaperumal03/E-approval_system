@@ -5,7 +5,9 @@ from application.views.approval import (
     view_approval,
     auth_approval,
     clarification,
-    approval_user_details
+    approval_user_details,
+    updateapproval,
+    form_approval
     
 )
 
@@ -16,7 +18,9 @@ __all__ = [
     view_approval,
     auth_approval,
     clarification,
-    approval_user_details
+    approval_user_details,
+    updateapproval,
+    form_approval
     
     
 ]

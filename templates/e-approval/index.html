@@ -84,7 +84,7 @@
       <a href="{% url 'approval_user_details' %}">E approval user details </a>
     </div>
     <div>
-      <form  method="POST"  id='create_form'  autocomplete="off">
+      <form  method="POST"  id='create_form'  autocomplete="off"   enctype="multipart/form-data" >
         {% csrf_token %}
 
       <div class="container1">
@@ -171,10 +171,10 @@
         <div class="attachment-details">
           <div class="heading">
           <h3>Attachment Details</h3></div>
-          <!-- <div class="detail-section">
+          <div class="detail-section">
             <span class="detail-label">Attachment</span>
             <input type="file" name='Attachment'class="detail-value" />
-          </div> -->
+          </div>
           <div class="detail-section">
             <span class="detail-label">Attachment-details</span>
             <input type="text" name='Attachment_details'class="detail-value" required/>

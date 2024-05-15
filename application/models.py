@@ -16,7 +16,7 @@ class e_approval(models.Model):
     Total_Value = models.CharField(max_length=100)
     In_words = models.CharField(max_length=200,blank=True,null=True)
     Spend_type=models.CharField(max_length=100,null=True)
-    Attachment = models.CharField(max_length=100)
+    Attachment = models.FileField(upload_to='pdf')
     date = models.DateField()
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)

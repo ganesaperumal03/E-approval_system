@@ -13,6 +13,36 @@ from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,D
 from application.models import e_approval,User,doc_remarks
 from django.contrib import messages
 import inflect
+
+
+
+
+def save_uploaded_pdfs(file_dict):
+    profile_images_directory = os.path.join('pdfs')
+    os.makedirs(profile_images_directory, exist_ok=True)
+
+    file_paths = {}
+
+    for field_name, file_obj in file_dict.items():
+        base_file_name = f'{field_name}_{file_obj.name}'
+        file_path = os.path.join(profile_images_directory, base_file_name)
+
+        # Check if the file already exists, if yes, append a number
+        counter = 1
+        while os.path.exists(file_path):
+            new_file_name = f'{field_name}_{counter}_{file_obj.name}'
+            file_path = os.path.join(profile_images_directory, new_file_name)
+            counter += 1
+
+        with open(file_path, 'wb') as destination:
+            for chunk in file_obj.chunks():
+                destination.write(chunk)
+
+        file_paths[field_name] = file_path
+
+    return file_paths
+
+
 def in_words(Total_Value):
     p = inflect.engine()
     In_words= p.number_to_words(Total_Value)
@@ -43,7 +73,9 @@ def create_form(request):
             user.staff_id = staff_id
             user.Document_no = doc_no
             user.Tran_No = tran_no
-
+            file_paths = save_uploaded_pdfs(request.FILES)
+            print("kjdhsfdhsfdhksdfhkfhjsfdhsfdhjsfdhjdsfhjadvguiv",file_paths.get('Attachment'))
+            user.Attachments = file_paths.get('Attachments')
             # Set approval status based on role
             if role == 'Technician':
                 user.Technician = None

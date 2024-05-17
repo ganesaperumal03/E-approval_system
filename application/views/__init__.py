@@ -7,7 +7,11 @@ from application.views.approval import (
     clarification,
     approval_user_details,
     updateapproval,
-    form_approval
+    form_approval,
+    pdf_show,
+    send_email,
+    process_department,
+    pdf
     
 )
 
@@ -20,7 +24,11 @@ __all__ = [
     clarification,
     approval_user_details,
     updateapproval,
-    form_approval
+    form_approval,
+    pdf_show,
+    send_email,
+    process_department,
+    pdf
     
     
 ]

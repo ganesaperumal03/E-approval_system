@@ -94,7 +94,7 @@
             <div class="detail-section">
               <span class="detail-label">Department</span>
               <select class="detail-value" name="Department">
-                <option value="" disabled selected></option>
+                <option value="" hidden disabled selected>Select Department</option>
                 <option value="cse">CSE</option>
                 <option value="it">IT</option>
                 <option value="aids">AIDS</option>
@@ -107,15 +107,31 @@
             </div>
             <div class="detail-section">
               <span class="detail-label">Org Unit</span>
-              <input type="text" name='Org_Unit'class="detail-value"  required/>
+              <input type="text" name='Org_Unit'class="detail-value"  value='RIT' required/>
             </div>
             <div class="detail-section">
               <span class="detail-label">Category</span>
-              <input type="text" name='Category'class="detail-value" required/>
+              <select class="detail-value" name="Category">
+
+              <option value="" disabled hidden selected>Select Category</option>
+
+              {% for c in category %}
+              <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+
             </div>
             <div class="detail-section">
               <span class="detail-label">Sub Category</span>
-              <input type="text" name='Sub_Category'class="detail-value" required/>
+              <select class="detail-value" name="Sub_Category">
+
+                <option value="" disabled hidden selected>Select Category</option>
+                {% for c in category %}
+                <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+              </select>
+
+
             </div>
             <div class="detail-section">
               <span class="detail-label">Document No</span>
@@ -136,7 +152,14 @@
           </div>
           <div class="detail-section">
             <span class="detail-label">Priority</span>
-            <input type="text" name='Priority'class="detail-value" required/>
+            <select class="detail-value" name="Priority">
+
+              <option value="" disabled hidden selected>Select Priority</option>
+
+              <option value="standed">standed</option>
+              <option value="High">High</option>
+              <option value="Low">Low</option>
+            </select>
           </div>
         </div>
       </div>
@@ -150,7 +173,12 @@
           </div>
           <div class="detail-section">
             <span class="detail-label">Fin.Commitment</span>
-            <input type="text" name='fin_commit'class="detail-value" required/>
+            <select class="detail-value" name="fin_commit">
+
+              <option value="" disabled hidden selected>Select fin_commit</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
           </div>
 
           <div class="detail-section">
@@ -161,11 +189,6 @@
             <span class="detail-label">Total Value</span>
             <input type="text" name="Total_Value" class="detail-value" required/>
           </div>
-          <div class="detail-section">
-            <span class="detail-label">Spend Type</span>
-            <input type="text" name="Spend_type" class="detail-value" required/>
-          </div>
-          
         </div>
 
         <div class="attachment-details">
@@ -176,12 +199,12 @@
             <input type="file" name='Attachment'class="detail-value" />
           </div>
           <div class="detail-section">
-            <span class="detail-label">Attachment-details</span>
+            <span class="detail-label">Attachment-Remarks</span>
             <input type="text" name='Attachment_details'class="detail-value" required/>
           </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" style >submit</button>
+      <button type="submit" class="btn btn-primary" style >Create</button>
 
     </form>
       <div class="footer">

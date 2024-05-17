@@ -512,7 +512,7 @@
               <div class="doc-row">
                 <div class="doc-con">
                   <span id="tags">Document no</span>
-                  <form action="{% url 'auth_approval' %}" method="get">
+                  <form action="{% url 'auth_approval' %}" method="GET">
                     <select name="Document_no">
                       <option value="" hidden>select Document</option>
                       {% for d in doc_data %}
@@ -602,7 +602,7 @@
               <div class="doc-remarks-con">
                 <div class="subject" id="tags">Subject</div>
                 <div class="remarks-subject">
-                  <input type="text" name="doc_subject"  >
+                  <input type="text" name="doc_subject" value="{{ Document_no.remarks_Subject }}" >
                 </div>
               </div>
               <div class="doc-remarks-con">
@@ -703,28 +703,20 @@
           <table class="table-list">
             <thead>
               <tr>
-                <th>User Name</th>
+                <th>Approval</th>
                 <th>Authoriztion Date</th>
                 <th>Approver Remarks</th>
-                <th>Return Reason</th>
-                <th>Return clafrification</th>
               </tr>
             </thead>
             <tbody>
+              {% for p in approval_user%}
               <tr>
-                <td>{{vise_principal.user_name}}</td>
-                <td>Authoriztion Date</td>
-                <td>Approver Remarks</td>
-                <td>Return Reason</td>
-                <td>Return clafrification</td>
+                <th>{{p.Approval}}</th>
+                <th>{{p.date}}</th>
+                <th>{{p.remarks}}</th>
+
               </tr>
-              <tr>
-                <td>{{vise_principal.user_name}}</td>
-                <td>Authoriztion Date</td>
-                <td>Approver Remarks</td>
-                <td>Return Reason</td>
-                <td>Return clafrification</td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-w#=8plo*p30=bg$xs9f7c1j2jo%&k)-5l#tl8udi(6v__v30y=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.16.71.76']
+ALLOWED_HOSTS = ["172.16.71.76"]
 
 
 # Application definition
@@ -73,6 +73,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'rit_e_approval.wsgi.application'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ganeshperumal256@gmail.com'  # Your Gmail email address
+EMAIL_HOST_PASSWORD = 'idokrftlbpbnuhsx'  
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -129,6 +135,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+MEDIA_URL = '/pdf/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'pdf')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

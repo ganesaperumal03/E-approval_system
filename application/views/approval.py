@@ -12,13 +12,12 @@ from django.conf import settings
 from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,DocRemarksUpdateForm,ClarificationUpdateForm
 from application.models import e_approval,User,doc_remarks
 from django.contrib import messages
-import inflect
-
-
+from django.db.models import Q
+import pandas as pd
 
 
 def save_uploaded_pdfs(file_dict):
-    profile_images_directory = os.path.join('pdfs')
+    profile_images_directory = os.path.join('media')
     os.makedirs(profile_images_directory, exist_ok=True)
 
     file_paths = {}
@@ -43,14 +42,20 @@ def save_uploaded_pdfs(file_dict):
     return file_paths
 
 
-def in_words(Total_Value):
-    p = inflect.engine()
-    In_words= p.number_to_words(Total_Value)
+# def in_words(Total_Value):
+#     p = inflect.engine()
+#     In_words= p.number_to_words(Total_Value)
 def create_form(request):
     user_data=request.session.get('user_data', {})
-    name=user_data["name"]
     staff_id=user_data["staff_id"]
-
+    excel_file_path = 'category.csv'
+    # Read the Excel file
+    try:
+        df = pd.read_csv(excel_file_path)
+    except pd.errors.EmptyDataError:
+        # Handle the case where the Excel file is empty
+        df = pd.DataFrame(columns=['Sub_category'])
+    category = df['Sub_category'].tolist()
     if request.method == 'POST':
         form = EApprovalForm(request.POST)
         if form.is_valid():
@@ -75,7 +80,7 @@ def create_form(request):
             user.Tran_No = tran_no
             file_paths = save_uploaded_pdfs(request.FILES)
             print("kjdhsfdhsfdhksdfhkfhjsfdhsfdhjsfdhjdsfhjadvguiv",file_paths.get('Attachment'))
-            user.Attachments = file_paths.get('Attachments')
+            user.Attachment = file_paths.get('Attachment')
             # Set approval status based on role
             if role == 'Technician':
                 user.Technician = None
@@ -102,10 +107,10 @@ def create_form(request):
                 user.vice_principal = None
                 user.principal = 'Pending'
 
-            user.save()  # Save the user with updated fields
+            user.save()
             return redirect('create_form')  # Redirect to a success page
         else:
-            return render(request, "e-approval/error.html", {'form': form})
+            return render(request, "e-approval/error.html", {'form': form,"category":category})
     else:
         form = EApprovalForm()
         staff_user = User.objects.get(staff_id=staff_id)
@@ -128,10 +133,8 @@ def create_form(request):
             # return render(request, "e-approval/index.html", {'form': form, 'gm_user': gm_user, 'vice_principal_user': vice_principal_user,
             #                                                 'principal_user': principal_user, 'HOD': HOD_user
             #                                              })
-        return render(request, "e-approval/index.html", {'form': form, "appruval_user":approval_user
+        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category
                                                          })
-
-
 
 
 def encrypt_password(raw_password):
@@ -201,6 +204,7 @@ def login(request):
             'role' : user.role,
             'Password' : user.Password,
             'conform_Password' : user.conform_Password           }
+            
             request.session['user_data'] = user_dict
 
             return redirect('create_form')
@@ -212,32 +216,36 @@ def login(request):
         return render(request, "auth/login.html")
 
 
-# def auth_approval(request):
-#     staff_id = e_approval.objects.filter(staff_id=567654)
-#     Document_no = request.GET.get('Document_no')
-#     print(Document_no,'89')
-#     if Document_no:
-#         Document_no = e_approval.objects.get(Document_no=Document_no)
-#         staff_id=Document_no.staff_id
-#         gm=Document_no.GM
-#         vice_prinicipal=Document_no.vice_principal
-#         prinicipal=Document_no.principal
-#         if gm=='pending':
-#             auth_staff_id = User.objects.get(staff_id=staff_id)
-#         print(Document_no)
-#         gm = User.objects.get(role='GM')
-#         vice_principal = User.objects.get(role='vice_principal')
-#         principal = User.objects.get(role='Principal')
-
-#         if Document_no:
-#             print(Document_no)
-#             return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no,"gm":gm,"vice_principal":vice_principal,"principal":principal})
-
-#         return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
-#     return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
-
+# #def auth_approval(request):
+# #    staff_id = e_approval.objects.filter(staff_id=567654)
+# #    Document_no = request.GET.get('Document_no')
+# #    print(Document_no,'89')
+# #    if Document_no:
+# #        Document_no = e_approval.objects.get(Document_no=Document_no)
+# #        staff_id=Document_no.staff_id
+# #        gm=Document_no.GM
+# #        vice_prinicipal=Document_no.vice_principal
+# #        prinicipal=Document_no.principal
+# #        if gm=='pending':
+# #            auth_staff_id = User.objects.get(staff_id=staff_id)
+# #        print(Document_no)
+# #        gm = User.objects.get(role='GM')
+# #        vice_principal = User.objects.get(role='vice_principal')
+# #        principal = User.objects.get(role='Principal')
+#
+# #        if Document_no:
+# #            print(Document_no)
+# #            return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no,"gm":gm,"vice_principal":vice_principal,"principal":principal})
+#
+# #        return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
+# #    return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
+def auth_approval_list():
+    pass
 def auth_approval(request):
     user_data=request.session.get('user_data', {})
+    staff_role=user_data['role']
+    department=user_data['Department']
+
     print('yhjgjhghj',user_data['role'])
     if request.method == 'POST':
         form = doc_remarks_form(request.POST)
@@ -266,12 +274,35 @@ def auth_approval(request):
 
 
     Document_no = request.GET.get('Document_no')
-    if Document_no:
-        document_data = e_approval.objects.get(Document_no=Document_no)
-        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data})
 
-    staff_id = e_approval.objects.filter(staff_id=567654)
-    print(staff_id)
+
+    if Document_no:
+        role=staff_role
+        role_list = ['HOD','GM','vice_principal','Principal']
+        ia = role_list.index(role)
+        print(department,role,ia)
+        approval_user = []
+        date=None
+
+        auth_list = e_approval.objects.filter(Document_no=Document_no)
+        for i,j in enumerate(auth_list):
+            if j.HOD!='Pending':
+                approval_user.append({"date":j.HOD_date,'Approval':'HOD',
+                'remarks':j.HOD})
+            if j.GM!='Pending':
+                approval_user.append({"date":j.GM_date,'Approval':'GM',
+                'remarks':j.GM})
+            if j.vice_principal!='Pending':
+                approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
+                'remarks':j.vice_principal})
+            if j.principal!='Pending':
+                approval_user.append({"date":j.principal_date,'Approval':'principal',
+                'remarks':j.principal})
+
+        document_data = e_approval.objects.get(Document_no=Document_no)
+        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user})
+
+
     user_data=request.session.get('user_data', {})
     print('yhjgjhghj',user_data['role'])
     doc_data=[]
@@ -294,7 +325,7 @@ def auth_approval(request):
          )
 
         for technician in technicians:
-            approvals = e_approval.objects.filter(staff_id=technician.staff_id ,HOD = 'approved',GM='Pending',vice_principal='Pending',principal='Pending')
+            approvals = e_approval.objects.exclude(HOD='Pending').filter(staff_id=technician.staff_id,GM='Pending',vice_principal='Pending',principal='Pending')
 
             if  approvals:
                 for approval in approvals:  # Iterate through the queryset
@@ -309,7 +340,7 @@ def auth_approval(request):
          )
 
         for technician in technicians:
-            approvals = e_approval.objects.filter(staff_id=technician.staff_id ,HOD = 'approved',GM='approved',vice_principal='Pending',principal='Pending')
+            approvals = e_approval.objects.exclude(HOD='Pending',GM='Pending').filter(staff_id=technician.staff_id,vice_principal='Pending',principal='Pending')
 
             if  approvals:
                 for approval in approvals:  # Iterate through the queryset
@@ -324,7 +355,7 @@ def auth_approval(request):
          )
         print('principal',technicians)
         for technician in technicians:
-            approvals = e_approval.objects.filter(staff_id=technician.staff_id ,HOD = 'approved',GM='approved',vice_principal='approved',principal='Pending')
+            approvals = e_approval.objects.exclude(HOD='Pending',GM='Pending',vice_principal='Pending').filter(staff_id=technician.staff_id ,principal='Pending')
             print(approvals)
             if  approvals:
                 for approval in approvals:  # Iterate through the queryset
@@ -339,9 +370,7 @@ def auth_approval(request):
             role = staff.role
 
 
-
-
-    return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id,"doc_data":doc_data})
+    return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data})
 
 doc_no = None # Declare the global variable outside the function
 
@@ -488,34 +517,91 @@ def view_approval(request):
     user_data=request.session.get('user_data', {})
     role=user_data['role']
     Department=user_data['Department']
+    staff_id=user_data['staff_id']
 
     approval_user = []
+    date=None
 
-    role_list = ['Technician','HOD','GM','vice_principal','Principal']
-    ia = role_list.index(role)
-    for i in role_list[ia+1:]:
-        print(i)
-        if i == "HOD":
-            approvals = e_approval.objects.exclude(HOD='Pending').filter(Tran_No=Tran_No,GM='Pending', vice_principal='Pending', principal='Pending')
-            date=None
-            for approval in approvals:
-                date=approval.HOD_date
-            approval_user.append({
-                'approvals': date,
-                'user': User.objects.filter(Department=Department, role=i).first()
-            })
-        elif i == "GM":
-            approval_user.append(User.objects.filter(role=i).first())
-        elif i == "vice_principal":
-            approval_user.append(User.objects.filter(role=i).first())
-        elif i == "Principal":
-            approval_user.append(User.objects.filter(role=i).first())
+    role_list = ['HOD','GM','vice_principal','Principal']
+    approval_user = []
+    date=None
 
-    # print("data-=========================",Tran_No)
+    auth_list = e_approval.objects.filter(Document_no=Tran_No)
+    for i,j in enumerate(auth_list):
+        if j.HOD!='Pending':
+            approval_user.append({"date":j.HOD_date,'Approval':'HOD',
+            'user':User.objects.filter(Department=Department, role='HOD').first()})
+        if j.GM!='Pending':
+            approval_user.append({"date":j.GM_date,'Approval':'GM',
+            'user':User.objects.filter( role='GM').first()})
+        if j.vice_principal!='Pending':
+            approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
+            'user':User.objects.filter( role='vice_principal').first()})
+        if j.principal!='Pending':
+            approval_user.append({"date":j.principal_date,'Approval':'principal',
+            'user':User.objects.filter( role='principal').first()})
     if Tran_No:
         Tran_No = e_approval.objects.get(Tran_No=Tran_No)
-        print(Tran_No)
+        print(Tran_No,'-------------------------')
         return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":approval_user})
 
-        return render(request, "e-approval/view_approval.html")
-    return render(request, "e-approval/view_approval.html")
+    doc_data=[]
+    tran_no=e_approval.objects.filter(staff_id=staff_id)
+    print(tran_no,'-------------------------')
+    return render(request, "e-approval/view_approval.html",{"tran_no":tran_no})
+
+
+
+from django.shortcuts import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+
+def pdf_show(request):
+    try:
+        pdf = e_approval.objects.get(Document_no="rit/acaids/Admission Promotion/Advertiesment Expenses/00002")
+        pdf_path = pdf.Attachment.path  
+        crct_pdf_path = pdf_path.replace('pdf\\', '')  # Remove 'pdf/' from the URL
+        print(crct_pdf_path)
+        if os.path.exists(crct_pdf_path):  # Check if the file exists
+            with open(crct_pdf_path, 'rb') as pdf_file:
+                response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+                response['Content-Disposition'] = f'inline; filename="{pdf.Attachment.name}"'
+                return response
+        else:
+            return HttpResponse("PDF not found.")
+    except ObjectDoesNotExist:
+        return HttpResponse("PDF not found.")
+
+from django.shortcuts import HttpResponse
+from django.core.mail import send_mail
+
+def send_email(request):
+    subject = 'Hello from Django'
+    message = 'This is a test email sent from Django.'
+    recipient_list = ['953621243053@ritrjpm.ac.in']  # Replace with the recipient's email address
+
+    send_mail(subject, message, 'ganeshperumal256@gmail.com', recipient_list)
+    return HttpResponse('Email sent successfully.')
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+import json
+
+@csrf_exempt
+def process_department(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            selected_department = data.get('department')
+            # print('---------------------------------', selected_department)
+            # Render the new template and return the HTML content
+            return render(request, "e-approval/view_approval.html")
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def pdf(request):
+    return render(request, "e-approval/pdf.html")

@@ -192,7 +192,14 @@
 
                 <div class="col-md-3 d-flex align-items-center justify-content-between">
                     <label for="search" class="mr-2">Transaction No:</label>
-                    <input type="text" id="search" name="Tran_No" class="form-control" placeholder="Enter Transaction No" aria-label="Transaction No" aria-describedby="search-addon" style="width: 60%;">
+                        <select name="Tran_No">
+                          <option value="" hidden>select Document</option>
+                          {% for d in tran_no %}
+                          <option value="{{ d.Tran_No }}">
+                            {{ d.Tran_No }}
+                          </option>
+                          {% endfor %}
+                        </select>
                     <button type="submit" class="btn btn-outline-secondary ml-2"><i class="fas fa-search"></i></button>
                 </div>
             </form>
@@ -314,7 +321,7 @@
                             <th>{{value.user.Name}}</th>
                             <th>{{value.user.role}}</th>
                             <th>{{value.user.email}}</th>
-                            <th>{{value.approvals}}</th>
+                            <th>{{value.date}}</th>
 
                             </tr>
                             {% endfor %}

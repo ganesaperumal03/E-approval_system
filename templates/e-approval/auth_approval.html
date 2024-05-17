@@ -1,27 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
 
     <style>
-      * {
-        margin: 0px;
-        padding: 0px;
-        text-decoration: none;
-        list-style: none;
-        box-sizing: border-box;
-      }
+        body {
+          min-height: 100vh;
+          overflow-x: hidden;
+          font-family:Arial, Helvetica, sans-serif ;
+        }
+        .vertical-nav {
+          min-width: 23rem;
+          width: 23rem;
+          height: 100vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+          box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+          transition: all 0.4s;
+        }
+        .page-content {
+          width: calc(100% - 17rem);
+          margin-left: 23rem;
+          transition: all 0.4s;
+        } 
 
-      body {
-        margin: 1px;
-      }
+        #sidebar.active {
+          margin-left: -23rem;
+        }
+
+        #content.active {
+          width: 100%;
+          margin: 0;
+        }
+
+        .separator {
+          margin: 3rem 0;
+          border-bottom: 1px dashed #fff;
+        }
+
+        .text-uppercase {
+          letter-spacing: 0.1em;
+        }
+        .text-gray {
+          color: #aaa;
+        }
+        .nav-link{
+            text-transform: capitalize;
+        }
+        .nav-link:hover{
+            background:#f3f2f2;
+        }
+        .text-primary{
+            color:#7579e7 !important;
+        }
+        @media (max-width: 768px) {
+          #sidebar {
+            margin-left: -17rem;
+          }
+          #sidebar.active {
+            margin-left: 0;
+          }
+          #content {
+            width: 100%;
+            margin: 0;
+          }
+          #content.active {
+            margin-left: 17rem;
+            width: calc(100% - 17rem);
+          }
+        }
       header {
         height: 27px;
         width: 100%;
@@ -31,9 +88,9 @@
       .over-all {
         display: flex;
         background: white;
-        height: 800px;
         border: 1px solid gray;
         border-radius: 5px;
+
       }
 
       .side-panel {
@@ -355,57 +412,6 @@
         padding: 5px;
         border: 1px solid #ccc;
       }
-      .nav-bar.active {
-        transform: translateX(0%);
-      }
-      .nav-bar {
-        font-family: sans-serif;
-        font-size: smaller;
-        width: 200px;
-        height: 100vh;
-        position: relative;
-        top: 25px;
-        left: 0;
-        border-radius: 7px;
-        border: 1px solid gray;
-        transform: translateX(-100%);
-        transition: transform 0.2s ease;
-        padding-left: 0;
-      }
-      .bars {
-        position: absolute;
-        left: 10px;
-        top: 4px;
-        font-size: 1.2rem;
-      }
-      .nav-bar {
-        font-family: sans-serif;
-        font-size: smaller;
-        width: 210px;
-        height: 83%;
-        position: fixed;
-        top: 30px;
-        left: 0;
-        border-radius: 7px;
-        border: 1px solid gray;
-        z-index: 9999;
-        background-color: white;
-        padding-left: 0;
-      }
-      .nav-bar a {
-        display: block;
-        text-align: left;
-        padding: 10px;
-        color: black;
-        border-radius: 5px;
-      }
-
-      .nav-bar a.active {
-        background-color: gray;
-      }
-      .nav-bar a:hover {
-        background-color: lightgray;
-      }
       th {
         background: #00407b;
         color: white;
@@ -474,250 +480,295 @@
     </style>
   </head>
   <body>
-    <header>
-      <div class="bars">
-        <i class="fa fa-bars" onclick="toggleNav()"></i>
-      </div>
-    </header>
-    <div class="nav-bar active" id="nav">
-      <a href="#">Home</a>
-      <a href="{% url 'create_form' %}">Create E approval</a>
-      <a class="active" href="{% url 'auth_approval' %}">Authorize E approval</a>
-      <a href="{% url 'clarification' %}">Clarification</a>
-      <a href="{% url 'view_approval' %}">View Appoval</a>
-      <a href="{% url 'approval_user_details' %}">E approval user details </a>
-    </div>
-    <div class="over-all">
-      <div class="side-panel">
-        <label for="to-approve">
-          <span class="text-approve">To Approve:</span>
-        </label>
-        <select class="select-box" id="to-approve" name="to-approve" required>
-          <option value="" hidden>select id</option>
-
-          <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
-
-        </select>
-
-        <br />
-      </div>
-      <div class="container">
-        <div class="document">
-          <div class="document-details">
-            <div class="document-head">
-              <span class="doc-1">Document</span>
-              <button id="view-button">View</button>
+    <div class="page-content p-5" id="content">
+      <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+      <div class="vertical-nav bg-white" id="sidebar">
+        <div class="py-4 px-3 mb-4 bg-light">
+          <div class="media d-flex align-items-center">
+            <img decoding="async" src="approval-process-management.png" alt="..." width="80" height="80" class="mr-3 rounded-circle img-thumbnail shadow-sm">
+            <div class="media-body">
+              <h4 class="m-0">E-Approval</h4>
+              <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
             </div>
-            <div class="document-body">
-              <div class="doc-row">
-                <div class="doc-con">
-                  <span id="tags">Document no</span>
-                  <form action="{% url 'auth_approval' %}" method="get">
-                    <select name="Document_no">
-                      <option value="" hidden>select Document</option>
-                      {% for d in doc_data %}
-                      <option value="{{ d.Document_no }}">
-                        {{ d.Document_no }}
-                      </option>
-                      {% endfor %}
+          </div>
+        </div>
+      
+        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
+      
+        <ul class="nav flex-column bg-white mb-0">
+          <li class="nav-item">
+            <a href="#" class="nav-link text-dark bg-light">
+                      <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+                      home
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'create_form' %}" class="nav-link text-dark" >
+                      <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
+                      Create E-Approval
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'auth_approval' %}"class="nav-link text-dark">
+                      <i class="fa fa-cubes mr-3 text-primary fa-fw"></i>
+                      Authorize E approval
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'clarification' %}"class="nav-link text-dark">
+                      <i class="fa fa-picture-o mr-3 text-primary fa-fw"></i>
+                      Clarification
+                  </a>
+          </li>
+      
+          <li class="nav-item">
+            <a href="{% url 'view_approval' %}"class="nav-link text-dark">
+                      <i class="fa fa-area-chart mr-3 text-primary fa-fw"></i>
+                      View Appoval
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'approval_user_details' %}" class="nav-link text-dark">
+                      <i class="fa fa-bar-chart mr-3 text-primary fa-fw"></i>
+                      E approval user details
+                  </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+      <div class="over-all">
+        <div class="side-panel">
+          <label for="to-approve">
+            <span class="text-approve">To Approve:</span>
+          </label>
+          <select class="select-box" id="to-approve" name="to-approve" required>
+            <option value="" hidden>select id</option>
+
+            <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
+
+          </select>
+
+          <br />
+        </div>
+        <div class="container">
+          <div class="document">
+            <div class="document-details">
+              <div class="document-head">
+                <span class="doc-1">Document</span>
+                <button id="view-button">View</button>
+              </div>
+              <div class="document-body">
+                <div class="doc-row">
+                  <div class="doc-con">
+                    <span id="tags">Document no</span>
+                    <form action="{% url 'auth_approval' %}" method="get">
+                      <select name="Document_no" class="form-select form-select-lg mb-3" aria-label=".form-select-lg">
+                        <option value="" hidden >select Document</option>
+                        {% for d in doc_data %}
+                        <option value="{{ d.Document_no }}">
+                          {{ d.Document_no }}
+                        </option>
+                        {% endfor %}
+                      </select>
+                      <button type="button" class="btn btn-primary ml-2 btn-sm">Submit</button>
+                    </form>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Date-</span>
+                    <span id="tag-ans"> {{ Document_no.date }} </span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Priority-</span>
+                    <span id="tag-ans"> {{ Document_no.Priority }}</span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Status-</span>
+                    <span id="tag-ans"> {{ Document_no.date }} </span>
+                  </div>
+                </div>
+                <div class="doc-row">
+                  <div class="doc-con">
+                    <span id="tags">Org.Unit-</span>
+                    <span id="tag-ans"> {{ Document_no.Org_Unit }} </span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Department-</span>
+                    <span id="tag-ans"> {{ Document_no.Department }} </span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Category-</span>
+                    <span id="tag-ans"> {{ Document_no.Category }} </span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Sub category-</span>
+                    <span id="tag-ans"> {{ Document_no.Sub_Category }} </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ref-document-details">
+              <div class="ref-document-head">
+                <span id="tag-ans"> Red Document Details </span>
+              </div>
+              <div class="ref-document-body">
+                <div class="doc-row">
+                  <div class="doc-con">
+                    <span id="tags">Fin commitment-</span>
+                    <span id="tag-ans"> {{ Document_no.fin_commit }} </span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Doc Type-</span>
+                    <span id="tag-ans"> {{ Document_no.date }} </span>
+                  </div>
+                </div>
+                <div class="ref-doc-row">
+                  <div class="doc-con">
+                    <span id="tags">Base Tran creation-</span>
+                    <select>
+                      <option>datedmothnn</option>
                     </select>
-                    <button type="submit" id="submit-button">submit</button>
-                  </form>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Date-</span>
-                  <span id="tag-ans"> {{ Document_no.date }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Priority-</span>
-                  <span id="tag-ans"> {{ Document_no.Priority }}</span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Status-</span>
-                  <span id="tag-ans"> {{ Document_no.date }} </span>
+                  </div>
+                  <div class="doc-con">
+                    <span id="tags">Transaction No-</span>
+                    <span id="tag-ans"> {{ Document_no.Tran_No }} </span>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <!--end of the document-->
+          <div class="doc-remarks">
+            <div class="doc-remarks-details">
+              <div class="doc-remarks-head">
+                <span class="doc-remarks-1">Document Remarks</span>
+              </div>
+              <div class="doc-remarks-body">
+                <div class="doc-remarks-con">
+                  <div class="subject" id="tags">Subject</div>
+                  <div class="remarks-subject">
+                    <input />
+                  </div>
+                </div>
+                <div class="doc-remarks-con">
+                  <div class="remarks" id="tags">Remarks</div>
+                  <div class="remarks-remarks">
+                    <input />
+                  </div>
+                </div>
+                <div class="doc-remarks-con">
+                  <div class="attachment" id="tags">Attachment</div>
+                  <div class="remarks-attachment">
+                    <input />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="clarification">
               <div class="doc-row">
-                <div class="doc-con">
-                  <span id="tags">Org.Unit-</span>
-                  <span id="tag-ans"> {{ Document_no.Org_Unit }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Department-</span>
-                  <span id="tag-ans"> {{ Document_no.Department }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Category-</span>
-                  <span id="tag-ans"> {{ Document_no.Category }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Sub category-</span>
-                  <span id="tag-ans"> {{ Document_no.Sub_Category }} </span>
-                </div>
+                <button class="clarification-button">Clarification</button>
               </div>
             </div>
           </div>
-          <div class="ref-document-details">
-            <div class="ref-document-head">
-              <span id="tag-ans"> Red Document Details </span>
-            </div>
-            <div class="ref-document-body">
-              <div class="doc-row">
-                <div class="doc-con">
-                  <span id="tags">Fin commitment-</span>
-                  <span id="tag-ans"> {{ Document_no.fin_commit }} </span>
+          <div class="same-div">
+            <div class="finance">
+              <div class="finance-details">
+                <div class="finance-head">
+                  <span class="finance-doc-1">Financial details</span>
                 </div>
-                <div class="doc-con">
-                  <span id="tags">Doc Type-</span>
-                  <span id="tag-ans"> {{ Document_no.date }} </span>
-                </div>
-              </div>
-              <div class="ref-doc-row">
-                <div class="doc-con">
-                  <span id="tags">Base Tran creation-</span>
-                  <select>
-                    <option>datedmothnn</option>
-                  </select>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Transaction No-</span>
-                  <span id="tag-ans"> {{ Document_no.Tran_No }} </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--end of the document-->
-        <div class="doc-remarks">
-          <div class="doc-remarks-details">
-            <div class="doc-remarks-head">
-              <span class="doc-remarks-1">Document Remarks</span>
-            </div>
-            <div class="doc-remarks-body">
-              <div class="doc-remarks-con">
-                <div class="subject" id="tags">Subject</div>
-                <div class="remarks-subject">
-                  <input />
-                </div>
-              </div>
-              <div class="doc-remarks-con">
-                <div class="remarks" id="tags">Remarks</div>
-                <div class="remarks-remarks">
-                  <input />
-                </div>
-              </div>
-              <div class="doc-remarks-con">
-                <div class="attachment" id="tags">Attachment</div>
-                <div class="remarks-attachment">
-                  <input />
+                <div class="finance-body">
+                  <div class="doc-row">
+                    <div class="doc-con">
+                      <span id="tags">Spend Type-</span>
+                      <span id="tag-ans">{{ Document_no.Spend_type}} </span>
+                    </div>
+                    <div class="doc-con">
+                      <span id="tags">Currency-</span>
+                      <span id="tag-ans">INR </span>
+                    </div>
+                    <div class="doc-con">
+                      <span id="tags">Value-</span>
+                      <span id="tag-ans"> {{ Document_no.Total_Value }} </span>
+                    </div>
+                    <div class="doc-con">
+                      <span id="tags">Tolerance-</span>
+                      <span id="tag-ans"> {{ Document_no.Tolerance }} </span>
+                    </div>
+                  </div>
+                  <div class="doc-row">
+                    <div class="doc-con">
+                      <span id="tags">Value+ -</span>
+                      <span id="tag-ans">10000 </span>
+                    </div>
+                    <div class="doc-con">
+                      <span id="tags">In Words-</span>
+                      <!-- <span id="tag-ans">{{ Document_no.Tran_No }}</span> -->
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="clarification">
-            <div class="doc-row">
-              <button class="clarification-button">Clarification</button>
-            </div>
-          </div>
-        </div>
-        <div class="same-div">
-          <div class="finance">
-            <div class="finance-details">
-              <div class="finance-head">
-                <span class="finance-doc-1">Financial details</span>
-              </div>
-              <div class="finance-body">
-                <div class="doc-row">
-                  <div class="doc-con">
-                    <span id="tags">Spend Type-</span>
-                    <span id="tag-ans">{{ Document_no.Spend_type}} </span>
+            <div class="approve-reject">
+              <div class="approve-body">
+                <div class="approve-row">
+                  <div class="approve-con">
+                    <div class="approvement">
+                      <button id="approvement">Approve</button>
+                    </div>
+                    <div class="apr-text">
+                      <textarea placeholder="Remarks"></textarea>
+                    </div>
                   </div>
-                  <div class="doc-con">
-                    <span id="tags">Currency-</span>
-                    <span id="tag-ans">INR </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">Value-</span>
-                    <span id="tag-ans"> {{ Document_no.Total_Value }} </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">Tolerance-</span>
-                    <span id="tag-ans"> {{ Document_no.Tolerance }} </span>
-                  </div>
-                </div>
-                <div class="doc-row">
-                  <div class="doc-con">
-                    <span id="tags">Value+ -</span>
-                    <span id="tag-ans">10000 </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">In Words-</span>
-                    <!-- <span id="tag-ans">{{ Document_no.Tran_No }}</span> -->
+                  <div class="approve-con">
+                    <div class="rejection">
+                      <button id="rejection">Return/Reject</button>
+                    </div>
+                    <div class="rea-text">
+                      <textarea placeholder="Reason"></textarea>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="approve-reject">
-            <div class="approve-body">
-              <div class="approve-row">
-                <div class="approve-con">
-                  <div class="approvement">
-                    <button id="approvement">Approve</button>
-                  </div>
-                  <div class="apr-text">
-                    <textarea placeholder="Remarks"></textarea>
-                  </div>
-                </div>
-                <div class="approve-con">
-                  <div class="rejection">
-                    <button id="rejection">Return/Reject</button>
-                  </div>
-                  <div class="rea-text">
-                    <textarea placeholder="Reason"></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <!-- end of approve reject-->
+          <div class="table-section">
+            <table class="table-list">
+              <thead>
+                <tr>
+                  <th>User Name</th>
+                  <th>Authoriztion Date</th>
+                  <th>Approver Remarks</th>
+                  <th>Return Reason</th>
+                  <th>Return clafrification</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{vise_principal.user_name}}</td>
+                  <td>Authoriztion Date</td>
+                  <td>Approver Remarks</td>
+                  <td>Return Reason</td>
+                  <td>Return clafrification</td>
+                </tr>
+                <tr>
+                  <td>{{vise_principal.user_name}}</td>
+                  <td>Authoriztion Date</td>
+                  <td>Approver Remarks</td>
+                  <td>Return Reason</td>
+                  <td>Return clafrification</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-        <!-- end of approve reject-->
-        <div class="table-section">
-          <table class="table-list">
-            <thead>
-              <tr>
-                <th>User Name</th>
-                <th>Authoriztion Date</th>
-                <th>Approver Remarks</th>
-                <th>Return Reason</th>
-                <th>Return clafrification</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{vise_principal.user_name}}</td>
-                <td>Authoriztion Date</td>
-                <td>Approver Remarks</td>
-                <td>Return Reason</td>
-                <td>Return clafrification</td>
-              </tr>
-              <tr>
-                <td>{{vise_principal.user_name}}</td>
-                <td>Authoriztion Date</td>
-                <td>Approver Remarks</td>
-                <td>Return Reason</td>
-                <td>Return clafrification</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
     <script>
-      function toggleNav() {
-        var nav = document.getElementById("nav");
-        nav.classList.toggle("active");
-      }
+      $(function() { 
+        $('#sidebarCollapse').on('click', function() {
+          $('#sidebar, #content').toggleClass('active');
+        });
+      });
     </script>
   </body>
 </html>

@@ -11,16 +11,79 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <style>
-    
+    body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        font-family:Arial, Helvetica, sans-serif ;
+    }
+    .vertical-nav {
+        min-width: 23rem;
+        width: 23rem;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s;
+    }
+    .page-content {
+        width: calc(100% - 17rem);
+        margin-left: 23rem;
+        transition: all 0.4s;
+    } 
+
+    #sidebar.active {
+          margin-left: -23rem;
+    }
+
+    #content.active {
+        width: 100%;
+        margin: 0;
+    }
+
+    .separator {
+        margin: 3rem 0;
+        border-bottom: 1px dashed #fff;
+    }
+
+    .text-uppercase {
+        letter-spacing: 0.1em;
+    }
+    .text-gray {
+        color: #aaa;
+    }
+    .nav-link{
+        text-transform: capitalize;
+    }
+    .nav-link:hover{
+        background:#f3f2f2;
+    }
+    .text-primary{
+        color:#7579e7 !important;
+    }
+    @media (max-width: 768px) {
+        #sidebar {
+        margin-left: -17rem;
+        }
+        #sidebar.active {
+        margin-left: 0;
+        }
+        #content {
+        width: 100%;
+        margin: 0;
+        }
+        #content.active {
+        margin-left: 17rem;
+        width: calc(100% - 17rem);
+        }
+    }    
     body {
     line-height: 1;
-    margin: 0; 
-    padding: 0; 
-    font-family: Arial, sans-serif; 
-    border:none; 
-    box-sizing: border-box;
     }
     button[type="submit"]{
         background-color: #00407b;
@@ -66,7 +129,7 @@
         flex: 1 0 0; 
     }
     .form-group1 .form-row .col-md-6 input {
-        width: 80%; 
+        width: 75%; 
         height: 70px; 
     }
     .form-group2 .form-row {
@@ -78,7 +141,7 @@
         flex: 1 0 0;
     }
     .form-group2 .form-row .col-md-6 input {
-        width: 80%; 
+        width: 75%; 
         height: 70px; 
     }
     .approvallist{
@@ -109,217 +172,183 @@
     th[id="authorized"] {
         width: 200px; 
     }
-    .navbar{
-        line-height: 1;
+    input{
+        background-color: #fff;
     }
-    .equal-size-btn {
-    
-        height: 30px; 
-    }
-    .nav-bar.active {
-        transform: translateX(0%);
-    }
-    .nav-bar {
-    font-family: sans-serif;
-    font-size: smaller;
-    width: 200px;
-    height: 100vh;
-    position: relative;
-    top: 25px;
-    left: 0;
-    border-radius: 7px;
-    border: 1px solid gray;
-    transform: translateX(-100%);
-    transition: transform 0.2s ease;
-    padding-left: 0;
-    }
-    .bars {
-    position: absolute;
-    left: 10px;
-    top: 4px;
-    font-size: 1.2rem;
-    }
-    .nav-bar {
-    font-family: sans-serif;
-    font-size: smaller;
-    width: 210px;
-    height: 83%;
-    position: fixed;
-    top: 30px;
-    left: 0;
-    border-radius: 7px;
-    border: 1px solid gray;
-    z-index: 9999;
-    background-color: white;
-    padding-left: 0;
-    }
-    .nav-bar a {
-    display: block;
-    text-align: left;
-    padding: 10px;
-    color: black;
-    border-radius: 5px;
-    }
-
-    .nav-bar a.active {
-        background-color: gray;
-    }
-    .nav-bar a:hover {
-    background-color: lightgray;
-    }
-
-
 </style>
 <body>
-    <header>
-      <div class="bars">
-        <i class="fa fa-bars" onclick="toggleNav()"></i>
-      </div>
-      <div class="nav-bar active" id="nav">
-        <a href="login.html">Home</a>
-        <a href="{% url 'create_form' %}">Create E approval</a>
-        <a href="{% url 'auth_approval' %}">Authorize E approval</a>
-        <a href="{% url 'clarification' %}">Clarification</a>
-        <a class="active" href="{% url 'view_approval' %}">View Appoval</a>
-        <a href="{% url 'approval_user_details' %}">E approval user details </a>
-      </div>
-    </header>
+    <div class="page-content p-5" id="content">
+        <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+        <div class="vertical-nav bg-white" id="sidebar">
+          <div class="py-4 px-3 mb-4 bg-light">
+            <div class="media d-flex align-items-center">
+              <img decoding="async" src="approval-process-management.png" alt="..." width="80" height="80" class="mr-3 rounded-circle img-thumbnail shadow-sm">
+              <div class="media-body">
+                <h4 class="m-0">E-Approval</h4>
+                <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+              </div>
+            </div>
+          </div>
+        
+          <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
+        
+          <ul class="nav flex-column bg-white mb-0">
+            <li class="nav-item">
+              <a href="#" class="nav-link text-dark">
+                        <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+                        home
+                    </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'create_form' %}" class="nav-link text-dark" >
+                        <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
+                        Create E-Approval
+                    </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'auth_approval' %}"class="nav-link text-dark">
+                        <i class="fa fa-cubes mr-3 text-primary fa-fw"></i>
+                        Authorize E approval
+                    </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'clarification' %}"class="nav-link text-dark">
+                        <i class="fa fa-picture-o mr-3 text-primary fa-fw"></i>
+                        Clarification
+                    </a>
+            </li>
+        
+            <li class="nav-item">
+              <a href="{% url 'view_approval' %}"class="nav-link text-dark bg-secondary">
+                        <i class="fa fa-area-chart mr-3 text-primary fa-fw"></i>
+                        View Appoval
+                    </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'approval_user_details' %}" class="nav-link text-dark">
+                        <i class="fa fa-bar-chart mr-3 text-primary fa-fw"></i>
+                        E approval user details
+                    </a>
+            </li>
+          </ul>
+        </div>
+        <div>
     
-    <div class="header1">
-        <h3>Headersec</h3>
-        <form action="/search" method="get" class="form-group">
-            <div class="form-row align-items-center justify-content-between">
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="search" class="mr-2">Transaction No:</label>
-                    <input type="text" id="search" name="q" class="form-control" placeholder="Enter Transaction No" aria-label="Transaction No" aria-describedby="search-addon" style="width: 60%;">
-                    <button type="submit" class="btn btn-outline-secondary ml-2"><i class="fas fa-search"></i></button>
-                </div>
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="date" class="mr-2">Date</label>
-                    <input type="date" id="date" name="date" readonly class="form-control" aria-label="Date" aria-describedby="date-addon" style="width: 60%;">
-                </div>
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="status" class="mr-2">Status</label>
-                    <input type="text" id="status" name="status" readonly class="form-control" style="width: 60%;">
-                </div>
-            </div>
-            <div class="form-row align-items-center justify-content-between">
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="department" class="mr-2">Department</label>
-                    <input type="text" id="department" name="department" readonly class="form-control" style="width: 60%;">
-                </div>
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="Category" class="mr-2">Category</label>
-                    <input type="text" id="catagory" name="catagory" readonly class="form-control" style="width: 60%;">
-                </div>
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="SubCategory" class="mr-2">Sub Category</label>
-                    <input type="text" id="subcatagory" name="subcatagory" readonly class="form-control" style="width: 60%;">
-                </div>
-            </div>
-            <div class="form-row align-items-center justify-content-between">
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="priority" class="mr-2">Priority</label>
-                    <input type="text" id="priority" name="priority" readonly class="form-control" style="width: 60%;">
-                </div>
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="doctype" class="mr-2">Doc Type</label>
-                    <input type="text" id="doctype" name="doctype" readonly class="form-control" style="width: 60%;">
-                </div>
-                <div class="col-md-3 d-flex align-items-center justify-content-between">
-                    <label for="tranno" class="mr-2">Trans No</label>
-                    <input type="text" id="transno" name="transno" readonly class="form-control" style="width: 60%;">
-                </div>
-            </div>
-        </form>
-        <form class="form-group1">
-            <div class="form-row align-items-center justify-content-between">
-                <div class="col-md-6 d-flex align-items-center justify-content-between">
-                    <label for="subject" class="mr-2">Subject</label>
-                    <input type="text" id="subject" name="subject" class="form-control">
-                </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-between">
-                    <label for="remarks" class="mr-2">Remarks</label>
-                    <input type="text" id="remarks" name="remarks" class="form-control">
-                </div>
-            </div>
-            <div class="form-row align-items-center justify-content-between">
-                <div class="col-md-6 d-flex align-items-center justify-content-between">
-                    <label for="attachedDocuments2" class="mr-2">Attached Remarks</label>
-                    <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
-                </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-between">
-                    <label for="attachmentRemarks2" class="mr-2">Attachment Documents</label>
-                    <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
-                </div>
-            </div>
-        </form>
-        <form class="form-group2">
-            <div class="form-row align-items-center justify-content-between">
-                <div class="col-md-6 d-flex align-items-center justify-content-between">
-                    <label for="returnforclarification" class="mr-2">Return For Clarification</label>
-                    <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
-                </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-between">
-                    <label for="returnforreason" class="mr-2">Return for Reason</label>
-                    <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
-                </div>
-            </div>
-        </form>
-        <form class="form-group3">
-            <div class="approvallist">
-                <h3>Approval list</h3>
-                <div class="navbar d-flex justify-content-between">
-                    <div class="pagination">
-                        <button><i class="fas fa-angle-double-left"></i></button>
-                        <div>1 - 4/4</div>
-                        <button><i class="fas fa-angle-double-right"></i></button>
+        <div class="header1">
+            <h3>Headersec</h3>
+            <form action="/search" method="get" class="form-group">
+                <div class="form-row align-items-center justify-content-between">
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="search" class="mr-2">Transaction No:</label>
+                        <input type="text" id="search" name="q" class="form-control" placeholder="Enter Transaction No" aria-label="Transaction No" aria-describedby="search-addon" style="width: 60%;">
+                        <button type="submit" class="btn btn-outline-secondary ml-2"><i class="fas fa-search"></i></button>
                     </div>
-                    <div class="sorting">
-                        <button><i class="fas fa-sort-up"></i></button>
-                        <button><i class="fas fa-sort-down"></i></button>
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="date" class="mr-2">Date</label>
+                        <input type="date" id="date" name="date" readonly class="form-control" aria-label="Date" aria-describedby="date-addon" style="width: 60%; background-color: #fff;">
                     </div>
-                    <button class="btn btn-outline-secondary equal-size-btn"><i class="fas fa-filter"></i></button>
-                    <div class="dropdown">
-                        <button><i class="fas fa-bars"></i> All</button>
-                    </div>
-                    <div class="search">
-                        <input type="text" placeholder="Search">
-                        <button><i class="fas fa-search"></i></button>
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="status" class="mr-2">Status</label>
+                        <input type="text" id="status" name="status" readonly class="form-control" style="width: 60%; background-color: #fff;">
                     </div>
                 </div>
-                
-                    
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class="thead">
-                            <tr>
-                                <th id="no">#</th>
-                                <th>Level</th>
-                                <th>Username</th>
-                                <th>Full Name</th>
-                                <th>Designation</th>
-                                <th id="mailid">Mail ID</th>
-                                <th id="authorized">Authorization Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="approvalTableBody">
-                            <tr>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                                <td>sample</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> <!-- End of div -->
-            </div>
-        </form>
-        
-        
+                <div class="form-row align-items-center justify-content-between">
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="department" class="mr-2">Department</label>
+                        <input type="text" id="department" name="department" readonly class="form-control" style="width: 60%; background-color: #fff;">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="Category" class="mr-2">Category</label>
+                        <input type="text" id="catagory" name="catagory" readonly class="form-control" style="width: 60%;background-color: #fff;">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="SubCategory" class="mr-2">Sub Category</label>
+                        <input type="text" id="subcatagory" name="subcatagory" readonly class="form-control" style="width: 60%; background-color: #fff;">
+                    </div>
+                </div>
+                <div class="form-row align-items-center justify-content-between">
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="priority" class="mr-2">Priority</label>
+                        <input type="text" id="priority" name="priority" readonly class="form-control" style="width: 60%; background-color: #fff;">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="doctype" class="mr-2">Doc Type</label>
+                        <input type="text" id="doctype" name="doctype" readonly class="form-control" style="width: 60%; background-color: #fff;">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <label for="tranno" class="mr-2">Trans No</label>
+                        <input type="text" id="transno" name="transno" readonly class="form-control" style="width: 60%; background-color: #fff;">
+                    </div>
+                </div>
+            </form>
+            <form class="form-group1">
+                <div class="form-row align-items-center justify-content-between">
+                    <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="subject" class="mr-2">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-control">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="remarks" class="mr-2">Remarks</label>
+                        <input type="text" id="remarks" name="remarks" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row align-items-center justify-content-between">
+                    <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="attachedDocuments2" class="mr-2">Attached Remarks</label>
+                        <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="attachmentRemarks2" class="mr-2">Attachment Documents</label>
+                        <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
+                    </div>
+                </div>
+            </form>
+            <form class="form-group2">
+                <div class="form-row align-items-center justify-content-between">
+                    <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="returnforclarification" class="mr-2">Return For Clarification</label>
+                        <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="returnforreason" class="mr-2">Return for Reason</label>
+                        <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
+                    </div>
+                </div>
+            </form>
+            <form class="form-group3">
+                <div class="approvallist">
+                    <h3>Approval list</h3> 
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead">
+                                <tr>
+                                    <th id="no">#</th>
+                                    <th>Level</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Designation</th>
+                                    <th id="mailid">Mail ID</th>
+                                    <th id="authorized">Authorization Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="approvalTableBody">
+                                <tr>
+                                    <td>sample</td>
+                                    <td>sample</td>
+                                    <td>sample</td>
+                                    <td>sample</td>
+                                    <td>sample</td>
+                                    <td>sample</td>
+                                    <td>sample</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> <!-- End of div -->
+                </div>
+            </form>
+            
+            
+        </div>
     </div>
     <!-- Add Bootstrap JS and its dependencies -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -333,10 +362,11 @@
         });
     </script>
     <script>
-        function toggleNav() {
-          var nav = document.getElementById("nav");
-          nav.classList.toggle("active");
-        }
+        $(function() { 
+          $('#sidebarCollapse').on('click', function() {
+            $('#sidebar, #content').toggleClass('active');
+          });
+        });
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models #type:ignore
 
 
 class e_approval(models.Model):
@@ -44,7 +44,7 @@ class User(models.Model):
     email = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     Password = models.CharField(max_length=100)
-    conform_Password = models.CharField(max_length=100)
+    confirm_Password = models.CharField(max_length=100)
 
 class auth_list(models.Model):
     Document_no = models.CharField(max_length=200, primary_key=True)

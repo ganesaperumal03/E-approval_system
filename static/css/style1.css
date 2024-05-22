@@ -52,7 +52,7 @@ main h2 {
 .document-remarks,
 .attachment-details,
 .financial-details {
-  border: 1px solid #ccc;
+  border: 0px;
   padding-top: 2px auto;
   padding-left: 2px auto;
   margin-bottom: 20 px;

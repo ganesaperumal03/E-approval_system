@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
@@ -161,7 +162,7 @@
 
 
         <div class="container border" style="margin: 0%; max-width: 100%; line-height: 2;">
-          <div class="col-md-12 align-items justify content-between border">
+          <div class="col-md-12 mt-5 align-items justify content-between border">
             <div class="document-details col-md-6">
               <div class="document-head">
                 <span class="doc-1">Document</span>
@@ -268,40 +269,47 @@
               </div>
             </div>
           </div>
-          <form  method="POST"  id='auth_approval'  autocomplete="off">
-            {% csrf_token %}
-          <form class="doc-remarks mt-4 border col" style="margin: 0%; max-width: 100%;">
-            <div class="doc-remarks-details col-md-11">
-              <div class="doc-remarks-head">
-                <label class="doc-remarks-1">Document Remarks</label>
-                <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
-                <input type="text" hidden name="doc_applied_staff_id" value="{{Document_no.staff_id}}" >
-              </div>
-              <div class="doc-remarks-body">
-                <div class="doc-remarks-con form-group row">
-                  <label class="col-sm-2 col-form-label" id="tags">Subject</label>
-                  <div class="col-sm-8">
-                      <input id="tag-ans" class="form-control" value="{{ Document_no.remarks_Subject }}">
+          <div class="col-md-12 align-items justify content-between border">
+            <form  method="POST"  id='auth_approval'  autocomplete="off">
+              {% csrf_token %}
+            <form class="doc-remarks mt-4 border col" style="margin: 0%; max-width: 100%;">
+              <div class="doc-remarks-details col-md-11">
+                <div class="doc-remarks-head">
+                  <label class="doc-remarks-1">Document Remarks</label>
+                  <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
+                  <input type="text" hidden name="doc_applied_staff_id" value="{{Document_no.staff_id}}" >
+                </div>
+                <div class="doc-remarks-body">
+                  <div class="doc-remarks-con form-group row">
+                    <label class="col-sm-2 col-form-label" id="tags">Subject</label>
+                    <div class="col-sm-8">
+                        <input id="tag-ans" class="form-control" value="{{ Document_no.remarks_Subject }}">
+                      </div>
+                  </div>
+                  <div class="doc-remarks-con form-group row">
+                    <label class="col-sm-2 col-form-label" id="tags">Remarks</label>
+                    <div class="col-sm-8">
+                        <input id="tag-ans" class="form-control" type="text" name="doc_remarks">
                     </div>
-                </div>
-                <div class="doc-remarks-con form-group row">
-                  <label class="col-sm-2 col-form-label" id="tags">Remarks</label>
-                  <div class="col-sm-8">
-                      <input id="tag-ans" class="form-control" type="text" name="doc_remarks">
                   </div>
-                </div>
-                <div class="doc-remarks-con form-group row">
-                  <label class="col-sm-2 col-form-label" id="tags">Attachment</label>
-                  <div class="col-sm-8">
-                      <input id="tag-ans" class="form-control" type="text"  name="doc_attachment">
+                  <div class="doc-remarks-con form-group row">
+                    <label class="col-sm-2 col-form-label" id="tags">Attachment</label>
+                    <div class="col-sm-8">
+                      <a href="">
+
+                        <button class=" btn btn-danger ml-2">
+                          <i class="bi bi-file-pdf"></i>
+                        </button>                  
+                      </a>
+
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="clarification my-5 col-2-my-2" >
-              <button class="btn btn-warning my-5 align-items-center">Clarification</button>
-            </div>
-          </form>
+              <div class="clarification my-5 col-2-my-2" >
+                <button class="btn btn-warning my-5 align-items-center">Clarification</button>
+              </div>
+            </form>
           </div>
           <div class="same-div row mt-4 border" style="margin: 0%; max-width: 100%;">
             <div class="finance col-md-5">
@@ -400,5 +408,9 @@
         });
       });
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
   </body>
 </html>

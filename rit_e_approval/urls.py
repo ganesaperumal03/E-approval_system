@@ -34,6 +34,8 @@ urlpatterns = [
     path('send_email',views.send_email,name="send_email"),
     path('process_department/', views.process_department, name='process_department'),
     path('pdf/', views.pdf, name='pdf'),
+    path('pdf_show/<str:Document_no>/', views.pdf_show, name='pdf_show'),
+
 
 
 ]

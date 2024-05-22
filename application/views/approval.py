@@ -300,7 +300,7 @@ def auth_approval(request):
                 'remarks':j.principal})
 
         document_data = e_approval.objects.get(Document_no=Document_no)
-        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user})
+        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no})
 
 
     user_data=request.session.get('user_data', {})
@@ -557,21 +557,24 @@ def view_approval(request):
 from django.shortcuts import HttpResponse #type:ignore
 from django.core.exceptions import ObjectDoesNotExist #type:ignore
 
-def pdf_show(request):
-    try:
-        pdf = e_approval.objects.get(Document_no="rit/acaids/Admission Promotion/Advertiesment Expenses/00002")
-        pdf_path = pdf.Attachment.path  
-        crct_pdf_path = pdf_path.replace('pdf\\', '')  # Remove 'pdf/' from the URL
-        print(crct_pdf_path)
-        if os.path.exists(crct_pdf_path):  # Check if the file exists
-            with open(crct_pdf_path, 'rb') as pdf_file:
+def pdf_show(request, Document_no):
+    # Retrieve the PDF object from the database
+    if doc:
+        pdf = get_object_or_404(e_approval, Document_no=Document_no)
+
+        # Get the file path from the attachment
+        pdf_path = pdf.Attachment.path
+
+        # Check if the file exists at the specified path
+        if os.path.exists(pdf_path):
+            with open(pdf_path, 'rb') as pdf_file:
                 response = HttpResponse(pdf_file.read(), content_type='application/pdf')
                 response['Content-Disposition'] = f'inline; filename="{pdf.Attachment.name}"'
                 return response
         else:
             return HttpResponse("PDF not found.")
-    except ObjectDoesNotExist:
-        return HttpResponse("PDF not found.")
+    return render(request, "e-approval/view_approval.html")
+
 
 from django.shortcuts import HttpResponse #type:ignore
 from django.core.mail import send_mail #type:ignore

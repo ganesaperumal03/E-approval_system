@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -216,7 +217,7 @@
                   <label class="col-sm-4 col-form-label" id="tags">Fin commitment</label>
                   <input id="tag-ans" class="mt-2"value="{{document_data.fin_commit}}">
                 </div>
-                <div class="doc-con mt-2">
+                <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Total Value-</label>
                   <input id="tag-ans" class="mt-2"value="{{document_data.Total_Value}}">
                 </div>
@@ -231,50 +232,50 @@
               </div>
               <div class="remarks-body">
                 <div class="remarks row">
-                  <label id="tags" class="col-sm-2 col-form-label">Remarks</label>
-                  <div class="col-sm-10">
+                  <label id="tags" class="col-sm-2 ml-2 col-form-label">Remarks</label>
+                  <div class="col-sm-9">
                     <input class="form-control mt-2 col-10" placeholder="Remarks" style="height: 70px;"></input>
                   </div>
                 </div>
                 <div class="subject row mt-2">
-                  <label id="tags" class="col-sm-2 col-form-label">Subject</label>
-                  <div class="col-sm-10  mb-2">
-                    <input class="form-control" placeholder="Subject"></input>
+                  <label id="tags" class="col-sm-2 ml-2 col-form-label">Subject</label>
+                  <div class="col-sm-9  mb-2">
+                    <input class="form-control mt-2 col-10" placeholder="Subject"></input>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="responsibe-user col-md-4 border">
+            <div class="responsibe-user row-3">
               <div class="document-head">
-                <label class="row-sm-6 col-form-label">Responsibe user</label>
+                <label class="row-sm-6 ml-2 col-form-label">Responsibe user</label>
               </div>
               <div class="responsibe-body">
                 <div class="subject row">
-                  <label class="col-sm-4 col-form-label" id="tags">Full name</label>
-                  <div class="body-response">
+                  <label class="col-sm-4 ml-2 col-form-label" id="tags">Full name</label>
+                  <div class="body-response ml-5">
                     <span>Academics regarding</span>
                   </div>
                 </div>
                 <div class="subject row">
-                  <label id="tags" class="col-sm-4 col-form-label">Designation</label>
-                  <div class="body-response">
+                  <label id="tags" class="col-sm-4 ml-2 col-form-label">Designation</label>
+                  <div class="body-response ml-5">
                     <span> Chief financial officer </span>
                   </div>
                 </div>
                 <div class="subject row">
-                  <label id="tags" class="col-sm-4 col-form-label">User name</label>
-                  <div class="body-response">
+                  <label id="tags" class="col-sm-4 ml-2 col-form-label">User name</label>
+                  <div class="body-response ml-5">
                     <span>RMLAPP</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="reroute-comments col-md-4">
+            <div class="reroute-comments row-3 border">
               <div class="comments-body">
-                <label class="reroutes-text">Reroute comments</label>
+                <label class="reroutes-text ml-2">Reroute comments</label>
                 <div class="body-response">
-                  <input class="form-control mt-2 col-10" placeholder="Reroute comments" style="height: 70px;"value="{{remarks_document_data.doc_remarks}}">
+                  <input class="form-control ml-2 mt-2 col-10" placeholder="Reroute comments" style="height: 70px;"value="{{remarks_document_data.doc_remarks}}">
                 </div>
               </div>
             </div>

@@ -115,12 +115,14 @@
     }
 
     .form-group {
-        border: 1px solid #000;
+        border: 1px solid gray;
+        border-radius: 5px;
         padding: 10px;
         margin-bottom: 10px;
     }
     .form-group1 {
-        border: 1px solid #000;
+        border: 1px solid  gray;
+        border-radius: 5px;
         padding: 10px;
         margin-bottom: 20px;
         line-height: 5;
@@ -149,7 +151,8 @@
         height: 70px; 
     }
     .approvallist{
-        border: 1px solid #000;
+        border: 1px solid gray;
+        border-radius: 5px;
         margin-bottom: 20px;
         width: 100%;
     }
@@ -223,7 +226,7 @@
             </li>
         
             <li class="nav-item">
-              <a href="{% url 'view_approval' %}"class="nav-link text-dark bg-secondary">
+              <a href="{% url 'view_approval' %}"class="nav-link bg-info text-white">
                         <i class="fa fa-eye mr-3 text-primary fa-fw"></i>
                         View Appoval
                     </a>
@@ -239,7 +242,6 @@
         <div>
     
             <div class="header1">
-                <h3>Headersec</h3>
                 <div class="form-group">
                     <form  method="GET"  id='view_approval'  autocomplete="off">
         
@@ -318,6 +320,7 @@
                         </div>
                     </div>
                 </form>
+                
                 <form class="form-group2">
                     <div class="form-row align-items-center justify-content-between">
                         <div class="col-md-6 d-flex align-items-center justify-content-between">

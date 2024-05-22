@@ -20,11 +20,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-'''
-cd D:\Profession\djangoenv\Scripts
-.\activate
-cd D:\Profession\rit
-python manage.py runserver
-
-'''

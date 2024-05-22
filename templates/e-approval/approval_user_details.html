@@ -1,286 +1,317 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
-        body {
-          min-height: 100vh;
-          overflow-x: hidden;
-          font-family:Arial, Helvetica, sans-serif ;
-        }
-        .vertical-nav {
-          min-width: 23rem;
-          width: 23rem;
-          height: 100vh;
-          position: fixed;
-          top: 0;
-          left: 0;
-          box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-          transition: all 0.4s;
-        }
-        .page-content {
-          width: calc(100% - 17rem);
-          margin-left: 23rem;
-          transition: all 0.4s;
-        } 
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .vertical-nav {
+        min-width: 23rem;
+        width: 23rem;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s;
+      }
+      .page-content {
+        width: calc(100% - 17rem);
+        margin-left: 23rem;
+        transition: all 0.4s;
+      }
 
+      #sidebar.active {
+        margin-left: -23rem;
+      }
+
+      #content.active {
+        width: 100%;
+        margin: 0;
+      }
+
+      .separator {
+        margin: 3rem 0;
+        border-bottom: 1px dashed #fff;
+      }
+
+      .text-uppercase {
+        letter-spacing: 0.1em;
+      }
+      .text-gray {
+        color: #aaa;
+      }
+      .nav-link {
+        text-transform: capitalize;
+      }
+      .nav-link:hover {
+        background: #f3f2f2;
+      }
+      .text-primary {
+        color: #a82707 !important;
+      }
+      @media (max-width: 768px) {
+        #sidebar {
+          margin-left: -17rem;
+        }
         #sidebar.active {
-          margin-left: -23rem;
+          margin-left: 0;
         }
-
-        #content.active {
+        #content {
           width: 100%;
           margin: 0;
         }
-
-        .separator {
-          margin: 3rem 0;
-          border-bottom: 1px dashed #fff;
+        #content.active {
+          margin-left: 17rem;
+          width: calc(100% - 17rem);
         }
-
-        .text-uppercase {
-          letter-spacing: 0.1em;
-        }
-        .text-gray {
-          color: #aaa;
-        }
-        .nav-link{
-            text-transform: capitalize;
-        }
-        .nav-link:hover{
-            background:#f3f2f2;
-        }
-        .text-primary{
-            color:#a82707 !important;
-        }
-        @media (max-width: 768px) {
-          #sidebar {
-            margin-left: -17rem;
-          }
-          #sidebar.active {
-            margin-left: 0;
-          }
-          #content {
-            width: 100%;
-            margin: 0;
-          }
-          #content.active {
-            margin-left: 17rem;
-            width: calc(100% - 17rem);
-          }
-        }
-        header{
+      }
+      header {
         height: 30px;
         width: 100%;
         background: gray;
         align-items: center;
-        }
-        body {
-            background-color: #fff;
-        }
-        .bordered {
-            border: 2px solid #6c757d;
-            padding: 20px;
-            margin-bottom: 20px;
-            height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .form-group div {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            width: 19%; /* reduce the width of the div containing the label and select dropdown */
-            margin-bottom: 10px;
-        }
-        .form-group label {
-            margin-right: 10px;
-            color: #6c757d;
-        }
-        .form-group select {
-            width: 100%;
-        }
-        .table, .buttons {
-            border: 2px solid #6c757d;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .buttons {
-            text-align: center;
-            margin-top: auto;
-            display: flex;
-            border:none;
-            justify-content: space-around;
-        }
-        .buttons button {
-            margin: 10px;
-            border: 1px solid #6c757d;
-            padding: 10px 20px;
-            background-color: #6c757d;
-            color: white;
-        }
-        .buttons button[class="btn btn-primary"]{
-            background-color: rgb(35, 168, 35);
-        }
-        .buttons button[class="btn btn-primary2"]{
-            background-color: rgb(179, 33, 28);
-        }
-        .table th{
-            background-color: rgb(7, 62, 126);
-            color: #f8f9fa;
-            border: 1px solid #ccc;
-        }
-        .table{
-            column-gap: normal;
-        }
+      }
+      body {
+        background-color: #fff;
+      }
+      .bordered {
+        border: 1px solid lightgray;
+        padding: 20px;
+        margin-bottom: 20px;
+        height: 100vh;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        border-radius: 3px;
+      }
+      .form-group {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .form-group div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 19%; /* reduce the width of the div containing the label and select dropdown */
+        margin-bottom: 10px;
+      }
+      .form-group label {
+        margin-right: 10px;
+        color: #6c757d;
+      }
+      .form-group select {
+        width: 100%;
+      }
+      .table,
+      .buttons {
+        border: 1px solid gray;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .buttons {
+        text-align: center;
+        margin-top: auto;
+        display: flex;
+        border: none;
+        justify-content: space-around;
+      }
+      .buttons button {
+        margin: 10px;
+        border: 1px solid #6c757d;
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+      }
+      .buttons button[class="btn btn-primary"] {
+        background-color: rgb(35, 168, 35);
+      }
+      .buttons button[class="btn btn-primary2"] {
+        background-color: rgb(179, 33, 28);
+      }
+      .table th {
+        background-color: rgb(7, 62, 126);
+        color: #f8f9fa;
+        border: 1px solid #ccc;
+      }
+      .table {
+        column-gap: normal;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="page-content p-5" id="content">
-        <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
-        <div class="vertical-nav bg-white" id="sidebar">
-          <div class="py-4 px-3 mb-4 bg-light">
-            <div class="media d-flex align-items-center">
-              <img decoding="async" src="{% static 'image/RIT_logo.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-top img-thumbnail shadow-sm">
-              <div class="media-body">
-                <h4 class="m-0">E-Approval</h4>
-                <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
-              </div>
+      <button
+        id="sidebarCollapse"
+        type="button"
+        class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"
+      >
+        <i class="fa fa-bars mr-2"></i
+        ><small class="text-uppercase font-weight-bold">Menu</small>
+      </button>
+      <div class="vertical-nav bg-white" id="sidebar">
+        <div class="py-4 px-3 mb-4 bg-light">
+          <div class="media d-flex align-items-center">
+            <img
+              decoding="async"
+              src="{% static 'image/RIT_logo.png' %}"
+              alt="..."
+              width="80"
+              height="80"
+              class="mr-3 rounded-top img-thumbnail shadow-sm"
+            />
+            <div class="media-body">
+              <h4 class="m-0">E-Approval</h4>
+              <p class="font-weight-normal text-muted mb-0">
+                Ramco Institute of Technology
+              </p>
             </div>
           </div>
-        
-          <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
-        
-          <ul class="nav flex-column bg-white mb-0">
-            <li class="nav-item">
-              <a href="#" class="nav-link text-dark">
-                        <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
-                        home
-                    </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'create_form' %}" class="nav-link text-dark" >
-                        <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
-                        Create E-Approval
-                    </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'auth_approval' %}"class="nav-link text-dark">
-                        <i class="fa fa-check-square mr-3 text-primary fa-fw"></i>
-                        Authorize E approval
-                    </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'clarification' %}"class="nav-link text-dark">
-                        <i class="fa fa-question-circle mr-3 text-primary fa-fw"></i>
-                        Clarification
-                    </a>
-            </li>
-        
-            <li class="nav-item">
-              <a href="{% url 'view_approval' %}"class="nav-link text-dark">
-                        <i class="fa fa-eye mr-3 text-primary fa-fw"></i>
-                        View Appoval
-                    </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'approval_user_details' %}" class="nav-link bg-info text-white">
-                        <i class="fa fa-users mr-3 text-primary fa-fw"></i>
-                        E approval user details
-                    </a>
-            </li>
-          </ul>
         </div>
-    
-        <div class="container-fluid h-100">
-            <div class="bordered">
-                <div class="form-group">
-                    <div>
-                        <label for="ouName">OU Name</label>
-                        <select id="ouName" class="form-control">
-                            <option selected>Rajapalayam Institute of Technology</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="department">Department</label>
-                        <select id="department" class="form-control">
-                            <option selected>Department</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="category">Category</label>
-                        <select id="category" class="form-control">
-                            <option selected>Category</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div>
-                        <label for="flag1">Flag</label>
-                        <select id="flag1" class="form-control">
-                            <option selected>Flag</option>
-                        </select>
-                    </div>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Department</th>
-                            <th>Category</th>
-                            <th>Username</th>
-                            <th>SL No.</th>
-                            <th>From Amount</th>
-                            <th>To Amount</th>
-                            <th>Sub-Category</th>
-                            <th>Flag</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="buttons">
-                    <button class="btn btn-primary">Save</button>
-                    <button class="btn btn-primary">Edit</button>
-                    <button class="btn btn-primary2">Delete</button>
-                </div>
+
+        <p
+          class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0"
+        >
+          Dashboard
+        </p>
+
+        <ul class="nav flex-column bg-white mb-0">
+          <li class="nav-item">
+            <a href="#" class="nav-link text-dark">
+              <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+              home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'create_form' %}" class="nav-link text-dark">
+              <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
+              Create E-Approval
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'auth_approval' %}" class="nav-link text-dark">
+              <i class="fa fa-check-square mr-3 text-primary fa-fw"></i>
+              Authorize E approval
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'clarification' %}" class="nav-link text-dark">
+              <i class="fa fa-question-circle mr-3 text-primary fa-fw"></i>
+              Clarification
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'view_approval' %}" class="nav-link text-dark">
+              <i class="fa fa-eye mr-3 text-primary fa-fw"></i>
+              View Appoval
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{% url 'approval_user_details' %}"
+              class="nav-link bg-info text-white"
+            >
+              <i class="fa fa-users mr-3 text-primary fa-fw"></i>
+              E approval user details
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="container-fluid h-100">
+        <div class="bordered">
+          <div class="form-group">
+            <div>
+              <label for="ouName">OU Name</label>
+              <select id="ouName" class="form-control">
+                <option selected>Rajapalayam Institute of Technology</option>
+              </select>
             </div>
+            <div>
+              <label for="department">Department</label>
+              <select id="department" class="form-control">
+                <option selected>Department</option>
+              </select>
+            </div>
+            <div>
+              <label for="category">Category</label>
+              <select id="category" class="form-control">
+                <option selected>Category</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div>
+              <label for="flag1">Flag</label>
+              <select id="flag1" class="form-control">
+                <option selected>Flag</option>
+              </select>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Department</th>
+                <th>Category</th>
+                <th>Username</th>
+                <th>SL No.</th>
+                <th>From Amount</th>
+                <th>To Amount</th>
+                <th>Sub-Category</th>
+                <th>Flag</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button class="btn btn-primary">Save</button>
+            <button class="btn btn-primary">Edit</button>
+            <button class="btn btn-primary2">Delete</button>
+          </div>
         </div>
+      </div>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        $(function() { 
-          $('#sidebarCollapse').on('click', function() {
-            $('#sidebar, #content').toggleClass('active');
-          });
+      $(function () {
+        $("#sidebarCollapse").on("click", function () {
+          $("#sidebar, #content").toggleClass("active");
         });
+      });
     </script>
-</body>
+  </body>
 </html>

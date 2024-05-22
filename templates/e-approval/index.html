@@ -43,7 +43,6 @@
           margin-left: -23rem;
         }
 
-<<<<<<< HEAD
         #content.active {
           width: 100%;
           margin: 0;
@@ -302,117 +301,12 @@
             </div>
           </div>
           
-=======
-      <div class="container1">
-        <div class="document-container">
-          <div class="heading"><h3>Document Detail</h3></div>
-          <div class="document-details">
-            <div class="detail-section">
-              <span class="detail-label">Department</span>
-              <select class="detail-value" name="Department">
-                <option value="" hidden disabled selected>Select Department</option>
-                <option value="cse">CSE</option>
-                <option value="it">IT</option>
-                <option value="aids">AIDS</option>
-                <option value="civil">Civil</option>
-                <option value="mechanical">Mechanical</option>
-                <option value="eee">EEE</option>
-                <option value="ece">ECE</option>
-                <option value="csbs">CSBS</option>
-              </select>
-            </div>
-            <div class="detail-section">
-              <span class="detail-label">Org Unit</span>
-              <input type="text" name='Org_Unit'class="detail-value"  value='RIT' required/>
-            </div>
-            <div class="detail-section">
-              <span class="detail-label">Category</span>
-              <select class="detail-value" name="Category">
-
-              <option value="" disabled hidden selected>Select Category</option>
-
-              {% for c in category %}
-              <option value="{{ c }}">{{ c }}</option>
-              {% endfor %}
-            </select>
-
-            </div>
-            <div class="detail-section">
-              <span class="detail-label">Sub Category</span>
-              <select class="detail-value" name="Sub_Category">
-
-                <option value="" disabled hidden selected>Select Category</option>
-                {% for c in category %}
-                <option value="{{ c }}">{{ c }}</option>
-                {% endfor %}
-              </select>
-
-
-            </div>
-            <div class="detail-section">
-              <span class="detail-label">Document No</span>
-              <input type="text" name='Document_no'class="detail-value" readonly/>
-            </div>
-            <div class="detail-section">
-              <span class="detail-label">Date</span>
-              <input type="date" name='date'class="detail-value" required/>
-            </div>
-          </div>
-        </div>
-        <div class="document-remarks">
-          <div class="heading">
-          <h3>Document remarks</h3></div>
-          <div class="detail-section">
-            <span class="detail-label">Subject</span>
-            <input type="text" name="remarks_Subject" class="detail-value" required/>
-          </div>
-          <div class="detail-section">
-            <span class="detail-label">Priority</span>
-            <select class="detail-value" name="Priority">
-
-              <option value="" disabled hidden selected>Select Priority</option>
-
-              <option value="standed">standed</option>
-              <option value="High">High</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="container2">
-        <div class="financial-details">
-          <div class="heading">
-          <h3>Financial Details</h3></div>
-          <div class="detail-section">
-            <span class="detail-label">Tran No</span>
-            <input type="text" name='Tran_No' class="detail-value" readonly/>
-          </div>
-          <div class="detail-section">
-            <span class="detail-label">Fin.Commitment</span>
-            <select class="detail-value" name="fin_commit">
-
-              <option value="" disabled hidden selected>Select fin_commit</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-
-          <div class="detail-section">
-            <span class="detail-label">Tolerance</span>
-            <input type="text" name='Tolerance'class="detail-value" required/>
-          </div>
-          <div class="detail-section">
-            <span class="detail-label">Total Value</span>
-            <input type="text" name="Total_Value" class="detail-value" required/>
-          </div>
->>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
         </div>
         
       </form>
         <div class="footer">
         <div class="approve-list">
           <div class="heading">
-<<<<<<< HEAD
           <h3>Approve List</h></div>
           <table class="approval table-bordered" style="width: 100%; border: black;">
             <thead>
@@ -456,72 +350,6 @@
           </table>
         </div>
       </div>
-=======
-          <h3>Attachment Details</h3></div>
-          <div class="detail-section">
-            <span class="detail-label">Attachment</span>
-            <input type="file" name='Attachment'class="detail-value" />
-          </div>
-          <div class="detail-section">
-            <span class="detail-label">Attachment-Remarks</span>
-            <input type="text" name='Attachment_details'class="detail-value" required/>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" style >Create</button>
-
-    </form>
-      <div class="footer">
-      <div class="approve-list">
-        <div class="heading">
-        <h3>Approve List</h></div>
-        <p>No rows to display!!!</p>
-        <table class="approval-table">
-          <thead>
-            <tr>
-              <th>Level</th>
-              <th>User Name</th>
-              <th>Login Name</th>
-              <th>Designation</th>
-              <th>Mail id</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for p in approval_user%}
-            <tr>
-              <th></th>
-
-              <th>{{p.user_name}}</th>
-              <th>{{p.staff_id}}</th>
-              <th>{{p.role}}</th>
-              <th>{{p.email}}</th>
-            </tr>
-            {% endfor %}
-            <!-- <tr>
-              <th></th>
-              <th>{{gm_user.user_name}}</th>
-              <th>{{gm_user.staff_id}}</th>
-              <th>{{gm_user.role}}</th>
-              <th>{{gm_user.email}}</th>
-            </tr>
-            <tr>
-              <th></th>
-              <th>{{vise_principal_user.user_name}}</th>
-              <th>{{vise_principal_user.staff_id}}</th>
-              <th>{{vise_principal_user.role}}</th>
-              <th>{{vise_principal_user.email}}</th>
-            </tr>
-            <tr>
-              <th></th>
-              <th>{{principal_user.user_name}}</th>
-              <th>{{principal_user.staff_id}}</th>
-              <th>{{principal_user.role}}</th>
-              <th>{{principal_user.email}}</th>
-            </tr> -->
-          </tbody>
-        </table>
-      </div>
->>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
     </div>
   
     <script>

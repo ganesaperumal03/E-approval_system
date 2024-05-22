@@ -99,7 +99,6 @@
     </style>
   </head>
   <body>
-<<<<<<< HEAD
     <div class="page-content p-5" id="content">
       <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4">
         <i class="fa fa-bars mr-2"></i>
@@ -112,199 +111,11 @@
             <div class="media-body">
               <h4 class="m-0">E-Approval</h4>
               <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
-=======
-    <header>
-      <div class="bars">
-        <i class="fa fa-bars" onclick="toggleNav()"></i>
-      </div>
-    </header>
-    <div class="nav-bar active" id="nav">
-      <a href="#">Home</a>
-      <a href="{% url 'create_form' %}">Create E approval</a>
-      <a class="active" href="{% url 'auth_approval' %}">Authorize E approval</a>
-      <a href="{% url 'clarification' %}">Clarification</a>
-      <a href="{% url 'view_approval' %}">View Appoval</a>
-      <a href="{% url 'approval_user_details' %}">E approval user details </a>
-    </div>
-    <div class="over-all">
-      <div class="side-panel">
-        <label for="to-approve">
-          <span class="text-approve">To Approve:</span>
-        </label>
-        <select class="select-box" id="to-approve" name="to-approve" required>
-          <option value="" hidden>select id</option>
-
-          <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
-
-        </select>
-
-        <br />
-      </div>
-      <div class="container">
-        <div class="document">
-          <div class="document-details">
-            <div class="document-head">
-              <span class="doc-1">Document</span>
-              <button id="view-button">View</button>
-            </div>
-            <div class="document-body">
-              <div class="doc-row">
-                <div class="doc-con">
-                  <span id="tags">Document no</span>
-                  <form action="{% url 'auth_approval' %}" method="GET">
-                    <select name="Document_no">
-                      <option value="" hidden>select Document</option>
-                      {% for d in doc_data %}
-                      <option value="{{ d.Document_no }}">
-                        {{ d.Document_no }}
-                      </option>
-                      {% endfor %}
-                    </select>
-                    <button type="submit" id="submit-button">submit</button>
-                  </form>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Date-</span>
-                  <span id="tag-ans"> {{ Document_no.date }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Priority-</span>
-                  <span id="tag-ans"> {{ Document_no.Priority }}</span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Status-</span>
-                  <span id="tag-ans"> {{ Document_no.date }} </span>
-                </div>
-              </div>
-              <div class="doc-row">
-                <div class="doc-con">
-                  <span id="tags">Org.Unit-</span>
-                  <span id="tag-ans"> {{ Document_no.Org_Unit }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Department-</span>
-                  <span id="tag-ans"> {{ Document_no.Department }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Category-</span>
-                  <span id="tag-ans"> {{ Document_no.Category }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Sub category-</span>
-                  <span id="tag-ans"> {{ Document_no.Sub_Category }} </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="ref-document-details">
-            <div class="ref-document-head">
-              <span id="tag-ans"> Red Document Details </span>
-            </div>
-            <div class="ref-document-body">
-              <div class="doc-row">
-                <div class="doc-con">
-                  <span id="tags">Fin commitment-</span>
-                  <span id="tag-ans"> {{ Document_no.fin_commit }} </span>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Doc Type-</span>
-                  <span id="tag-ans"> {{ Document_no.date }} </span>
-                </div>
-              </div>
-              <div class="ref-doc-row">
-                <div class="doc-con">
-                  <span id="tags">Base Tran creation-</span>
-                  <select>
-                    <option>datedmothnn</option>
-                  </select>
-                </div>
-                <div class="doc-con">
-                  <span id="tags">Transaction No-</span>
-                  <span id="tag-ans"> {{ Document_no.Tran_No }} </span>
-                </div>
-              </div>
->>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
             </div>
           </div>
         </div>
 
-<<<<<<< HEAD
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
-=======
-            </div>
-            <div class="doc-remarks-body">
-              <div class="doc-remarks-con">
-                <div class="subject" id="tags">Subject</div>
-                <div class="remarks-subject">
-                  <input type="text" name="doc_subject" value="{{ Document_no.remarks_Subject }}" >
-                </div>
-              </div>
-              <div class="doc-remarks-con">
-                <div class="remarks" id="tags">Remarks</div>
-                <div class="remarks-remarks">
-                  <input type="text" name="doc_remarks">
-                </div>
-              </div>
-              <div class="doc-remarks-con">
-                <div class="attachment" id="tags">Attachment</div>
-                <div class="remarks-attachment" >
-                  <input type="text"  name="doc_attachment" >
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="clarification">
-            <div class="doc-row">
-              <button type="submit"  class="clarification-button">Clarification</button>
-            </div>
-          </div>
-        </div>
-      </form>
-        <div class="same-div">
-          <div class="finance">
-            <div class="finance-details">
-              <div class="finance-head">
-                <span class="finance-doc-1">Financial details</span>
-              </div>
-              <div class="finance-body">
-                <div class="doc-row">
-                  <div class="doc-con">
-                    <span id="tags">Spend Type-</span>
-                    <span id="tag-ans">{{ Document_no.Spend_type}} </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">Currency-</span>
-                    <span id="tag-ans">INR </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">Value-</span>
-                    <span id="tag-ans"> {{ Document_no.Total_Value }} </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">Tolerance-</span>
-                    <span id="tag-ans"> {{ Document_no.Tolerance }} </span>
-                  </div>
-                </div>
-                <div class="doc-row">
-                  <div class="doc-con">
-                    <span id="tags">Value+ -</span>
-                    <span id="tag-ans">10000 </span>
-                  </div>
-                  <div class="doc-con">
-                    <span id="tags">In Words-</span>
-                    <!-- <span id="tag-ans">{{ Document_no.Tran_No }}</span> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="approve-reject">
-            <div class="approve-body">
-              <div class="approve-row">
-                <div class="approve-con">
-                  <form action="{% url 'form_approval' %}" method="POST">
-                    {% csrf_token %}
->>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
 
         <ul class="nav flex-column bg-white mb-0">
           <li class="nav-item">
@@ -579,32 +390,6 @@
             </table>
           </div>
         </div>
-<<<<<<< HEAD
-=======
-        <!-- end of approve reject-->
-        <div class="table-section">
-          <table class="table-list">
-            <thead>
-              <tr>
-                <th>Approval</th>
-                <th>Authoriztion Date</th>
-                <th>Approver Remarks</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for p in approval_user%}
-              <tr>
-                <th>{{p.Approval}}</th>
-                <th>{{p.date}}</th>
-                <th>{{p.remarks}}</th>
-
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
->>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
     </div>
     <script>
       $(function() {

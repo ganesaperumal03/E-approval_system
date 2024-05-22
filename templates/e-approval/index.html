@@ -70,7 +70,7 @@
         }
         @media (max-width: 768px) {
           #sidebar {
-            margin-left: -17rem;
+            margin-left: -23rem;
           }
           #sidebar.active {
             margin-left: 0;
@@ -80,8 +80,8 @@
             margin: 0;
           }
           #content.active {
-            margin-left: 17rem;
-            width: calc(100% - 17rem);
+            margin-left: 23rem;
+            width: calc(100% - 23rem);
           }
         }
         .document-container,.document-remarks,.financial-details,.attachment-details{
@@ -106,7 +106,7 @@
       <div class="vertical-nav bg-white" id="sidebar">
         <div class="py-4 px-3 mb-4 bg-light">
           <div class="media d-flex align-items-center">
-            <img decoding="async" src="approval-process-management.png" alt="..." width="80" height="80" class="mr-3 rounded-circle img-thumbnail shadow-sm">
+            <img decoding="async" src="{% static 'image/approval-process-management.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-circle img-thumbnail shadow-sm">
             <div class="media-body">
               <h4 class="m-0">E-Approval</h4>
               <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
@@ -118,13 +118,13 @@
       
         <ul class="nav flex-column bg-white mb-0">
           <li class="nav-item">
-            <a href="#" class="nav-link text-dark bg-light">
+            <a href="#" class="nav-link text-dark">
                       <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
                       home
                   </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'create_form' %}" class="nav-link text-dark" >
+            <a href="{% url 'create_form' %}" class="nav-link text-dark bg-secondary" >
                       <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
                       Create E-Approval
                   </a>
@@ -166,8 +166,8 @@
                 <div class="document-details">
                   <div class="detail-section">
                     <span class="detail-label">Department</span>
-                    <select class="detail-value" name="Department">
-                      <option value="" disabled selected></option>
+                    <select class="detail-value col-md-5" name="Department">
+                      <option value="" hidden selected>Select Department</option>
                       <option value="cse">CSE</option>
                       <option value="it">IT</option>
                       <option value="aids">AIDS</option>
@@ -180,23 +180,37 @@
                   </div>
                   <div class="detail-section">
                     <span class="detail-label">Org Unit</span>
-                    <input type="text" name='Org_Unit'class="detail-value"  required/>
+                    <input type="text" name='Org_Unit'class="detail-value col-md-5" value='RIT' required/>
                   </div>
                   <div class="detail-section">
                     <span class="detail-label">Category</span>
-                    <input type="text" name='Category'class="detail-value" required/>
+                    <select class="detail-value col-md-5" name="Category">
+
+                      <option value="" disabled hidden selected>Select Category</option>
+      
+                        {% for c in category %}
+                      <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
+                    </select>
+      
                   </div>
                   <div class="detail-section">
                     <span class="detail-label">Sub Category</span>
-                    <input type="text" name='Sub_Category'class="detail-value" required/>
+                    <select class="detail-value col-md-5" name="Sub_Category">
+
+                      <option value="" disabled hidden selected>Select Category</option>
+                      {% for c in category %}
+                      <option value="{{ c }}">{{ c }}</option>
+                      {% endfor %}
+                    </select>
                   </div>
                   <div class="detail-section">
                     <span class="detail-label">Document No</span>
-                    <input type="text" name='Document_no'class="detail-value" readonly/>
+                    <input type="text" name='Document_no'class="detail-value col-md-5" readonly/>
                   </div>
                   <div class="detail-section">
                     <span class="detail-label">Date</span>
-                    <input type="date" name='date'class="detail-value" required/>
+                    <input type="date" name='date'class="detail-value col-md-5" required/>
                   </div>
                 </div>
               </div>
@@ -205,11 +219,18 @@
                 <h3>Document remarks</h3></div>
                 <div class="detail-section">
                   <span class="detail-label">Subject</span>
-                  <input type="text" name="remarks_Subject" class="detail-value" required/>
+                  <input type="text" name="remarks_Subject" class="detail-value col-md-5" required/>
                 </div>
                 <div class="detail-section">
                   <span class="detail-label">Priority</span>
-                  <input type="text" name='Priority'class="detail-value" required/>
+                  <select class="detail-value col-md-5" name="Priority">
+
+                    <option value="" disabled hidden selected>Select Priority</option>
+      
+                    <option value="standed">Standard</option>
+                    <option value="High">High</option>
+                    <option value="Low">Low</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -219,41 +240,46 @@
                 <h3>Financial Details</h3></div>
                 <div class="detail-section">
                   <span class="detail-label">Tran No</span>
-                  <input type="text" name='Tran_No' class="detail-value" readonly/>
+                  <input type="text" name='Tran_No' class="detail-value col-md-5" readonly/>
                 </div>
                 <div class="detail-section">
                   <span class="detail-label">Fin.Commitment</span>
-                  <input type="text" name='fin_commit'class="detail-value" required/>
+                  <select class="detail-value col-md-5" name="fin_commit">
+
+                    <option value="" disabled hidden selected>Select fin_commit</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
                 </div>
 
                 <div class="detail-section">
                   <span class="detail-label">Tolerance</span>
-                  <input type="text" name='Tolerance'class="detail-value" required/>
+                  <input type="text" name='Tolerance'class="detail-value col-md-5" required/>
                 </div>
                 <div class="detail-section">
                   <span class="detail-label">Total Value</span>
-                  <input type="text" name="Total_Value" class="detail-value" required/>
+                  <input type="text" name="Total_Value" class="detail-value col-md-5" required/>
                 </div>
               </div>
 
               <div class="attachment-details col-md-6 .ms-md-auto">
                 <div class="heading">
                 <h3>Attachment Details</h3></div>
-                <!-- <div class="detail-section">
+                <div class="detail-section">
                   <span class="detail-label">Attachment</span>
-                  <input type="file" name='Attachment'class="detail-value" />
-                </div> -->
+                  <input type="file" name='Attachment'class="detail-value col-md-5" style="border: none;" />
+                </div>
                 <div class="detail-section">
                   <span class="detail-label">Attachment-details</span>
-                  <input type="text" name='Attachment_details'class="detail-value" required/>
+                  <input type="text" name='Attachment_details'class="detail-value col-md-5" required/>
                 </div>
               </div>
             </div>
           
         </div>
-        <div class="container" style="text-align: center;">
+        <div class="container my-3" style="text-align: center;">
           <!-- Trigger the modal with a button -->
-          <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color: #00407b;">Create</button>
+          <button type="submit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color: #00407b;">Create</button>
         
           <!-- Modal -->
           <div class="modal fade" id="myModal" role="dialog">
@@ -282,7 +308,7 @@
         <div class="approve-list">
           <div class="heading">
           <h3>Approve List</h></div>
-          <table class="approval-table-bordered" style="width: 100%;">
+          <table class="approval table-bordered" style="width: 100%; border: black;">
             <thead>
               <tr>
                 <th scope="col">User Name</th>
@@ -290,10 +316,13 @@
               </tr>
             </thead>
             <tbody>
-              {% for p in appruval_user%}
+              {% for p in approval_user%}
               <tr>
-                <td scope="row">{{p.user_name}}</td>
-                <td scope="row">{{p.role}}</td>
+
+  
+                <td>{{p.user_name}}</td>
+                <td>{{p.role}}</td>
+
               </tr>
               {% endfor %}
               <!-- <tr>

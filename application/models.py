@@ -2,7 +2,7 @@ from django.db import models
 
 
 class e_approval(models.Model):
-    Document_no = models.CharField(max_length=20,primary_key=True)
+    Document_no = models.CharField(max_length=200,primary_key=True)
     Department = models.CharField(max_length=100)
     Org_Unit = models.CharField(max_length=100)
     Category = models.CharField(max_length=100)
@@ -15,8 +15,7 @@ class e_approval(models.Model):
     Tolerance = models.CharField(max_length=100)
     Total_Value = models.CharField(max_length=100)
     In_words = models.CharField(max_length=200,blank=True,null=True)
-    Spend_type=models.CharField(max_length=100,null=True)
-    Attachment = models.CharField(max_length=100)
+    Attachment = models.FileField(upload_to='')
     date = models.DateField()
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)
@@ -48,7 +47,7 @@ class User(models.Model):
     conform_Password = models.CharField(max_length=100)
 
 class auth_list(models.Model):
-    Document_no = models.CharField(max_length=20, primary_key=True)
+    Document_no = models.CharField(max_length=200, primary_key=True)
 
     hod = models.CharField(max_length=100, blank=True, null=True)
     hod_date = models.CharField(max_length=100, blank=True, null=True)
@@ -75,27 +74,33 @@ class auth_list(models.Model):
     principal_clarification = models.CharField(max_length=100, blank=True, null=True)
 
 class clarification(models.Model):
-    Document_no = models.CharField(max_length=20, primary_key=True)
-
+    Document_no = models.CharField(max_length=200, primary_key=True)
     remarks = models.CharField(max_length=500, blank=True, null=True)
     reroute_comments = models.CharField(max_length=500, blank=True, null=True)
     reroute_clarification = models.CharField(max_length=500, blank=True, null=True)
 
 
 class auth_remarks(models.Model):
-    Document_no = models.CharField(max_length=20, primary_key=True)
+    Document_no = models.CharField(max_length=200, primary_key=True)
     auth_approval=models.CharField(max_length=100,blank=True, null=True)
     auth_remarks=models.CharField(max_length=100,blank=True, null=True)
     auth_reason=models.CharField(max_length=100,blank=True,null=True)
+
 class doc_remarks(models.Model):
-    Document_no = models.CharField(max_length=20, primary_key=True)
-    doc_approval=models.CharField(max_length=20, blank=True,null=True)
+    Document_no = models.CharField(max_length=100, primary_key=True)
+    doc_date_and_time = models.DateField(auto_now_add=True)
+    doc_approval_id =models.CharField(max_length=20, blank=True,null=True)
+    doc_applied_staff_id =models.CharField(max_length=20, blank=True,null=True)
     doc_subject=models.CharField(max_length=100, blank=True,null=True)
     doc_remarks=models.CharField(max_length=100, blank=True,null=True)
     doc_attachment=models.CharField(max_length=100,blank=True,null=True)
+    doc_clarification_status=models.CharField(max_length=100,blank=True,null=True)
+    doc_clarifictaions_reason=models.CharField(max_length=100,blank=True,null=True)
+
 class clarification(models.Model):
-    Document_no = models.CharField(max_length=20, primary_key=True)
+    Document_no = models.CharField(max_length=200, primary_key=True)
     clarification_approval=models.CharField(max_length=500, blank=True, null=True)
+    clarification_date_and_time = models.DateField(auto_now_add=True)
     clarification_remarks = models.CharField(max_length=500, blank=True, null=True)
     clarification_reroute_comments = models.CharField(max_length=500, blank=True, null=True)
     clarification_reroute_clarification = models.CharField(max_length=500, blank=True, null=True)

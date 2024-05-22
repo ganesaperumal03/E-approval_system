@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Department</title>
+</head>
+<body>
+    <select id="department-select">
+        <option value="1">Department 1</option>
+        <option value="2">Department 2</option>
+        <option value="3">Department 3</option>
+    </select>
+
+    <script>
+        document.getElementById('department-select').addEventListener('change', function() {
+            var selectedDepartment = this.value;
+            sendData(selectedDepartment);
+        });
+
+        function sendData(selectedDepartment) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/process_department/', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken')); // Adding CSRF token for Django
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Assuming server responds with the new HTML content
+                    document.body.innerHTML = xhr.responseText;
+                } else {
+                    console.log('Failed to send data');
+                }
+            };
+
+            xhr.send(JSON.stringify({ department: selectedDepartment }));
+        }
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

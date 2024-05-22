@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from application import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('create_form', views.create_form, name="create_form"),
@@ -26,7 +27,14 @@ urlpatterns = [
     path('view_approval', views.view_approval, name="view_approval"),
     path('auth_approval', views.auth_approval, name="auth_approval"),
     path('clarification', views.clarification, name="clarification"),
-    path('approval_user_details',views.approval_user_details,name="approval_user_details")
+    path('approval_user_details',views.approval_user_details,name="approval_user_details"),
+    path('updateapproval',views.updateapproval,name="updateapproval"),
+    path('form_approval',views.form_approval,name="form_approval"),
+    path('pdf_show',views.pdf_show,name="pdf_show"),
+    path('send_email',views.send_email,name="send_email"),
+    path('process_department/', views.process_department, name='process_department'),
+    path('pdf/', views.pdf, name='pdf'),
 
 
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,502 +9,327 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
-      * {
-        margin: 0px;
-        padding: 0px;
-        text-decoration: none;
-        list-style: none;
-        box-sizing: border-box;
+      body {
+          min-height: 100vh;
+          overflow-x: hidden;
+          font-family:Arial, Helvetica, sans-serif ;
       }
-      .body {
-        margin: 3px;
-        border: 1px solid #5c5c5c;
+      .vertical-nav {
+        min-width: 23rem;
+        width: 23rem;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s;
+      }
+      .page-content {
+        width: calc(100% - 17rem);
+        margin-left: 23rem;
+        transition: all 0.4s;
+      } 
+
+      #sidebar.active {
+        margin-left: -23rem;
       }
 
-    .container {
-      display: flex;
-      background: white;
-      height: 700px;
-      border: 1px solid gray;
-      border-radius: 5px;
-      flex: 1;
-      flex-direction: column;
-      width: 99%;
-
-      margin: 6px;
-      margin-left: 3px;
-      padding: 6px;
-      font-family: sans-serif;
-    }
-    .document {
-      width: 100%;
-      display: flex;
-      background: white;
-      align-items: flex-start;
-      flex-direction: column;
-
-      height: 100%;
-    }
-    #tags {
-      color: #565555;
-    }
-    #tag-ans {
-      font-size: small;
-    }
-
-    .document-clarification {
-      display: flex;
-      width: 100%;
-
-      border: 1px solid lightgray;
-      height: 30%;
-      border-radius: 4px;
-
-      flex-direction: column;
-
-      background-color: white;
-    }
-
-    .document-head {
-      display: flex;
-      padding: 8px;
-      font-size: small;
-    }
-
-    .document-body {
-      flex-wrap: wrap;
-      margin: 2px;
-      justify-content: space-between;
-      padding: 3px;
-      font-size: smaller;
-    }
-
-    .doc-row {
-      display: flex;
-      height: 37%;
-      align-items: center;
-      width: 100%;
-    }
-
-    .doc-con {
-      flex: 1;
-      padding: 2px;
-    }
-    .second-sec {
-      margin-top: 10px;
-      display: flex;
-      width: 100%;
-      border: 1px solid lightgray;
-      height: 30%;
-      border-radius: 4px;
-      flex-direction: row;
-      background-color: white;
-    }
-    .document-remarks,
-    .responsibe-user,
-    .reroute-comments {
-      flex: 1;
-      width: 33.33%;
-      border: 1px solid lightgray;
-      border-radius: 4px;
-      margin: 4px;
-      height: 90%;
-    }
-
-    .remarks-body,
-    .responsibe-body,
-    .comments-body {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      height: 60%;
-
-      margin: 2px;
-      justify-content: space-around;
-      padding: 7px;
-      font-size: smaller;
-    }
-
-    .remarks,
-    .subject {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .body-response {
-      flex: 75%;
-      display: flex;
-      align-items: center;
-    }
-
-    .remarks-text {
-      flex: 25%;
-    }
-    .remarks-input {
-      height: 100%;
-      resize: none;
-      width: 100%;
-      padding: 5px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .reroutes-text {
-      flex: 25%;
-    }
-    .reroutes-input {
-      height: 100%;
-      resize: none;
-      width: 100%;
-      padding: 5px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .third-sec {
-      margin-top: 10px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      height: 15%;
-      border: 1px solid lightgray;
-      border-radius: 4px;
-    }
-
-    .click-head {
-      padding: 8px;
-      font-size: small;
-    }
-
-    .click-body {
-      flex: 1; 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: smaller; 
-    }
-    .click {
-      width: 20%;
-    }
-    .reroute-tag {
-      width: 20%;
-    }
-    .rerotute.text {
-      height: 100%;
-      resize: none;
-      padding: 5px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .submit {
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      width: 100%;
-      height: 10%;
-      border: 1px solid lightgray;
-      border-radius: 4px;
-      margin-top: 4px;
-    }
-
-    .submit button {
-      background-color: rgb(52, 240, 52); 
-      color: rgb(0, 0, 0); 
-      padding: 10px 20px; 
-      border: none;
-      border-radius: 4px; 
-      cursor: pointer;
-    }
-    .data {
-      display: flex;
-      justify-content: center;
-
-      width: 100%;
-      height: 10%;
-      border: 1px solid lightgray;
-      border-radius: 4px;
-      margin-top: 2px;
-      font-size: smaller;
-    }
-    .left {
-      width: 50%;
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      height: 100%;
-      padding-left: 40px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-    }
-    .right {
-      width: 50%;
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      height: 100%;
-      margin-top: 5px;
-      margin-bottom: 10px;
-    }
-    header{
-        height: 27px;
+      #content.active {
         width: 100%;
-        background: gray;
-        align-items: center;
-    }
-    .nav-bar.active {
-        transform: translateX(0%);
-    }
-    .nav-bar {
-    font-family: sans-serif;
-    font-size: smaller;
-    width: 200px;
-    height: 100vh;
-    position: relative;
-    top: 25px;
-    left: 0;
-    border-radius: 7px;
-    border: 1px solid gray;
-    transform: translateX(-100%);
-    transition: transform 0.2s ease;
-    padding-left: 0;
-    }
-    .bars {
-    position: absolute;
-    left: 10px;
-    top: 4px;
-    font-size: 1.2rem;
-    }
-    .nav-bar {
-    font-family: sans-serif;
-    font-size: smaller;
-    width: 210px;
-    height: 83%;
-    position: fixed;
-    top: 30px;
-    left: 0;
-    border-radius: 7px;
-    border: 1px solid gray;
-    z-index: 9999;
-    background-color: white;
-    padding-left: 0;
-    }
-    .nav-bar a {
-    display: block;
-    text-align: left;
-    padding: 10px;
-    color: black;
-    border-radius: 5px;
-    }
+        margin: 0;
+      }
 
-    .nav-bar a.active {
-        background-color: gray;
-    }
-    .nav-bar a:hover {
-    background-color: lightgray;
-    }
+      .separator {
+        margin: 3rem 0;
+        border-bottom: 1px dashed #fff;
+      }
 
-
-      </style>
+      .text-uppercase {
+        letter-spacing: 0.1em;
+      }
+      .text-gray {
+        color: #aaa;
+      }
+      .nav-link{
+          text-transform: capitalize;
+      }
+      .nav-link:hover{
+          background:#f3f2f2;
+      }
+      .text-primary{
+          color:#7579e7 !important;
+      }
+      @media (max-width: 768px) {
+        #sidebar {
+          margin-left: -23rem;
+        }
+        #sidebar.active {
+          margin-left: 0;
+        }
+        #content {
+          width: 100%;
+          margin: 0;
+        }
+        #content.active {
+          margin-left: 23rem;
+          width: calc(100% - 23rem);
+        }
+      }
+      .container {
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-    <header>
-      <div class="bars">
-        <i class="fa fa-bars" onclick="toggleNav()"></i>
+    <div class="page-content p-5" id="content">
+      <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+      <div class="vertical-nav bg-white" id="sidebar">
+        <div class="py-4 px-3 mb-4 bg-light">
+          <div class="media d-flex align-items-center">
+            <img decoding="async" src="{% static 'image/approval-process-management.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-circle img-thumbnail shadow-sm">
+            <div class="media-body">
+              <h4 class="m-0">E-Approval</h4>
+              <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+            </div>
+          </div>
+        </div>
+      
+        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
+      
+        <ul class="nav flex-column bg-white mb-0">
+          <li class="nav-item">
+            <a href="#" class="nav-link text-dark ">
+                      <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+                      home
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'create_form' %}" class="nav-link text-dark" >
+                      <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
+                      Create E-Approval
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'auth_approval' %}"class="nav-link text-dark">
+                      <i class="fa fa-cubes mr-3 text-primary fa-fw"></i>
+                      Authorize E approval
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'clarification' %}"class="nav-link text-dark bg-secondary">
+                      <i class="fa fa-picture-o mr-3 text-primary fa-fw"></i>
+                      Clarification
+                  </a>
+          </li>
+      
+          <li class="nav-item">
+            <a href="{% url 'view_approval' %}"class="nav-link text-dark">
+                      <i class="fa fa-area-chart mr-3 text-primary fa-fw"></i>
+                      View Appoval
+                  </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'approval_user_details' %}" class="nav-link text-dark">
+                      <i class="fa fa-bar-chart mr-3 text-primary fa-fw"></i>
+                      E approval user details
+                  </a>
+          </li>
+        </ul>
       </div>
-    </header>
-    <div class="nav-bar active" id="nav">
-      <a href="login.html">Home</a>
-      <a href="{% url 'create_form' %}">Create E approval</a>
-      <a href="{% url 'auth_approval' %}">Authorize E approval</a>
-      <a class="active" href="{% url 'clarification' %}">Clarification</a>
-      <a href="{% url 'view_approval' %}">View Appoval</a>
-      <a href="{% url 'approval_user_details' %}">E approval user details </a>
-    </div>
-    <div class="container">
-      <div class="document">
-        <div class="document-clarification">
-          <div class="document-head">
-            <span class="doc-1">Document Clarificaton</span>
-          </div>
-          <div class="document-body">
-            <div class="doc-row">
-              <div class="doc-con">
-                <span id="tags">Document no</span>
-                <select>
-                  <option value="{{ d.Document_no }}">{{ d.Document_no }}</option>
-                </select>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Date-</span>
-                <span id="tag-ans"> date1</span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Priority-</span>
-                <span id="tag-ans"> High</span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Status-</span>
-                <span id="tag-ans">pending</span>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-con">
-                <span id="tags">Department-</span>
-                <span id="tag-ans">AD</span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Category-</span>
-                <span id="tag-ans">Category here</span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Sub category-</span>
-                <span id="tag-ans">Sub category </span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Trans no-</span>
-                <span id="tag-ans">R1234123/1324/</span>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-con">
-                <span id="tags">Doc type-</span>
-                <span id="tag-ans">345f34</span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Currency-</span>
-                <span id="tag-ans">INR</span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Fin commitment-</span>
-                <span id="tag-ans">No </span>
-              </div>
-              <div class="doc-con">
-                <span id="tags">Total value-</span>
-                <span id="tag-ans">200000/</span>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-con">
-                <span id="tags">Attached document-</span>
-                <span id="tag-ans">document.pdf </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--end of document clarificaiton-->
-        <div class="second-sec">
-          <div class="document-remarks">
+      <div class="container border" style="max-width:100%; margin: none;">
+        <div class="document col" style="line-height: 2;">
+          <div class="document-clarification col border" style="max-width:100%;">
             <div class="document-head">
-              <span class="doc-1">Document remarks</span>
+              <label class="doc-1">Document Clarificaton</label>
             </div>
-            <div class="remarks-body">
-              <div class="remarks">
-                <div id="tags" class="remarks-text">Remarks</div>
-                <div class="body-response">
-                  <textarea class="remarks-input"></textarea>
+            <div class="document-body row">
+              <div class="doc col-md-4">
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Document no</label>
+                  <div class="col-sm-5 mb-2">
+                    <form id="clarificationForm" action="{% url 'clarification' %}" method="get">
+                      <select class="form-control" id="document_data_select" name="document_data_value" onchange="handleSelectChange()" aria-label="Default select example">
+                        {% for key, value in document_data_value.items %}
+                        <option value="{{ key }}|{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                      </select>
+                      <button type="submit" id="submit-button">submit</button>
+                    </form>
+                  </div>
+                </div>
+                <form  method="POST" action="{% url 'updateapproval' %}" autocomplete="off">
+                  {% csrf_token %}
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Date-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.date}}">
+                </div>
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Priority-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.Priority}}">
+                </div>
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Status-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.date}}">
+                </div>
+                <div class="doc-conform-group row mt-2 mb-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Attached document-</label>
+                  <span id="tag-ans"> document.pdf </span>
                 </div>
               </div>
-              <div class="subject">
-                <div id="tags" class="remarks-text">Subject</div>
-                <div class="body-response">
-                  <span class="subject-input">Academics regarding</span>
+              <div class="doc col-md-4">
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Department-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.Department}}">
+                </div>
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Category-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.Category}}">
+                </div>
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Sub category-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.Sub_Category}}">
+                </div>
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Trans no-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.Tran_No}}">
                 </div>
               </div>
-            </div>
-          </div>
+              <div class="doc col-md-4">
+                <input type="text" hidden name="Document_no"  value="{{document_data.Document_no}}">
+                <input type="text" hidden name="remarks_document_data"  value="{{remarks_document_data.Document_no}}">
 
-          <div class="responsibe-user">
-            <div class="document-head">
-              <span class="doc-1">Responsibe user</span>
-            </div>
-            <div class="responsibe-body">
-              <div class="subject">
-                <div id="tags" class="remarks-text">Full name</div>
-                <div class="body-response">
-                  <span>Academics regarding</span>
+                <div class="doc-con mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Currency-</label>
+                  <span id="tag-ans">INR</span>
                 </div>
-              </div>
-              <div class="subject">
-                <div id="tags" class="remarks-text">Designation</div>
-                <div class="body-response">
-                  <span> Chief financial officer </span>
+                <div class="doc-con mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Fin commitment-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.fin_commit}}">
                 </div>
-              </div>
-              <div class="subject">
-                <div id="tags" class="remarks-text">User name</div>
-                <div class="body-response">
-                  <span>RMLAPP</span>
+                <div class="doc-con mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Total Value-</label>
+                  <input id="tag-ans" class="mt-2"value="{{document_data.Total_Value}}">
                 </div>
               </div>
             </div>
           </div>
-          <div class="reroute-comments">
-            <div class="comments-body">
-              <div class="reroutes-text">Reroute comments</div>
-              <div class="body-response">
-                <textarea class="reroutes-input"></textarea>
+          <!--end of document clarificaiton-->
+          <div class="second-sec row border">
+            <div class="document-remarks col-md-4 border">
+              <div class="document-head">
+                <label >Document remarks</label>
               </div>
-            </div>
-          </div>
-        </div>
-        <!-- end of second sec-->
-        <div class="third-sec">
-          <div class="click-head">
-            <span class="doc-1">Clarification given</span>
-          </div>
-          <div class="click-body">
-            <div class="click">
-              <label for="myCheckbox" id="tags">click</label>
-              <input type="checkbox" id="myCheckbox" />
-            </div>
-            <div class="reroute-tag">
-              <span id="tags">Reroute Clarification</span>
+              <div class="remarks-body">
+                <div class="remarks row">
+                  <label id="tags" class="col-sm-2 col-form-label">Remarks</label>
+                  <div class="col-sm-10">
+                    <input class="form-control mt-2 col-10" placeholder="Remarks" style="height: 70px;"></input>
+                  </div>
+                </div>
+                <div class="subject row mt-2">
+                  <label id="tags" class="col-sm-2 col-form-label">Subject</label>
+                  <div class="col-sm-10  mb-2">
+                    <input class="form-control" placeholder="Subject"></input>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="reroute-text">
-              <textarea class="reroutes-input"></textarea>
+            <div class="responsibe-user col-md-4 border">
+              <div class="document-head">
+                <label class="row-sm-6 col-form-label">Responsibe user</label>
+              </div>
+              <div class="responsibe-body">
+                <div class="subject row">
+                  <label class="col-sm-4 col-form-label" id="tags">Full name</label>
+                  <div class="body-response">
+                    <span>Academics regarding</span>
+                  </div>
+                </div>
+                <div class="subject row">
+                  <label id="tags" class="col-sm-4 col-form-label">Designation</label>
+                  <div class="body-response">
+                    <span> Chief financial officer </span>
+                  </div>
+                </div>
+                <div class="subject row">
+                  <label id="tags" class="col-sm-4 col-form-label">User name</label>
+                  <div class="body-response">
+                    <span>RMLAPP</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="reroute-comments col-md-4">
+              <div class="comments-body">
+                <label class="reroutes-text">Reroute comments</label>
+                <div class="body-response">
+                  <input class="form-control mt-2 col-10" placeholder="Reroute comments" style="height: 70px;"value="{{remarks_document_data.doc_remarks}}">
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- end of clarificaition given-->
-        <div class="submit">
-          <button>Submit</button>
-        </div>
-        <!--end of click-->
-        <div class="data">
-          <div class="left">
-            <div class="doc-row">
-              <div id="tags">Created by:</div>
-              <div id="tags">ramkumar</div>
-            </div>
-            <div class="doc-row">
-              <div id="tags">Created date:</div>
-              <div id="tags">11-11-2023</div>
+          <!-- end of second sec-->
+          <div class="third-sec border mt-2">
+            <label class="row-sm-6 col-form-label">Clarification given</label>
+            <div class="click-body row">
+              <div class="click col-md-4"style="text-align: center;">
+                <label class="mx-4"for="myCheckbox" id="tags">click</label>
+                <input type="checkbox" id="myCheckbox" />
+              </div>
+              <div class="reroute-tag col-md-4">
+                <label id="tags" class="col-sm-4 col-form-label">Reroute Clarification</label>
+                <div>
+                  <input class="form-control mt-2 col-10" name='doc_clarifictaions_reason' placeholder="Reroute Clarification" style="height: 70px;"></input>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="right">
-            <div class="doc-row">
-              <div id="tags">Modified by:</div>
-              <div id="tags">jayaraj</div>
+          <!-- end of clarificaition given-->
+          <div class="submit border mt-2 mb-2" style="text-align: center;">
+            <button type="submit"class="btn btn-success btn-lg ">Submit</button>
+          </div>
+          <!--end of click-->
+          <div class="data border">
+            <div class="col-md-6">
+              <div class="doc-row" >
+                <label class="row-sm-6 col-form-label" id="tags">Created by:</label>
+                <span id="tags">-</span>
+              </div>
+              <div class="doc-row">
+                <label class="row-sm-6 col-form-label" id="tags">Created date:</label>
+                <span id="tags">-</span>
+              </div>
             </div>
-            <div class="doc-row">
-              <div id="tags">Modified date:</div>
-              <div id="tags">12-11-2023</div>
+            <div class="col-md-6">
+              <div class="doc-row">
+                <label class="row-sm-6 col-form-label" id="tags">Modified by:</label>
+                <span id="tags">-</span>
+              </div>
+              <div class="doc-row">
+                <label class="row-sm-6 col-form-label" id="tags">Modified date:</label>
+                <span id="tags">-</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <script>
-      function toggleNav() {
-        var nav = document.getElementById("nav");
-        nav.classList.toggle("active");
-      }
-  </script>
+      $(function() { 
+        $('#sidebarCollapse').on('click', function() {
+          $('#sidebar, #content').toggleClass('active');
+        });
+      });
+    </script>
   </body>
 </html>

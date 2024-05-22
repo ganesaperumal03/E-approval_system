@@ -1,19 +1,19 @@
 import re
-from django.shortcuts import render, redirect, get_object_or_404
-from datetime import datetime
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import authenticate
-from django.contrib.auth import logout as auth_logout
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404  #type:ignore
+from datetime import datetime  #type:ignore
+from django.contrib.auth import login as auth_login  #type:ignore
+from django.contrib.auth import authenticate       #type:ignore
+from django.contrib.auth import logout as auth_logout   #type:ignore
+from django.shortcuts import render, redirect         #type:ignore
+from django.contrib.auth.decorators import login_required     #type:ignore
 import os
-from django.core.paginator import Paginator
-from django.conf import settings
-from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,DocRemarksUpdateForm,ClarificationUpdateForm
-from application.models import e_approval,User,doc_remarks
-from django.contrib import messages
-from django.db.models import Q
-import pandas as pd
+from django.core.paginator import Paginator    #type:ignore
+from django.conf import settings     #type:ignore
+from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,DocRemarksUpdateForm,ClarificationUpdateForm    #type:ignore
+from application.models import e_approval,User,doc_remarks     #type:ignore
+from django.contrib import messages #type:ignore
+from django.db.models import Q  #type:ignore
+import pandas as pd     
 
 
 def save_uploaded_pdfs(file_dict):
@@ -79,7 +79,7 @@ def create_form(request):
             user.Document_no = doc_no
             user.Tran_No = tran_no
             file_paths = save_uploaded_pdfs(request.FILES)
-            print("kjdhsfdhsfdhksdfhkfhjsfdhsfdhjsfdhjdsfhjadvguiv",file_paths.get('Attachment'))
+            print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
             # Set approval status based on role
             if role == 'Technician':
@@ -148,7 +148,7 @@ def signup(request):
         form = userform(request.POST)
         if form.is_valid():
             password = form.cleaned_data['Password']
-            confirm_password = form.cleaned_data['conform_Password']
+            confirm_password = form.cleaned_data['confirm_Password']
 
             if password == confirm_password:
                 encrypted_password = encrypt_password(password)
@@ -156,7 +156,7 @@ def signup(request):
                 # Save the encrypted password to your user model
                 user = form.save(commit=False)  # Don't save the form yet
                 user.Password = encrypted_password
-                user.conform_Password = encrypted_password
+                user.confirm_Password = encrypted_password
 
                 user.save()
 
@@ -203,7 +203,7 @@ def login(request):
             'email' : user.email,
             'role' : user.role,
             'Password' : user.Password,
-            'conform_Password' : user.conform_Password           }
+            'confirm_Password' : user.confirm_Password           }
             
             request.session['user_data'] = user_dict
 
@@ -554,8 +554,8 @@ def view_approval(request):
 
 
 
-from django.shortcuts import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import HttpResponse #type:ignore
+from django.core.exceptions import ObjectDoesNotExist #type:ignore
 
 def pdf_show(request):
     try:
@@ -573,8 +573,8 @@ def pdf_show(request):
     except ObjectDoesNotExist:
         return HttpResponse("PDF not found.")
 
-from django.shortcuts import HttpResponse
-from django.core.mail import send_mail
+from django.shortcuts import HttpResponse #type:ignore
+from django.core.mail import send_mail #type:ignore
 
 def send_email(request):
     subject = 'Hello from Django'
@@ -586,9 +586,9 @@ def send_email(request):
 
 
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.http import JsonResponse #type:ignore
+from django.views.decorators.csrf import csrf_exempt #type:ignore
+from django.shortcuts import render #type:ignore
 import json
 
 @csrf_exempt

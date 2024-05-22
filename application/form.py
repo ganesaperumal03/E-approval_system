@@ -1,4 +1,4 @@
-from django import forms
+from django import forms #type:ignore
 from .models import e_approval,User,auth_list,doc_remarks
 # forms.py
 class EApprovalForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class userform(forms.ModelForm):
         model = User
         fields = [
             'Name', 'user_name', 'staff_id', 'Department', 'email',
-            'role', 'Password', 'conform_Password'
+            'role', 'Password', 'confirm_Password'
  ]
 
 

@@ -180,6 +180,7 @@
     }
 </style>
 <body>
+<<<<<<< HEAD
     <div class="page-content p-5" id="content">
         <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
         <div class="vertical-nav bg-white" id="sidebar">
@@ -190,6 +191,77 @@
                 <h4 class="m-0">E-Approval</h4>
                 <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
               </div>
+=======
+    <header>
+      <div class="bars">
+        <i class="fa fa-bars" onclick="toggleNav()"></i>
+      </div>
+      <div class="nav-bar active" id="nav">
+        <a href="login.html">Home</a>
+        <a href="{% url 'create_form' %}">Create E approval</a>
+        <a href="{% url 'auth_approval' %}">Authorize E approval</a>
+        <a href="{% url 'clarification' %}">Clarification</a>
+        <a class="active" href="{% url 'view_approval' %}">View Appoval</a>
+        <a href="{% url 'approval_user_details' %}">E approval user details </a>
+      </div>
+    </header>
+    <div class="header1">
+        <h3>Headersec</h3>
+        <div class="form-group">
+            <form  method="GET"  id='view_approval'  autocomplete="off">
+
+            <div class="form-row align-items-center justify-content-between">
+
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="search" class="mr-2">Transaction No:</label>
+                        <select name="Tran_No">
+                          <option value="" hidden>select Document</option>
+                          {% for d in tran_no %}
+                          <option value="{{ d.Tran_No }}">
+                            {{ d.Tran_No }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                    <button type="submit" class="btn btn-outline-secondary ml-2"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="date" class="mr-2">Date</label>
+                    <input type="text" id="date" name="date" value="{{Tran_No.date}}" readonly class="form-control" aria-label="Date" aria-describedby="date-addon" style="width: 60%;">
+                </div>
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="status" class="mr-2">Status</label>
+                    <input type="text" id="status" name="status" value="{{Tran_No}}" readonly class="form-control" style="width: 60%;">
+                </div>
+            </div>
+            <div class="form-row align-items-center justify-content-between">
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="department" class="mr-2">Department</label>
+                    <input type="text" id="department" name="department" value={{Tran_No.Department}}  readonly class="form-control" style="width: 60%;">
+                </div>
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="Category" class="mr-2">Category</label>
+                    <input type="text" id="catagory" name="catagory" value={{Tran_No.Category}}  readonly class="form-control" style="width: 60%;">
+                </div>
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="SubCategory" class="mr-2">Sub Category</label>
+                    <input type="text" id="subcatagory" name="subcatagory"  value={{Tran_No.Sub_Category}} readonly class="form-control" style="width: 60%;">
+                </div>
+            </div>
+            <div class="form-row align-items-center justify-content-between">
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="priority" class="mr-2">Priority</label>
+                    <input type="text" id="priority" name="priority" value={{Tran_No.Priority}} readonly class="form-control" style="width: 60%;">
+                </div>
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="doctype" class="mr-2">Doc Type</label>
+                    <input type="text" id="doctype" name="doctype" value={{Tran_No}} readonly class="form-control" style="width: 60%;">
+                </div>
+                <div class="col-md-3 d-flex align-items-center justify-content-between">
+                    <label for="tranno" class="mr-2">Trans No</label>
+                    <input type="text" id="transno" name="transno" value={{Tran_No.Tran_No}} readonly class="form-control" style="width: 60%;">
+                </div>
+>>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
             </div>
           </div>
         
@@ -235,12 +307,104 @@
             </li>
           </ul>
         </div>
+<<<<<<< HEAD
         <div>
     
             <div class="header1">
                 <h3>Headersec</h3>
                 <div class="form-group">
                     <form  method="GET"  id='view_approval'  autocomplete="off">
+=======
+        <form class="form-group1">
+            <div class="form-row align-items-center justify-content-between">
+                <div class="col-md-6 d-flex align-items-center justify-content-between">
+                    <label for="subject" class="mr-2">Subject</label>
+                    <input type="text" id="subject" name="subject" class="form-control">
+                </div>
+                <div class="col-md-6 d-flex align-items-center justify-content-between">
+                    <label for="remarks" class="mr-2">Remarks</label>
+                    <input type="text" id="remarks" name="remarks" class="form-control">
+                </div>
+            </div>
+            <div class="form-row align-items-center justify-content-between">
+                <div class="col-md-6 d-flex align-items-center justify-content-between">
+                    <label for="attachedDocuments2" class="mr-2">Attached Remarks</label>
+                    <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
+                </div>
+                <div class="col-md-6 d-flex align-items-center justify-content-between">
+                    <label for="attachmentRemarks2" class="mr-2">Attachment Documents</label>
+                    <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
+                </div>
+            </div>
+        </form>
+        <form class="form-group2">
+            <div class="form-row align-items-center justify-content-between">
+                <div class="col-md-6 d-flex align-items-center justify-content-between">
+                    <label for="returnforclarification" class="mr-2">Return For Clarification</label>
+                    <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
+                </div>
+                <div class="col-md-6 d-flex align-items-center justify-content-between">
+                    <label for="returnforreason" class="mr-2">Return for Reason</label>
+                    <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
+                </div>
+            </div>
+        </form>
+        <form class="form-group3">
+            <div class="approvallist">
+                <h3>Approval list</h3>
+                <div class="navbar d-flex justify-content-between">
+                    <div class="pagination">
+                        <button><i class="fas fa-angle-double-left"></i></button>
+                        <div>1 - 4/4</div>
+                        <button><i class="fas fa-angle-double-right"></i></button>
+                    </div>
+                    <div class="sorting">
+                        <button><i class="fas fa-sort-up"></i></button>
+                        <button><i class="fas fa-sort-down"></i></button>
+                    </div>
+                    <button class="btn btn-outline-secondary equal-size-btn"><i class="fas fa-filter"></i></button>
+                    <div class="dropdown">
+                        <button><i class="fas fa-bars"></i> All</button>
+                    </div>
+                    <div class="search">
+                        <input type="text" placeholder="Search">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead">
+                            <tr>
+                                <th id="no">#</th>
+                                <th>Level</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Designation</th>
+                                <th id="mailid">Mail ID</th>
+                                <th id="authorized">Authorization Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvalTableBody">
+                            {% for value in approval_user%}
+                            <tr>
+                            <th></th>
+                            <th></th>
+
+                            <th>{{value.user.user_name}}</th>
+                            <th>{{value.user.Name}}</th>
+                            <th>{{value.user.role}}</th>
+                            <th>{{value.user.email}}</th>
+                            <th>{{value.date}}</th>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div> <!-- End of div -->
+            </div>
+        </form>
+>>>>>>> 8b6c9cf6fa51e46b62320a4520ab4c3415684aa2
         
                     <div class="form-row align-items-center justify-content-between">
         

@@ -179,17 +179,7 @@
                 <div class="document-details">
                   <div class="detail-section">
                     <label class="detail-label">Department</label>
-                    <select class="detail-value col-md-5" name="Department">
-                      <option value="" hidden selected>Select Department</option>
-                      <option value="cse">CSE</option>
-                      <option value="it">IT</option>
-                      <option value="aids">AIDS</option>
-                      <option value="civil">Civil</option>
-                      <option value="mechanical">Mechanical</option>
-                      <option value="eee">EEE</option>
-                      <option value="ece">ECE</option>
-                      <option value="csbs">CSBS</option>
-                    </select>
+                    <input class="detail-value col-md-5" name="Department" value="{{Department}}">
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Org Unit</label>
@@ -240,7 +230,7 @@
 
                     <option value="" disabled hidden selected>Select Priority</option>
       
-                    <option value="standed">Standard</option>
+                    <option value="Standard">Standard</option>
                     <option value="High">High</option>
                     <option value="Low">Low</option>
                   </select>

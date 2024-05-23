@@ -186,20 +186,27 @@
 </style>
 <body>
     <div class="page-content p-5" id="content">
-        <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+        <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>   
         <div class="vertical-nav bg-white" id="sidebar">
-          <div class="py-4 px-3 mb-4 bg-light">
-            <div class="media d-flex align-items-center">
-                <img decoding="async" src="{% static 'image/RIT_logo.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-top img-thumbnail shadow-sm">
+            <div class="py-4 px-3 mb-4 bg-light border-bottom">
+              <div class="media d-flex align-items-center">
+                <img decoding="async" src="{% static 'image/RIT_logo.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
                 <div class="media-body">
-                <h4 class="m-0">E-Approval</h4>
-                <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+                  <h4 class="m-0">E-Approval</h4>
+                  <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+                </div>
               </div>
             </div>
-          </div>
-        
-          <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
-        
+            <div class=" border-bottom mb-2" style="width: 23rem;">
+              <div class="card-body text-center">
+                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                <h5 class="card-title">{{Name}}</h5>
+                <p class="card-text">{{department}}</p>
+                <p class="card-text">{{role}}</p>
+              </div>
+            </div>
+
+          <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
           <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
               <a href="#" class="nav-link text-dark">
@@ -242,7 +249,7 @@
         </div>
         <div>
     
-            <div class="header1">
+            <div class="header1" style="width: 95%;">
                 <div class="form-group">
                     <form  method="GET"  id='view_approval'  autocomplete="off">
         
@@ -250,15 +257,15 @@
         
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="search" class="mr-2">Transaction No:</label>
-                                <select class="col-md-5" name="Tran_No">
-                                  <option value="" hidden>select Document</option>
+                                <select class=" form-control col-md-5" name="Tran_No">
+                                  <option value="" hidden>Select Document</option>
                                   {% for d in tran_no %}
                                   <option value="{{ d.Tran_No }}">
                                     {{ d.Tran_No }}
                                   </option>
                                   {% endfor %}
                                 </select>
-                            <button type="submit" class="btn btn-outline-secondary ml-2"><i class="fas fa-search"></i></button>
+                            <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
                         </div>
                     </form>
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
@@ -330,7 +337,7 @@
                     </div>
                 </form>
                 
-                <form class="form-group2">
+                <form class="form-group2 border mb-3">
                     <div class="form-row align-items-center justify-content-between">
                         <div class="col-md-6 d-flex align-items-center justify-content-between">
                             <label for="returnforclarification" class="mr-2">Return For Clarification</label>

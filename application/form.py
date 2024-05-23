@@ -9,7 +9,7 @@ class EApprovalForm(forms.ModelForm):
             'remarks_Subject', 'Priority', 'Tolerance', 'Attachment_details', 'Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
             "GM_date","vice_principal","vice_principal_date","principal","principal_date"
  ]
-        exclude=['Document_no',"Tran_No","Tolerance"]
+        exclude=['Document_no',"Tran_No"]
 
 class userform(forms.ModelForm):
     class Meta:

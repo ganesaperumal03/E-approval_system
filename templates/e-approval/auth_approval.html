@@ -290,13 +290,13 @@
                   <div class="doc-remarks-con form-group row">
                     <label class="col-sm-2 col-form-label" id="tags">Subject</label>
                     <div class="col-sm-8">
-                        <input id="tag-ans" class="form-control" value="{{ Document_no.remarks_Subject }}">
+                        <textarea id="tag-ans" class="form-control" value="{{ Document_no.remarks_Subject }}"></textarea>
                       </div>
                   </div>
                   <div class="doc-remarks-con form-group row">
                     <label class="col-sm-2 col-form-label" id="tags">Remarks</label>
                     <div class="col-sm-8">
-                        <input id="tag-ans" class="form-control" type="text" name="doc_remarks">
+                        <textarea id="tag-ans" class="form-control" type="text" name="doc_remarks"></textarea>
                     </div>
                   </div>
                   <div class="doc-remarks-con form-group row">
@@ -365,7 +365,7 @@
                     <form action="{% url 'form_approval' %}" class="col-md-12"method="POST">
                         {% csrf_token %}
                       <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
-                      <input type='text' class="form-control mt-2 col" name='approval_Remarks' placeholder="Remarks" style="height: 70px;width:85%;"></input>
+                      <textarea type='text' class="form-control mt-2 col" name='approval_Remarks' placeholder="Remarks" style="height: 70px;width:85%;"></textarea>
                       <button type="submit" id="approvement"  class="approvement btn btn-success btn-sm ml-2">Approve</button>
                     </form>
 
@@ -377,7 +377,7 @@
                     <form action="{% url 'form_approval' %}" class="col-md-12" method="POST">
                       {% csrf_token %}
                       <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
-                      <input type='text' class="form-control mt-2 col" name='approval_Reason' placeholder="Reason" style="height: 70px; width:85%;"></input>
+                      <textarea type='text' class="form-control mt-2 col" name='approval_Reason' placeholder="Reason" style="height: 70px; width:85%;"></textarea>
                       <button type="submit"id="rejection" class="rejection btn btn-danger btn-sm ml-2">Return/Reject</button>
                     </form>
                   </div>

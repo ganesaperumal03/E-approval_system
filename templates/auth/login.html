@@ -7,19 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <title>Ramco Institute of Technology</title>
-<body>
+    <style>
+      .gradient-custom {
+      background: #eef3f3;
+      background: -webkit-linear-gradient(to right, rgb(244, 245, 245), rgb(25, 123, 148));
+      background: linear-gradient(to right, rgb(225, 228, 230), rgb(227, 230, 231))
+    }
+    </style>
+<body class="vh-100 gradient-custom">
     <div class="rit"></div>
-    <div class="container">           
+    <div class="wrapper fadeInDown">           
 
 
-<div class="container container-login" style="margin-top: 100px;margin-top: 100px; font-size:larger;">
+<div class="card-body " style="margin-top: 100px;margin-top: 100px; font-size:larger;" >
     <div class="row justify-content-center">
-      <div class="col-md-6">
-        <h2>Login to RIT Dashboard</h2>
+      <div class="col-md-3 bg-dark text-white mt-5" style="background: rgba(241, 238, 238, 0.2); border-radius: 1rem;">
+        <h2 class="mt-2">Login to RIT Dashboard</h2>
         <form method="POST" action="{% url 'login' %}" autocomplete="off">
           {% csrf_token %}
           {{ error_message }}

@@ -186,6 +186,17 @@
                     <input type="text" name='Org_Unit'class="detail-value col-md-5" value='RIT' required/>
                   </div>
                   <div class="detail-section">
+                    <label class="detail-label">Priority</label>
+                    <select class="detail-value col-md-5" name="Priority">
+  
+                      <option value="" disabled hidden selected>Select Priority</option>
+        
+                      <option value="Standard">Standard</option>
+                      <option value="High">High</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  </div>
+                  <div class="detail-section">
                     <label class="detail-label">Category</label>
                     <select class="detail-value col-md-5" name="Category">
 
@@ -208,10 +219,6 @@
                     </select>
                   </div>
                   <div class="detail-section">
-                    <label class="detail-label">Document No</label>
-                    <input type="text" name='Document_no'class="detail-value col-md-5" readonly/>
-                  </div>
-                  <div class="detail-section">
                     <label class="detail-label">Date</label>
                     <input type="date" name='date'class="detail-value col-md-5" required/>
                   </div>
@@ -221,19 +228,12 @@
                 <div class="heading">
                 <h3>Document remarks</h3></div>
                 <div class="detail-section">
-                  <label class="detail-label">Subject</label>
-                  <input type="text" name="remarks_Subject" class="detail-value col-md-5" required/>
+                  <label class="detail-label col-md-2">Subject</label>
+                  <textarea type="text" name="remarks_Subject" class="detail-value col-md-5" required></textarea>
                 </div>
                 <div class="detail-section">
-                  <label class="detail-label">Priority</label>
-                  <select class="detail-value col-md-5" name="Priority">
-
-                    <option value="" disabled hidden selected>Select Priority</option>
-      
-                    <option value="Standard">Standard</option>
-                    <option value="High">High</option>
-                    <option value="Low">Low</option>
-                  </select>
+                  <label class="detail-label  col-md-2">Remarks</label>
+                  <textarea type="text" name="remarks_Subject1" class="detail-value col-md-5" required></textarea>
                 </div>
               </div>
             </div>
@@ -241,10 +241,6 @@
               <div class="financial-details col-md-6 .ms-md-auto border">
                 <div class="heading">
                 <h3>Financial Details</h3></div>
-                <div class="detail-section">
-                  <label class="detail-label">Tran No</label>
-                  <input type="text" name='Tran_No' class="detail-value col-md-5" readonly/>
-                </div>
                 <div class="detail-section">
                   <span class="detail-label">Fin.Commitment</span>
                   <select class="detail-value col-md-5" name="fin_commit">
@@ -274,7 +270,7 @@
                 </div>
                 <div class="detail-section">
                   <label class="detail-label">Attachment-details</label>
-                  <input type="text" name='Attachment_details'class="detail-value col-md-5" required/>
+                  <textarea type="text" name='Attachment_details'class="detail-value col-md-5" required></textarea>
                 </div>
               </div>
             </div>

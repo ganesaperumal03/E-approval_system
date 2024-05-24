@@ -6,7 +6,7 @@ class EApprovalForm(forms.ModelForm):
         model = e_approval
         fields = [
             'Document_no', 'Department', 'Org_Unit', 'Category', 'Sub_Category',"staff_id",
-            'remarks_Subject', 'Priority', 'Tolerance', 'Attachment_details', 'Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
+            'remarks_Subject', 'Priority', 'Tolerance','Attachment_details', 'Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
             "GM_date","vice_principal","vice_principal_date","principal","principal_date"
  ]
         exclude=['Document_no',"Tran_No"]

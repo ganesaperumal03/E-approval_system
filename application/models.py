@@ -17,6 +17,7 @@ class e_approval(models.Model):
     In_words = models.CharField(max_length=200,blank=True,null=True)
     Attachment = models.FileField(upload_to='')
     date = models.DateField()
+
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)
     HOD = models.CharField(max_length=100,blank=True,null=True)

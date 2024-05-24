@@ -83,6 +83,7 @@ def create_form(request):
             user.staff_id = staff_id
             user.Document_no = doc_no
             user.Tran_No = tran_no
+
             file_paths = save_uploaded_pdfs(request.FILES)
             print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
@@ -295,15 +296,19 @@ def auth_approval(request):
             if j.HOD!='Pending':
                 approval_user.append({"date":j.HOD_date,'Approval':'HOD',
                 'remarks':j.HOD})
+     
             if j.GM!='Pending':
                 approval_user.append({"date":j.GM_date,'Approval':'GM',
                 'remarks':j.GM})
+    
             if j.vice_principal!='Pending':
                 approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
                 'remarks':j.vice_principal})
+
             if j.principal!='Pending':
                 approval_user.append({"date":j.principal_date,'Approval':'principal',
                 'remarks':j.principal})
+
 
         document_data = e_approval.objects.get(Document_no=Document_no)
         return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department})
@@ -338,6 +343,7 @@ def auth_approval(request):
                     staff = User.objects.filter(staff_id=approval.staff_id).first()
                     approval.staff_name = staff.Name
                     doc_data.append(approval)
+
 
 
     elif user_data['role'] == 'vice_principal':
@@ -385,6 +391,7 @@ def clarification(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
+
 
     document_data_value = request.GET.get('document_data_value')
 

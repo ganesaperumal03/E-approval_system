@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
@@ -153,20 +154,41 @@
                       E approval user details
                   </a>
           </li>
+          <li class="nav-item">
+            <a href="{% url 'login' %}" class="nav-link text-dark">
+              <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
+              Log Out
+            </a>
+          </li>
         </ul>
       </div>
       <div class="container" style="max-width:100%; margin: none;">
         <div class="document col " style="line-height: 2;">
           <div class="document-clarification col mb-2 border" style="max-width:100%;">
+
+
             <div class="document-head">
               <label class="doc-1">Document Clarificaton</label>
             </div>
+            <div class="doc-conform-group row mt-2 mb-2">
+              <label class="col-sm-4 col-form-label" id="tags">Attached document</label>
+              {%if document_data.Tran_No %}
+              <a href="{% url 'pdf_show' document_data.Tran_No  %}" target="_blank">
+                                <button class=" btn btn-danger ml-2">
+                  <i class="bi bi-file-pdf"></i> FILE
+                </button>                  
+              </a>
+              {%endif %}
+            </div>
+
+
             <div class="document-body row">
               <div class="doc col-md-4">
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Document no</label>
                   <div class="col-sm-5 mb-2">
-                    <form id="clarificationForm" action="{% url 'clarification' %}" method="get">
+                    <form  action="{% url 'clarification' %}" method="GET">
+
                       <select class="form-control" id="document_data_select" name="document_data_value" onchange="handleSelectChange()" aria-label="Default select example">
                         {% for key, value in document_data_value.items %}
                         <option value="{{ key }}|{{ value }}">{{ value }}</option>
@@ -176,46 +198,41 @@
                     </form>
                   </div>
                 </div>
-                <form  method="POST" action="{% url 'updateapproval' %}" autocomplete="off">
+                <form  method="POST" action="{% url 'updateapproval' %}" autocomplete="off" enctype="multipart/form-data">
                   {% csrf_token %}
-                <div class="doc-con form-group row mt-2">
+                  <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Date-</label>
-                  <input id="tag-ans" class="mt-2"value="{{document_data.date}}">
+                  <input id="tag-ans" name='date' class="mt-2"value="{{document_data.date}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Priority</label>
-                  <input id="tag-ans" class="mt-2" name="Priority" value="{{document_data.Priority}}">
+                  <input id="tag-ans"name='date'  class="mt-2" name="Priority" value="{{document_data.Priority}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Status</label>
-                  <input id="tag-ans" class="mt-2" name="doc_subject" value="{{document_data.date}}">
+                  <input id="tag-ans" name='date' class="mt-2" name="doc_subject" value="{{document_data.date}}">
                 </div>
-                <div class="doc-conform-group row mt-2 mb-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Attached document</label>
-                  <a href="">
-
-                    <button class=" btn btn-danger ml-2">
-                      <i class="bi bi-file-pdf"></i>
-                    </button>                  
-                  </a>
+                <div class="doc-con form-group row mt-2">
+                  <label class="col-sm-4 col-form-label" id="tags">Upadate the document</label>
+                  <input id="tag-ans"  name='update_document' type='file' class="mt-2" name="update_document" >
                 </div>
               </div>
               <div class="doc col-md-4">
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Department</label>
-                  <input id="tag-ans" class="mt-2"value="{{document_data.Department}}">
+                  <input id="tag-ans"name='Department'  class="mt-2"value="{{document_data.Department}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Category</label>
-                  <input id="tag-ans" class="mt-2" name="Category" value="{{document_data.Category}}">
+                  <input id="tag-ans" name='Category'  class="mt-2" name="Category" value="{{document_data.Category}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Sub category</label>
-                  <input id="tag-ans" class="mt-2" name="Sub_Category" value="{{document_data.Sub_Category}}">
+                  <input id="tag-ans"  name='Sub_Category' class="mt-2" name="Sub_Category" value="{{document_data.Sub_Category}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Trans no</label>
-                  <input id="tag-ans" class="mt-2"value="{{document_data.Tran_No}}">
+                  <span id="tag-ans"  name='Tran_No' class="mt-2">{{document_data.Tran_No}}</span>
                 </div>
               </div>
               <div class="doc col-md-4">
@@ -223,19 +240,16 @@
                 <input type="text" hidden name="remarks_document_data"  value="{{remarks_document_data.Document_no}}">
 
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Currency</label>
-                  <span id="tag-ans">INR</span>
-                </div>
-                <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Fin commitment</label>
                   <input id="tag-ans" class="mt-2" name="fin_commit" value="{{document_data.fin_commit}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Total Value-</label>
+                  <label class="col-sm-4 col-form-label" id="tags"> Amount (INR) </label>
                   <input id="tag-ans" class="mt-2" name="Total_Value" value="{{document_data.Total_Value}}">
                 </div>
               </div>
             </div>
+          
           </div>
           <!--end of document clarificaiton-->
           <div class="second-sec row-12 border mb-2">
@@ -247,13 +261,13 @@
                 <div class="remarks row">
                   <label id="tags" class="col-sm-2 ml-2 col-form-label">Remarks</label>
                   <div class="col-sm-9">
-                    <textarea class="form-control mt-2 col-10" placeholder="Remarks" style="height: 70px;"></textarea>
+                    <textarea class="form-control mt-2 col-10" placeholder="Remarks" style="height: 70px; resize:none;"></textarea>
                   </div>
                 </div>
                 <div class="subject row mt-2">
                   <label id="tags" class="col-sm-2 ml-2 col-form-label">Subject</label>
                   <div class="col-sm-9  mb-2">
-                    <textarea class="form-control mt-2 col-10" placeholder="Subject"></textarea>
+                    <textarea class="form-control mt-2 col-10" placeholder="Subject" style="resize: none;"></textarea>
                   </div>
                 </div>
               </div>
@@ -288,7 +302,7 @@
               <div class="comments-body">
                 <label class="reroutes-text ml-2">Reroute comments</label>
                 <div class="body-response">
-                  <textarea class="form-control ml-2 mt-2 col-10" placeholder="Reroute comments" style="height: 70px;"value="{{remarks_document_data.doc_remarks}}"></textarea>
+                  <textarea class="form-control ml-2 mt-2 col-10" placeholder="Reroute comments" style="height: 70px;resize: none;"value="{{remarks_document_data.doc_remarks}}"></textarea>
                 </div>
               </div>
             </div>
@@ -299,12 +313,12 @@
             <div class="click-body row">
               <div class="click col-md-4"style="text-align: center;">
                 <label class="mx-4"for="myCheckbox" id="tags">click</label>
-                <input type="checkbox" id="myCheckbox" />
+                <input type="checkbox" id="myCheckbox" required />
               </div>
               <div class="reroute-tag col-md-4">
                 <label id="tags" class="col-sm-4 col-form-label">Reroute Clarification</label>
                 <div>
-                  <textarea class="form-control mt-2 col-10" name='doc_clarifictaions_reason' placeholder="Reroute Clarification" style="height: 70px;"></textarea>
+                  <textarea class="form-control mt-2 col-10" name='doc_clarifictaions_reason' placeholder="Reroute Clarification" style="height: 70px; resize: none;" required></textarea>
                 </div>
               </div>
             </div>
@@ -325,7 +339,7 @@
                 <span id="tags">-</span>
               </div>
             </div>
-            <div class="col-md-6">
+            {% comment %} <div class="col-md-6">
               <div class="doc-row">
                 <label class="row-sm-6 col-form-label" id="tags">Modified by:</label>
                 <span id="tags">-</span>
@@ -334,7 +348,7 @@
                 <label class="row-sm-6 col-form-label" id="tags">Modified date:</label>
                 <span id="tags">-</span>
               </div>
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
       </div>

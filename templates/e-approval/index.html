@@ -14,6 +14,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
       />
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -167,10 +168,16 @@
                       E approval user details
                   </a>
           </li>
+          <li class="nav-item">
+            <a href="{% url 'login' %}" class="nav-link text-dark">
+              <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
+              Log Out
+            </a>
+          </li>
         </ul>
       </div>
       <div>
-        <form  method="POST"  id='create_form'  autocomplete="off">
+        <form  method="POST"  id='create_form'  autocomplete="off" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="container-fluid">
             <div class="container1 border">
@@ -184,17 +191,6 @@
                   <div class="detail-section">
                     <label class="detail-label">Org Unit</label>
                     <input type="text" name='Org_Unit'class="detail-value col-md-5" value='RIT' required/>
-                  </div>
-                  <div class="detail-section">
-                    <label class="detail-label">Priority</label>
-                    <select class="detail-value col-md-5" name="Priority">
-  
-                      <option value="" disabled hidden selected>Select Priority</option>
-        
-                      <option value="Standard">Standard</option>
-                      <option value="High">High</option>
-                      <option value="Low">Low</option>
-                    </select>
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Category</label>
@@ -219,6 +215,17 @@
                     </select>
                   </div>
                   <div class="detail-section">
+                    <label class="detail-label">Priority</label>
+                    <select class="detail-value col-md-5" name="Priority">
+  
+                      <option value="" disabled hidden selected>Select Priority</option>
+        
+                      <option value="Standard">Standard</option>
+                      <option value="High">High</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  </div>
+                  <div class="detail-section">
                     <label class="detail-label">Date</label>
                     <input type="date" name='date'class="detail-value col-md-5" required/>
                   </div>
@@ -228,13 +235,14 @@
                 <div class="heading">
                 <h3>Document remarks</h3></div>
                 <div class="detail-section">
-                  <label class="detail-label col-md-2">Subject</label>
-                  <textarea type="text" name="remarks_Subject" class="detail-value col-md-5" required></textarea>
+                  <label class="detail-label col-md-3">Subject</label>
+                  <textarea type="text" name="remarks_Subject" class="detail-value col-md-7" required style="resize: none;"></textarea>
                 </div>
                 <div class="detail-section">
-                  <label class="detail-label  col-md-2">Remarks</label>
-                  <textarea type="text" name="remarks_Subject1" class="detail-value col-md-5" required></textarea>
+                  <label class="detail-label col-md-3">Remarks</label>
+                  <textarea type="text" name="remarks_Subject1" class="detail-value col-md-7" required style="resize: none;"></textarea>
                 </div>
+
               </div>
             </div>
             <div class="container2 border">
@@ -256,7 +264,7 @@
                   <input type="text" name='Tolerance'class="detail-value col-md-5" required/>
                 </div>
                 <div class="detail-section">
-                  <label class="detail-label">Total Value</label>
+                  <label class="detail-label">Amount (INR) </label>
                   <input type="text" name="Total_Value" class="detail-value col-md-5" required/>
                 </div>
               </div>
@@ -265,12 +273,12 @@
                 <div class="heading">
                 <h3>Attachment Details</h3></div>
                 <div class="detail-section">
-                  <label class="detail-label">Attachment</label>
+                  <label class="detail-label col-md-3">Attachment</label>
                   <input type="file" name='Attachment'class="detail-value col-md-5" style="border: none;" />
                 </div>
                 <div class="detail-section">
-                  <label class="detail-label">Attachment-details</label>
-                  <textarea type="text" name='Attachment_details'class="detail-value col-md-5" required></textarea>
+                  <label class="detail-label col-md-3">Attachment-details</label>
+                  <textarea type="text" name='Attachment_details'class="detail-value col-md-7" required style="resize: none;"></textarea>
                 </div>
               </div>
             </div>
@@ -290,7 +298,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
                   <div class="modal-body">
-                    <p>Created Successfully!!</p>
+                    <p>Some Details are Missing ??</p>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="background-color: red; color: #fff;">Close</button>

@@ -245,6 +245,12 @@
                         E approval user details
                     </a>
             </li>
+            <li class="nav-item">
+                <a href="{% url 'login' %}" class="nav-link text-dark">
+                  <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
+                  Log Out
+                </a>
+            </li>
           </ul>
         </div>
         <div>
@@ -257,7 +263,7 @@
         
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="search" class="mr-2">Transaction No:</label>
-                                <select class=" form-control col-md-5" name="Tran_No">
+                                <select class=" form-control col-md-5" name="Tran_No" id='Tran_No' >
                                   <option value="" hidden>Select Document</option>
                                   {% for d in tran_no %}
                                   <option value="{{ d.Tran_No }}">
@@ -297,51 +303,57 @@
                             <span type="text" id="priority" name="priority"  class="col-md-6" >{{Tran_No.Priority}}</span>
                         </div>
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
+                            <label for="doctype" class="mr-2">Doc Type</label>
+                            <input type="text" id="doctype" name="doctype" value={{Tran_No}} readonly class="form-control" style="width: 60%;">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="tranno" class="mr-2">Trans No</label>
                             <input type="text" id="transno" name="transno" value={{Tran_No.Tran_No}} readonly class="form-control" style="width: 60%;">
                         </div>
                     </div>
                 </div>
                 <form class="form-group1">
-                    <div class="form-row align-items-center justify-content-between">
-                        <div class="col-md-5 d-flex align-items-center justify-content-between">
-                            <label for="subject" class="col-md-3">Subject</label>
-                            <textarea type="text" id="subject" name="subject" class="form-control"></textarea>
-                        </div>
-                        <div class="col-md-5 d-flex align-items-center justify-content-between">
-                            <label for="remarks" class="col-md-3">Remarks</label>
-                            <textarea type="text" id="remarks" name="remarks" class="form-control"></textarea>
-                        </div>
+                    <div class="form-row align-items-center justify-content-between mb-3">
+                      <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="subject" class="col-md-3">Subject</label>
+                        <textarea id="subject" name="subject" class="form-control" style="resize: none;"></textarea>
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="remarks" class="col-md-3">Remarks</label>
+                        <textarea id="remarks" name="remarks" class="form-control" style="resize: none;"></textarea>
+                      </div>
                     </div>
-                    <div class="form-row align-items-center justify-content-between">
-                        <div class="col-md-5 d-flex align-items-center justify-content-between">
-                            <label for="attachedDocuments2" class=" col-md-3">Attached Remarks</label>
-                            <textarea type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control"></textarea>
+                    <div class="form-row align-items-center justify-content-between mb-3">
+                      <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="attachedDocuments2" class="col-md-3">Attached Remarks</label>
+                        <textarea id="attachedDocuments2" name="attachedDocuments2" class="form-control" style="resize: none;"></textarea>
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-between">
+                        <label for="attachmentRemarks2" class="col-md-3">Attachment Documents</label>
+                        <div class="col-sm-8">
+                          {% if Tran_No %}
+                          <a href="{% url 'pdf_show' Tran_No %}" target="_blank">
+                            <button type="button" class="btn btn-danger ml-2">
+                              <i class="bi bi-file-pdf"></i>
+                            </button>
+                          </a>
+                          {% endif %}
                         </div>
-                        <div class="col-md-5 d-flex align-items-center justify-content-between">
-                            <label for="attachmentRemarks2" class="col-md-4">Attachment Documents</label>
-                            <div class="col-sm-8">
-                                <a href="">
-          
-                                  <button class=" btn btn-danger ml-2">
-                                    <i class="bi bi-file-pdf"></i>
-                                  </button>                  
-                                </a>
-          
-                            </div>
-                        </div>
+                      </div>
                     </div>
                 </form>
-                
+                  
+
+                    
                 <form class="form-group2 border mb-3">
                     <div class="form-row align-items-center justify-content-between">
-                        <div class="col-md-5 d-flex align-items-center justify-content-between">
-                            <label for="returnforclarification" class="col-md-3">Return For Clarification</label>
-                            <textarea type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control"></textarea>
+                        <div class="col-md-6 d-flex align-items-center justify-content-between">
+                            <label for="returnforclarification" class="mr-2">Return For Clarification</label>
+                            <input type="text" id="attachedDocuments2" name="attachedDocuments2" class="form-control">
                         </div>
-                        <div class="col-md-5 d-flex align-items-center justify-content-between">
-                            <label for="returnforreason" class="col-md-3">Return for Reason</label>
-                            <textarea type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control"></textarea>
+                        <div class="col-md-6 d-flex align-items-center justify-content-between">
+                            <label for="returnforreason" class="mr-2">Return for Reason</label>
+                            <input type="text" id="attachmentRemarks2" name="attachmentRemarks2" class="form-control">
                         </div>
                     </div>
                 </form>
@@ -397,6 +409,81 @@
             $('#sidebar, #content').toggleClass('active');
           });
         });
+
+
+            document.getElementById('Tran_No').addEventListener('change', function() {
+                var selectedValue = this.value;
+                sendData({ Tran_No: selectedValue });
+            })
+          
+            function sendData(data) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'view_approval', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+        
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        document.body.innerHTML = xhr.responseText;
+                    } else {
+                        console.log('Failed to send data');
+                    }
+                };
+        
+                xhr.send(JSON.stringify(data));
+            }
+        
+            function getCookie(name) {
+                var cookieValue = null;
+                var cookies = document.cookie ? document.cookie.split(';') : [];
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+                return cookieValue;
+            }
     </script>
 </body>
 </html>
+{% comment %} 
+document.getElementById('Document_no').addEventListener('change', function() {
+    var selectedDepartment = this.value;
+    sendData(selectedDepartment);
+});
+
+function sendData(selectedDepartment) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/auth_approval_list/', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken')); // Adding CSRF token for Django
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Assuming server responds with the new HTML content
+            document.body.innerHTML = xhr.responseText;
+        } else {
+            console.log('Failed to send data');
+        }
+    };
+
+    xhr.send(JSON.stringify({ department: selectedDepartment }));
+}
+
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+} {% endcomment %}

@@ -83,7 +83,6 @@ def create_form(request):
             user.staff_id = staff_id
             user.Document_no = doc_no
             user.Tran_No = tran_no
-
             file_paths = save_uploaded_pdfs(request.FILES)
             print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
@@ -245,9 +244,15 @@ def login(request):
 #
 # #        return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
 # #    return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
-def auth_approval_list():
-    pass
+
+
+
+from num2words import num2words
+
 def auth_approval(request):
+
+# Convert a number to words
+
     user_data=request.session.get('user_data', {})
     staff_role=user_data['role']
     department=user_data['Department']
@@ -296,22 +301,21 @@ def auth_approval(request):
             if j.HOD!='Pending':
                 approval_user.append({"date":j.HOD_date,'Approval':'HOD',
                 'remarks':j.HOD})
-     
             if j.GM!='Pending':
                 approval_user.append({"date":j.GM_date,'Approval':'GM',
                 'remarks':j.GM})
-    
             if j.vice_principal!='Pending':
                 approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
                 'remarks':j.vice_principal})
-
             if j.principal!='Pending':
                 approval_user.append({"date":j.principal_date,'Approval':'principal',
                 'remarks':j.principal})
 
-
         document_data = e_approval.objects.get(Document_no=Document_no)
-        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department})
+        number = document_data.Total_Value
+        number_in_words = num2words(number)
+        print(number_in_words)
+        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words})
 
 
     user_data=request.session.get('user_data', {})
@@ -343,7 +347,6 @@ def auth_approval(request):
                     staff = User.objects.filter(staff_id=approval.staff_id).first()
                     approval.staff_name = staff.Name
                     doc_data.append(approval)
-
 
 
     elif user_data['role'] == 'vice_principal':
@@ -380,8 +383,6 @@ def auth_approval(request):
         if form.is_valid():
             user = form.save(commit=False)
             role = staff.role
-
-
     return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department})
 
 doc_no = None # Declare the global variable outside the function
@@ -391,7 +392,6 @@ def clarification(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
-
 
     document_data_value = request.GET.get('document_data_value')
 
@@ -427,52 +427,50 @@ def approval_user_details(request):
 
 
 def updateapproval(request):
-    user_data=request.session.get('user_data', {})
-    staff_role=user_data['role']
-    department=user_data['Department']
-    name=user_data["name"]
-    print("ghkuvhgujkhnjk-1")
+    user_data = request.session.get('user_data', {})
+    staff_role = user_data.get('role')
+    department = user_data.get('Department')
+    name = user_data.get("name")
 
     if request.method == 'POST':
-
         Priority = request.POST.get('Priority')
         Document_no = request.POST.get('Document_no')
         remarks_Document_no = request.POST.get('remarks_document_data')
-        print(Document_no,remarks_Document_no)
-
         Category = request.POST.get('Category')
         Sub_Category = request.POST.get('Sub_Category')
         fin_commit = request.POST.get('fin_commit')
         Total_Value = request.POST.get('Total_Value')
         doc_clarifictaions_reason = request.POST.get('doc_clarifictaions_reason')
-        print(Category,Sub_Category,fin_commit,Total_Value,doc_clarifictaions_reason)
 
-        approval_data = get_object_or_404(e_approval,Document_no=Document_no)
-        doc_data = get_object_or_404(doc_remarks,Document_no=remarks_Document_no)
+        # Save uploaded files
+        file_paths = save_uploaded_pdfs(request.FILES)
+        print(".......................................................",file_paths.get('update_document'))
 
-
-        clarificationform = ClarificationUpdateForm(request.GET,instance=approval_data)
-        print(clarificationform)
-        print('yesgvhbhjb')
+        # Update approval data
+        approval_data = get_object_or_404(e_approval, Document_no=Document_no)
+        if 'update_document' in file_paths:
+            path=str(approval_data.Attachment)
+            if approval_data.Attachment and os.path.isfile(path):
+                os.remove(path)
+            approval_data.Attachment = file_paths['update_document']
+            
         approval_data.Priority = Priority
         approval_data.Category = Category
         approval_data.Sub_Category = Sub_Category
         approval_data.fin_commit = fin_commit
         approval_data.Total_Value = Total_Value
+  
         approval_data.save()
 
+        # Update document remarks
+        doc_data = get_object_or_404(doc_remarks, Document_no=remarks_Document_no)
         doc_data.doc_clarifictaions_reason = doc_clarifictaions_reason
         doc_data.doc_clarification_status = 'verified'
         doc_data.save()
 
-        # if docremarksform.is_valid():
-        #     doc_data.doc_clarifictaions_reason = doc_clarifictaions_reason
-        #     doc_data.doc_clarification_status = doc_clarification_status
-        #     DocRemarksUpdateForm.save()
-
         return redirect('clarification')
-    return render(request, "e-approval/clarification.html",{"Name":name,"role":staff_role,"department":department})
 
+    return render(request, "e-approval/clarification.html", {"Name": name, "role": staff_role, "department": department})
 
 
 
@@ -536,7 +534,7 @@ def form_approval(request):
 
 
 def view_approval(request):
-    Tran_No = request.GET.get('Tran_No')
+    Tran_No = request.POST.get('selectedValue')
     user_data=request.session.get('user_data', {})
     role=user_data['role']
     Department=user_data['Department']
@@ -579,19 +577,19 @@ def view_approval(request):
 from django.shortcuts import HttpResponse #type:ignore
 from django.core.exceptions import ObjectDoesNotExist #type:ignore
 
-def pdf_show(request, Document_no):
-    user_data=request.session.get('user_data', {})
-    role=user_data['role']
-    Department=user_data['Department']
-    name=user_data["name"]
-    # Retrieve the PDF object from the database
-    if 0!=0:
-        pdf = get_object_or_404(e_approval, Document_no=Document_no)
+import logging
 
-        # Get the file path from the attachment
-        pdf_path = pdf.Attachment.path
+logger = logging.getLogger(__name__)
 
-        # Check if the file exists at the specified path
+def pdf_show(request,Tran_No):
+    if Tran_No:
+        pdf = get_object_or_404(e_approval,Tran_No=Tran_No)
+        
+        pdf_paths = pdf.Attachment
+        pdf_path=str(pdf_paths)
+        print(pdf_path,'--------------------------------------')
+
+    if pdf_path:
         if os.path.exists(pdf_path):
             with open(pdf_path, 'rb') as pdf_file:
                 response = HttpResponse(pdf_file.read(), content_type='application/pdf')
@@ -599,7 +597,7 @@ def pdf_show(request, Document_no):
                 return response
         else:
             return HttpResponse("PDF not found.")
-    return render(request, "e-approval/view_approval.html",{"Name":name,"role":role,"department":Department})
+    return render(request, "e-approval/view_approval.html")
 
 
 from django.shortcuts import HttpResponse #type:ignore

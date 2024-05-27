@@ -93,12 +93,6 @@ def create_form(request):
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
-            elif role == 'lab_Incharge':
-                user.Technician = None
-                user.HOD = None
-                user.GM = 'Pending'
-                user.vice_principal = 'Pending'
-                user.principal = 'Pending'
             elif role == 'HOD':
                 user.Technician = None
                 user.HOD = None
@@ -250,9 +244,6 @@ def login(request):
 #
 # #        return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
 # #    return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
-
-
-
 from num2words import num2words
 
 def auth_approval(request):
@@ -433,50 +424,51 @@ def approval_user_details(request):
 
 
 def updateapproval(request):
-    user_data = request.session.get('user_data', {})
-    staff_role = user_data.get('role')
-    department = user_data.get('Department')
-    name = user_data.get("name")
+    user_data=request.session.get('user_data', {})
+    staff_role=user_data['role']
+    department=user_data['Department']
+    name=user_data["name"]
+    print("ghkuvhgujkhnjk-1")
 
     if request.method == 'POST':
+
         Priority = request.POST.get('Priority')
         Document_no = request.POST.get('Document_no')
         remarks_Document_no = request.POST.get('remarks_document_data')
+        print(Document_no,remarks_Document_no)
+
         Category = request.POST.get('Category')
         Sub_Category = request.POST.get('Sub_Category')
         fin_commit = request.POST.get('fin_commit')
         Total_Value = request.POST.get('Total_Value')
         doc_clarifictaions_reason = request.POST.get('doc_clarifictaions_reason')
-
-        # Save uploaded files
         file_paths = save_uploaded_pdfs(request.FILES)
-        print(".......................................................",file_paths.get('update_document'))
-
-        # Update approval data
-        approval_data = get_object_or_404(e_approval, Document_no=Document_no)
-        if 'update_document' in file_paths:
-            path=str(approval_data.Attachment)
-            if approval_data.Attachment and os.path.isfile(path):
-                os.remove(path)
-            approval_data.Attachment = file_paths['update_document']
-            
+        print(".......................................................",file_paths.get('Attachment'))
+        approval_data = get_object_or_404(e_approval,Document_no=Document_no)
+        doc_data = get_object_or_404(doc_remarks,Document_no=remarks_Document_no)
+        print('yesgvhbhjb')
         approval_data.Priority = Priority
         approval_data.Category = Category
         approval_data.Sub_Category = Sub_Category
         approval_data.fin_commit = fin_commit
         approval_data.Total_Value = Total_Value
-  
+        approval_data.Attachment = file_paths.get('Attachment')
+        print(file_paths.get('Attachment'))
+
         approval_data.save()
 
-        # Update document remarks
-        doc_data = get_object_or_404(doc_remarks, Document_no=remarks_Document_no)
         doc_data.doc_clarifictaions_reason = doc_clarifictaions_reason
         doc_data.doc_clarification_status = 'verified'
         doc_data.save()
 
-        return redirect('clarification')
+        # if docremarksform.is_valid():
+        #     doc_data.doc_clarifictaions_reason = doc_clarifictaions_reason
+        #     doc_data.doc_clarification_status = doc_clarification_status
+        #     DocRemarksUpdateForm.save()
 
-    return render(request, "e-approval/clarification.html", {"Name": name, "role": staff_role, "department": department})
+        return redirect('clarification')
+    return render(request, "e-approval/clarification.html",{"Name":name,"role":staff_role,"department":department})
+
 
 
 
@@ -579,6 +571,7 @@ def view_approval(request):
     return render(request, "e-approval/view_approval.html",{"tran_no":tran_no,"Name":name,"role":role,"department":Department})
 
 
+
 from django.shortcuts import HttpResponse #type:ignore
 from django.core.exceptions import ObjectDoesNotExist #type:ignore
 
@@ -602,7 +595,6 @@ def pdf_show(request,Tran_No):
                 return response
         else:
             return HttpResponse("PDF not found.")
-    return render(request, "e-approval/view_approval.html")
 
 
 from django.shortcuts import HttpResponse #type:ignore
@@ -643,3 +635,92 @@ def process_department(request):
 
 def pdf(request):
     return render(request, "e-approval/pdf.html")
+
+
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+from PIL import Image
+from io import BytesIO  # Add this import statement
+import os
+
+def generate_pdf(request):
+    # Create a file-like buffer to receive PDF data.
+    buffer = BytesIO()
+    Document_no = e_approval.objects.get(Document_no=Document_no)
+
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer, pagesize=A4)
+
+    # Draw the content on the PDF
+    width, height = A4
+
+    # Title
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(175, height - 50, "Ramco Institute of Technology")
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(245, height - 80, "E-approval")
+    p.drawString(50, height - 330, "Approval List")
+
+    # Labels
+    p.setFont("Times-Bold", 13)
+    
+    p.drawString(70, height - 120, "Department :")
+    p.drawString(150, height - 120, Document_no.Department)
+    p.line(140, height - 125, 550, height - 125)
+    p.drawString(70, height - 150, "Trans NO ")
+    p.rect(140,height - 155, 150, 20)
+    p.drawString(70, height - 180, "Category ")
+    p.drawString(140, height - 180, ":")
+    p.line(140, height - 185, 300, height - 185)
+    p.drawString(70, height - 210, "Subject ")
+    p.drawString(140, height - 210, ":")
+    p.line(140, height - 215, 300, height - 215)
+    p.drawString(70, height - 240, "Remarks ")
+    p.drawString(140, height - 240, ":")
+    p.line(140, height - 245, 300, height - 245)
+    p.drawString(70, height - 300, "Amount (INR) ")
+    p.drawString(155, height - 300, ":")
+    p.line(160, height - 305, 300, height - 305)
+
+    p.drawString(320, height - 150, "Doc NO ")
+    p.rect(400,height - 155, 150, 20)
+    p.drawString(320, height - 180, "Sub-category ")
+    p.drawString(400, height - 180, ":")
+    p.line(400, height - 185, 550, height - 185)
+
+    # Approval List Table
+    p.setFont("Courier-Bold", 14)
+    p.drawString(60, height - 360, "Name")
+    p.drawString(210, height - 360, "Role")
+    p.drawString(360, height - 360, "Date")
+
+    # Draw table lines
+    p.line(50, height - 340, 550, height - 340)
+    p.line(50, height - 370, 550, height - 370)
+    p.line(50, height - 400, 550, height - 400)
+    p.line(50, height - 430, 550, height - 430)
+    p.line(50, height - 460, 550, height - 460)
+    p.line(50, height - 490, 550, height - 490)
+
+    p.line(50, height - 340, 50, height - 490)
+    p.line(200, height - 340, 200, height - 490)
+    p.line(350, height - 340, 350, height - 490)
+    p.line(550, height - 340, 550, height - 490)
+
+    # Footer
+    p.setFont("Helvetica-Oblique", 10)
+    p.drawString(50, 50, "Created by E-approval System")
+
+    # Close the PDF object cleanly.
+    p.showPage()
+    p.save()
+
+    # Get the value of the BytesIO buffer and write it to the response.
+    pdf = buffer.getvalue()
+    buffer.close()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="e_approval.pdf"'
+    response.write(pdf)
+    return response

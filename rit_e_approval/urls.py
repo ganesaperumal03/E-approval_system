@@ -35,6 +35,7 @@ urlpatterns = [
     path('process_department/', views.process_department, name='process_department'),
     path('pdf/', views.pdf, name='pdf'),
     path('pdf_show/<path:Tran_No>/', views.pdf_show, name='pdf_show'),
+    path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
 
 
 

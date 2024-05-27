@@ -258,7 +258,7 @@
         
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="search" class="mr-2">Transaction No:</label>
-                                <select class=" form-control col-md-5" name="Tran_No" id='Tran_No' >
+                                <select class=" form-control col-md-5" name="Tran_No" >
                                   <option value="" hidden>Select Document</option>
                                   {% for d in tran_no %}
                                   <option value="{{ d.Tran_No }}">
@@ -355,9 +355,14 @@
                             <div class="col">
                                 <h3>Approval list</h3>
                             </div>
+                            
                             <div class="col">
-                                <button type="button" class="btn btn-primary">Generate PDF</button>
-                            </div>
+                                {% if Tran_No.principal %}
+                                    <a href="{% url 'generate_pdf'%}" target="_blank">
+                                        <button type="button" class="btn btn-primary">Generate PDF</button>
+                                    </a>
+                                {% endif %}
+                            </div>  
                         </div>
                         <div class="table-responsive">
                             <table class="table">

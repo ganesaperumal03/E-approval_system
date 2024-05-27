@@ -19,8 +19,6 @@ class e_approval(models.Model):
     date = models.DateField()
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)
-    lab_Incharge = models.CharField(max_length=100,blank=True,null=True)
-    lab_Incharge_date = models.CharField(max_length=100,blank=True,null=True)
     HOD = models.CharField(max_length=100,blank=True,null=True)
     HOD_date = models.CharField(max_length=100,blank=True,null=True)
 
@@ -50,13 +48,6 @@ class User(models.Model):
 
 class auth_list(models.Model):
     Document_no = models.CharField(max_length=200, primary_key=True)
-
-
-    lab_Incharge = models.CharField(max_length=100, blank=True, null=True)
-    lab_Incharge_date = models.CharField(max_length=100, blank=True, null=True)
-    lab_Incharge_remarks = models.CharField(max_length=100, blank=True, null=True)
-    lab_Incharge_reason = models.CharField(max_length=100, blank=True, null=True)
-    lab_Incharge_clarification = models.CharField(max_length=100, blank=True, null=True)
 
     hod = models.CharField(max_length=100, blank=True, null=True)
     hod_date = models.CharField(max_length=100, blank=True, null=True)

@@ -93,6 +93,12 @@ def create_form(request):
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
+            elif role == 'lab_Incharge':
+                user.Technician = None
+                user.HOD = None
+                user.GM = 'Pending'
+                user.vice_principal = 'Pending'
+                user.principal = 'Pending'
             elif role == 'HOD':
                 user.Technician = None
                 user.HOD = None
@@ -534,7 +540,7 @@ def form_approval(request):
 
 
 def view_approval(request):
-    Tran_No = request.POST.get('selectedValue')
+    Tran_No = request.GET.get('Tran_No')
     user_data=request.session.get('user_data', {})
     role=user_data['role']
     Department=user_data['Department']
@@ -571,7 +577,6 @@ def view_approval(request):
     tran_no=e_approval.objects.filter(staff_id=staff_id)
     print(tran_no,'-------------------------')
     return render(request, "e-approval/view_approval.html",{"tran_no":tran_no,"Name":name,"role":role,"department":Department})
-
 
 
 from django.shortcuts import HttpResponse #type:ignore

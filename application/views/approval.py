@@ -646,9 +646,10 @@ from io import BytesIO  # Add this import statement
 import os
 
 def generate_pdf(request):
+    Tran_No = request.GET.get('Tran_No')
     # Create a file-like buffer to receive PDF data.
     buffer = BytesIO()
-    Document_no = e_approval.objects.get(Document_no=Document_no)
+    Document_no = e_approval.objects.get(Document_no='rit/acB.TECH AD/AICTE/AICTE/00008')
 
     # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer, pagesize=A4)
@@ -667,7 +668,6 @@ def generate_pdf(request):
     p.setFont("Times-Bold", 13)
     
     p.drawString(70, height - 120, "Department :")
-    p.drawString(150, height - 120, Document_no.Department)
     p.line(140, height - 125, 550, height - 125)
     p.drawString(70, height - 150, "Trans NO ")
     p.rect(140,height - 155, 150, 20)
@@ -683,6 +683,19 @@ def generate_pdf(request):
     p.drawString(70, height - 300, "Amount (INR) ")
     p.drawString(155, height - 300, ":")
     p.line(160, height - 305, 300, height - 305)
+
+    p.drawString(145, height - 120, Document_no.Department)
+    p.drawString(145, height - 150, Document_no.Tran_No)
+    p.drawString(145, height - 180, Document_no.Category)
+    p.drawString(405, height - 180, Document_no.Sub_Category)
+    p.drawString(145, height - 210, Document_no.remarks_Subject)
+    p.drawString(160, height - 300, Document_no.Total_Value)
+    p.drawString(405, height - 120, Document_no.Document_no)
+    # p.drawString(150, height - 120, Document_no.Department)
+    
+
+    
+    
 
     p.drawString(320, height - 150, "Doc NO ")
     p.rect(400,height - 155, 150, 20)

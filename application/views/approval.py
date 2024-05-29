@@ -470,7 +470,6 @@ def updateapproval(request):
         Priority = request.POST.get('Priority')
         Document_no = request.POST.get('Document_no')
         remarks_Document_no = request.POST.get('remarks_document_data')
-        print(Document_no,remarks_Document_no)
 
         Category = request.POST.get('Category')
         Sub_Category = request.POST.get('Sub_Category')
@@ -478,17 +477,14 @@ def updateapproval(request):
         Total_Value = request.POST.get('Total_Value')
         doc_clarifictaions_reason = request.POST.get('doc_clarifictaions_reason')
         file_paths = save_uploaded_pdfs(request.FILES)
-        print(".......................................................",file_paths.get('Attachment'))
         approval_data = get_object_or_404(e_approval,Document_no=Document_no)
         doc_data = get_object_or_404(doc_remarks,Document_no=remarks_Document_no)
-        print('yesgvhbhjb')
         approval_data.Priority = Priority
         approval_data.Category = Category
         approval_data.Sub_Category = Sub_Category
         approval_data.fin_commit = fin_commit
         approval_data.Total_Value = Total_Value
         approval_data.Attachment = file_paths.get('Attachment')
-        print(file_paths.get('Attachment'))
 
         approval_data.save()
 
@@ -695,11 +691,11 @@ from PIL import Image
 from io import BytesIO  # Add this import statement
 import os
 
-def generate_pdf(request):
-    Tran_No = request.GET.get('Tran_No')
+def generate_pdf(request,Tran_No):
+    print(Tran_No)
     # Create a file-like buffer to receive PDF data.
     buffer = BytesIO()
-    Document_no = e_approval.objects.get(Document_no='rit/acB.TECH AD/AICTE/AICTE/00008')
+    Document_no = e_approval.objects.get(Tran_No=Tran_No)
 
     # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer, pagesize=A4)
@@ -758,6 +754,18 @@ def generate_pdf(request):
     p.drawString(60, height - 360, "Name")
     p.drawString(210, height - 360, "Role")
     p.drawString(360, height - 360, "Date")
+    p.drawString(60, height - 390, "Name")
+    p.drawString(210, height - 390, Document_no.Document_no)
+    p.drawString(360, height - 390, Document_no.Document_no)
+    p.drawString(60, height - 420, "Name")
+    p.drawString(210, height - 420, Document_no.Document_no)
+    p.drawString(360, height - 420, Document_no.Document_no)
+    p.drawString(60, height - 450, "Name")
+    p.drawString(210, height - 450, Document_no.Document_no)
+    p.drawString(360, height - 450, Document_no.Document_no)
+    p.drawString(60, height - 360, "Name")
+    p.drawString(210, height - 360, Document_no.Document_no)
+    p.drawString(360, height - 360, Document_no.Document_no)
 
     # Draw table lines
     p.line(50, height - 340, 550, height - 340)

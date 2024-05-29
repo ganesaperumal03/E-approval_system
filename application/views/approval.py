@@ -13,7 +13,8 @@ from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,D
 from application.models import e_approval,User,doc_remarks     #type:ignore
 from django.contrib import messages #type:ignore
 from django.db.models import Q  #type:ignore
-import pandas as pd     
+import pandas as pd  
+from num2words import num2words   
 
 
 def save_uploaded_pdfs(file_dict):
@@ -240,7 +241,12 @@ def login(request):
             return render(request, "auth/login.html", {'error_message': error_message})
     else:
         return render(request, "auth/login.html")
-
+def logout(request):
+    print('logout function called')
+    auth_logout(request)
+    messages.success(request,'You were logged out')
+    request.session.flush()  # Flush all session data
+    return render(request, "auth/login.html")
 
 # #def auth_approval(request):
 # #    staff_id = e_approval.objects.filter(staff_id=567654)
@@ -265,7 +271,7 @@ def login(request):
 #
 # #        return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
 # #    return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
-from num2words import num2words
+
 
 def auth_approval(request):
 

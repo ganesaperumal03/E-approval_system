@@ -11,7 +11,8 @@ from application.views.approval import (
     pdf_show,
     send_email,
     process_department,
-    pdf
+    pdf,
+    generate_pdf
     
 )
 

@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'rit_e_approval',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': '127.0.0.1',
+        'HOST': '',
         'PORT': '3306',
     }
 }

@@ -19,6 +19,8 @@ class e_approval(models.Model):
     date = models.DateField()
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)
+    Staff = models.CharField(max_length=100,blank=True,null=True)
+    Staff_date = models.CharField(max_length=100,blank=True,null=True)
     HOD = models.CharField(max_length=100,blank=True,null=True)
     HOD_date = models.CharField(max_length=100,blank=True,null=True)
 
@@ -48,6 +50,13 @@ class User(models.Model):
 
 class auth_list(models.Model):
     Document_no = models.CharField(max_length=200, primary_key=True)
+
+
+    staff = models.CharField(max_length=100, blank=True, null=True)
+    staff_date = models.CharField(max_length=100, blank=True, null=True)
+    staff_remarks = models.CharField(max_length=100, blank=True, null=True)
+    staff_reason = models.CharField(max_length=100, blank=True, null=True)
+    staff_clarification = models.CharField(max_length=100, blank=True, null=True)
 
     hod = models.CharField(max_length=100, blank=True, null=True)
     hod_date = models.CharField(max_length=100, blank=True, null=True)

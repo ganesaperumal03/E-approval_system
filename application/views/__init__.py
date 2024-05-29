@@ -12,7 +12,8 @@ from application.views.approval import (
     send_email,
     process_department,
     pdf,
-    generate_pdf
+    generate_pdf,
+    logout
     
 )
 

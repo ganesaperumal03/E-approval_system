@@ -14,7 +14,7 @@ from application.models import e_approval,User,doc_remarks     #type:ignore
 from django.contrib import messages #type:ignore
 from django.db.models import Q  #type:ignore
 import pandas as pd     
-
+from num2words import num2words
 
 def save_uploaded_pdfs(file_dict):
     profile_images_directory = os.path.join('media')
@@ -219,32 +219,14 @@ def login(request):
             return render(request, "auth/login.html", {'error_message': error_message})
     else:
         return render(request, "auth/login.html")
+    
+def logout(request):
+    auth_logout(request)
+    messages.success(request,'You were logged out')
+    request.session.flush()  # Flush all session data
+    return render(request, "auth/login.html")
 
 
-# #def auth_approval(request):
-# #    staff_id = e_approval.objects.filter(staff_id=567654)
-# #    Document_no = request.GET.get('Document_no')
-# #    print(Document_no,'89')
-# #    if Document_no:
-# #        Document_no = e_approval.objects.get(Document_no=Document_no)
-# #        staff_id=Document_no.staff_id
-# #        gm=Document_no.GM
-# #        vice_prinicipal=Document_no.vice_principal
-# #        prinicipal=Document_no.principal
-# #        if gm=='pending':
-# #            auth_staff_id = User.objects.get(staff_id=staff_id)
-# #        print(Document_no)
-# #        gm = User.objects.get(role='GM')
-# #        vice_principal = User.objects.get(role='vice_principal')
-# #        principal = User.objects.get(role='Principal')
-#
-# #        if Document_no:
-# #            print(Document_no)
-# #            return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no,"gm":gm,"vice_principal":vice_principal,"principal":principal})
-#
-# #        return render(request, "e-approval/auth_approval.html",{"Document_no":Document_no})
-# #    return render(request, "e-approval/auth_approval.html",{"staff_id":staff_id})
-from num2words import num2words
 
 def auth_approval(request):
 

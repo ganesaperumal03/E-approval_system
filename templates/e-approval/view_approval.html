@@ -260,6 +260,7 @@
                             <label for="search" class="mr-2">Transaction No:</label>
                                 <select class=" form-control col-md-5" name="Tran_No" >
                                   <option value="" hidden>Select Document</option>
+                                  
                                   {% for d in tran_no %}
                                   <option value="{{ d.Tran_No }}">
                                     {{ d.Tran_No }}

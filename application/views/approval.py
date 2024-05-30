@@ -615,8 +615,9 @@ def view_approval(request):
             'user':User.objects.filter( role='principal').first()})
     if Tran_No:
         Tran_No = e_approval.objects.get(Tran_No=Tran_No)
-        print(Tran_No,'-------------------------')
-        return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":approval_user,"Name":name,"role":role,"department":Department})
+        tran_no=e_approval.objects.filter(staff_id=staff_id)
+        print(Tran_No,'!-------------------------!')
+        return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":approval_user,"Name":name,"role":role,"department":Department,"tran_no":tran_no})
 
     doc_data=[]
     tran_no=e_approval.objects.filter(staff_id=staff_id)

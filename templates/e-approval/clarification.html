@@ -181,14 +181,19 @@
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Document no</label>
                   <div class="col-sm-5 mb-2">
-                    <form  action="{% url 'clarification' %}" method="GET">
-
-                      <select class="form-control" id="document_data_select" name="document_data_value" onchange="handleSelectChange()" aria-label="Default select example">
-                        {% for key, value in document_data_value.items %}
-                        <option value="{{ key }}|{{ value }}">{{ value }}</option>
-                        {% endfor %}
-                      </select>
-                      <button type="submit" id="submit-button">submit</button>
+                    <form  action="{% url 'clarification' %}" class="form-group row" method="GET">
+                      <div class="col">
+                        <select class="form-control" id="document_data_select" name="document_data_value" aria-label="Default select example">
+                          {% for key, value in document_data_value.items %}
+                          <option value="{{ key }}|{{ value }}">{{ value }}</option>
+                          {% endfor %}
+                          
+                        </select>
+                      </div>
+                      <div class="col">
+                        <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
+                      </div>
+                      
                     </form>
                   </div>
                 </div>

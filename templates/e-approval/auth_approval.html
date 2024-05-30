@@ -183,16 +183,20 @@
                     <div class="col d-flex align-items justify-content-between">
                         <label id="tags">Document no</label>
                         <div class="col-sm-8">
-                          <form action="{% url 'auth_approval' %}" method="GET">
-                            <select class="form-control" name="Document_no">
-                              <option value="" hidden>Select Document</option>
-                              {% for d in doc_data %}
-                              <option value="{{ d.Document_no }}">
-                                {{ d.Document_no }}
-                              </option>
-                              {% endfor %}
-                            </select>
-                            <button type="submit" id="submit-button">submit</button>
+                          <form action="{% url 'auth_approval' %}" class="form-group row" method="GET">
+                            <div class ="col">
+                              <select class="form-control" name="Document_no">
+                                <option value="" hidden>Select Document</option>
+                                {% for d in doc_data %}
+                                <option value="{{ d.Document_no }}">
+                                  {{ d.Document_no }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="col">
+                              <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
+                            </div>
                           </form>
                         </div>
                     </div>

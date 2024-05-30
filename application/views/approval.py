@@ -430,6 +430,8 @@ def clarification(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
+    user_name=user_data["user_name"]
+    print(user_name)
 
     document_data_value = request.GET.get('document_data_value')
 
@@ -443,7 +445,7 @@ def clarification(request):
         remarks_document_data = doc_remarks.objects.get(Document_no=key, doc_clarification_status='Pending')
 
         print(document_data)
-        return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"role":staff_role,"department":department})
+        return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department})
 
 
     doc_data = {}
@@ -456,7 +458,8 @@ def clarification(request):
             document_data_value = match.group(1)
             doc_data[doc.Document_no] = document_data_value
     print(doc_data)
-    return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"department":department})
+
+    return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"user_name":user_name,"department":department})
 
 
 
@@ -469,7 +472,8 @@ def updateapproval(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
-    print("ghkuvhgujkhnjk-1")
+    user_name=user_data["user_name"]
+    print(user_name)
 
     if request.method == 'POST':
 
@@ -504,7 +508,7 @@ def updateapproval(request):
         #     DocRemarksUpdateForm.save()
 
         return redirect('clarification')
-    return render(request, "e-approval/clarification.html",{"Name":name,"role":staff_role,"department":department})
+    return render(request, "e-approval/clarification.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name})
 
 
 

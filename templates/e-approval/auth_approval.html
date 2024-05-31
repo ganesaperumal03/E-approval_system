@@ -184,7 +184,7 @@
                       <label id="tags">Document no</label>
                       <div class="col-sm-8">
                         <form action="{% url 'auth_approval' %}" class="form-group row" method="GET">
-                          <div class ="col">
+                          <div class ="col-md-9">
                             <select class="form-control" name="Document_no">
                               <option value="" hidden>Select Document</option>
                               {% for d in doc_data %}
@@ -194,7 +194,7 @@
                               {% endfor %}
                             </select>
                           </div>
-                          <div class="col">
+                          <div class="col-md-2">
                             <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
                           </div>
                         </form>

@@ -281,8 +281,9 @@
           </div class="border">
           <div class="container my-3" style="text-align: center;">
             <!-- Trigger the modal with a button -->
-            <button type="submit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color: #00407b;">Create</button>
-          
+            
+            <button href="{% url 'send_email' %}" .type="submit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color: #00407b;">Create</button>
+    
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
               <div class="modal-dialog">
@@ -320,34 +321,11 @@
                 <tbody>
                   {% for p in approval_user%}
                   <tr>
-
-      
                     <td>{{p.user_name}}</td>
                     <td>{{p.role}}</td>
-
                   </tr>
                   {% endfor %}
-                  <!-- <tr>
-                    <th></th>
-                    <th>{{gm_user.user_name}}</th>
-                    <th>{{gm_user.staff_id}}</th>
-                    <th>{{gm_user.role}}</th>
-                    <th>{{gm_user.email}}</th>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <th>{{vise_principal_user.user_name}}</th>
-                    <th>{{vise_principal_user.staff_id}}</th>
-                    <th>{{vise_principal_user.role}}</th>
-                    <th>{{vise_principal_user.email}}</th>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <th>{{principal_user.user_name}}</th>
-                    <th>{{principal_user.staff_id}}</th>
-                    <th>{{principal_user.role}}</th>
-                    <th>{{principal_user.email}}</th>
-                  </tr> -->
+                  
                 </tbody>
               </table>
             </div>

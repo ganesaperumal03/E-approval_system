@@ -46,122 +46,118 @@ def save_uploaded_pdfs(file_dict):
 # def in_words(Total_Value):
 #     p = inflect.engine()
 #     In_words= p.number_to_words(Total_Value)
+import pandas as pd
+from django.shortcuts import render, redirect
+from application.form import EApprovalForm
+from application.models import e_approval, User
+import logging
+
+logger = logging.getLogger(__name__)
+
 def create_form(request):
-    user_data=request.session.get('user_data', {})
-    staff_id=user_data["staff_id"]
-    Name=user_data["name"]
-    Department=user_data["Department"]
-    role=user_data["role"]
+    # Get user data from session
+    user_data = request.session.get('user_data', {})
+    staff_id = user_data.get("staff_id")
+    name = user_data.get("name")
+    department = user_data.get("Department")
+    role = user_data.get("role")
 
-
+    # Read the CSV file
     excel_file_path = 'category.csv'
-    # Read the Excel file
     try:
         df = pd.read_csv(excel_file_path)
     except pd.errors.EmptyDataError:
-        # Handle the case where the Excel file is empty
+        # Handle empty file case
         df = pd.DataFrame(columns=['Sub_category'])
     category = df['Sub_category'].tolist()
+
     if request.method == 'POST':
         form = EApprovalForm(request.POST)
         if form.is_valid():
-            Department = form.cleaned_data['Department']
-            Category = form.cleaned_data['Category']
-            Sub_Category = form.cleaned_data['Sub_Category']
-            # Calculate count and format as strings with leading zeros
+            # Get cleaned data
+            department = form.cleaned_data['Department']
+            category = form.cleaned_data['Category']
+            sub_category = form.cleaned_data['Sub_Category']
+            
+            # Calculate counts
             count = e_approval.objects.count() + 1
-            print(count)
+            tran_count = e_approval.objects.filter(Department=department).count() + 1
+            
+            # Format counts with leading zeros
             count_no = f"{count:05d}"
-            tran_count = e_approval.objects.filter(Department=Department).count() + 1
             tran_count_no = f"{tran_count:05d}"
-
+            
             # Construct document and transaction numbers
-            doc_no = f'rit/ac{Department}/{Category}/{Sub_Category}/{count_no}'
-            tran_no = f'rit/ac{Department}/{Category}/{Sub_Category}/{tran_count_no}'
+            doc_no = f'rit/ac{department}/{category}/{sub_category}/{count_no}'
+            tran_no = f'rit/ac{department}/{category}/{sub_category}/{tran_count_no}'
+
+            # Get staff user
             staff = User.objects.get(staff_id=staff_id)
+            
+            # Save the form without committing to the database
             user = form.save(commit=False)
-            role = staff.role
             user.staff_id = staff_id
             user.Document_no = doc_no
             user.Tran_No = tran_no
+            
+            # Save uploaded PDFs
             file_paths = save_uploaded_pdfs(request.FILES)
-            print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
-            # Set approval status based on role
-            if role == 'Technician':
-                user.Technician = None
-                user.staff = 'Pending'
-                user.HOD = 'Pending'
-                user.GM = 'Pending'
-                user.vice_principal = 'Pending'
-                user.principal = 'Pending'
-            elif role == 'Staff':
-                user.Technician = None
-                user.staff = None
-                user.HOD = 'Pending'
-                user.GM = 'Pending'
-                user.vice_principal = 'Pending'
-                user.principal = 'Pending'
-            elif role == 'HOD':
-                user.Technician = None
-                user.staff = None
-                user.HOD = None
-                user.GM = 'Pending'
-                user.vice_principal = 'Pending'
-                user.principal = 'Pending'
+            
+            # Set approval statuses based on the role
+            pending_roles = {
+                'Technician': ['staff', 'HOD', 'GM', 'vice_principal', 'principal'],
+                'Staff': ['HOD', 'GM', 'vice_principal', 'principal'],
+                'HOD': ['GM', 'vice_principal', 'principal'],
+                'office': ['GM', 'vice_principal', 'principal'],
+                'GM': ['vice_principal', 'principal'],
+                'vice_principal': ['principal'],
+                'Principal': []
+            }
+            for pending_role in pending_roles.get(role, []):
+                setattr(user, pending_role, 'Pending')
 
-            elif role == 'office':
-                user.Technician = None
-                user.staff = None
-                user.HOD = None
-                user.GM = 'Pending'
-                user.vice_principal = 'Pending'
-                user.principal = 'Pending'
-            elif role == 'GM':
-                user.Technician = None
-                user.staff = None
-                user.HOD = None
-                user.GM = None
-                user.vice_principal = 'Pending'
-                user.principal = 'Pending'
-            elif role == 'vice_principal':
-                user.Technician = None
-                user.staff = None
-                user.HOD = None
-                user.GM = None
-                user.vice_principal = None
-                user.principal = 'Pending'
-
+            # Save the user
             user.save()
             return redirect('create_form')  # Redirect to a success page
         else:
-            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name})
+            # Handle form errors
+            return render(request, "e-approval/error.html", {
+                'form': form,
+                "category": category,
+                "role": role,
+                "Department": department,
+                "Name": name
+            })
     else:
         form = EApprovalForm()
         staff_user = User.objects.get(staff_id=staff_id)
-        department=staff_user.Department
-        role=staff_user.role
-        role_list = ['Technician','office','Staff','HOD','GM','vice_principal','Principal']
+        department = staff_user.Department
+        role = staff_user.role
+        role_list = ['Technician', 'office', 'Staff', 'HOD', 'GM', 'vice_principal', 'Principal']
+        
+        # Get the index of the current role
         ia = role_list.index(role)
-        print(department,role,ia)
+        
         approval_user = []
-        for i in role_list[ia+1]:
-            print(i)
-            if i == "Staff":
-                approval_user.append(User.objects.filter(Department=department, role=i).first())  # Use .first() to get the first object or None
-            elif i == "HOD":
-                approval_user.append(User.objects.filter(Department=department,role=i).first())  # Use .first() to get the first object or None
-            elif i == "GM":
-                approval_user.append(User.objects.filter(role=i).first())
-            elif i == "vice_principal":
-                approval_user.append(User.objects.filter(role=i).first())
-            elif i == "Principal":
-                approval_user.append(User.objects.filter(role=i).first())
-            # return render(request, "e-approval/index.html", {'form': form, 'gm_user': gm_user, 'vice_principal_user': vice_principal_user,
-            #                                                 'principal_user': principal_user, 'HOD': HOD_user
-            #                                              })
-        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name
-                                                         })
+        
+        for next_role in role_list[ia+1:]:
+            approver = User.objects.filter(role=next_role)
+            if next_role in ['Staff', 'HOD']:
+                approver = approver.filter(Department=department)
+            approval_user.append(approver.first())
+
+        # Filter out None values if any role does not have a user
+        approval_user = [user for user in approval_user if user is not None]
+        
+        return render(request, "e-approval/index.html", {
+            'form': form,
+            "approval_user": approval_user,
+            "category": category,
+            "role": role,
+            "Department": department,
+            "Name": name
+        })
 
 
 def encrypt_password(raw_password):

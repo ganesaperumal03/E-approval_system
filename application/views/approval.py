@@ -277,8 +277,8 @@ def auth_approval(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
+    staff_id=user_data['staff_id']
 
-    print(user_data['role'])
     if request.method == 'POST':
         form = doc_remarks_form(request.POST)
 
@@ -290,7 +290,7 @@ def auth_approval(request):
 
             # Combine the document number and date-time string
             doc_no = f"{Document_no}@{date_time}"
-            print(doc_no)
+
 
             # Save the form data to the database
             user = form.save(commit=False)
@@ -307,20 +307,21 @@ def auth_approval(request):
 
     Document_no = request.GET.get('Document_no')
 
-
     if Document_no:
         role=staff_role
         role_list = ['Staff','HOD','GM','vice_principal','Principal']
         ia = role_list.index(role)
-        print(department,role,ia)
         approval_user = []
         date=None
 
         auth_list = e_approval.objects.filter(Document_no=Document_no)
+        
+       
         for i,j in enumerate(auth_list):
             if j.Staff!='Pending':
                 approval_user.append({"date":j.Staff_date,'Approval':'Staff',
                 'remarks':j.Staff})
+
             if j.HOD!='Pending':
                 approval_user.append({"date":j.HOD_date,'Approval':'HOD',
                 'remarks':j.HOD})
@@ -333,85 +334,88 @@ def auth_approval(request):
             if j.principal!='Pending':
                 approval_user.append({"date":j.principal_date,'Approval':'principal',
                 'remarks':j.principal})
-
+        
         document_data = e_approval.objects.get(Document_no=Document_no)
+        print(document_data,"************")
         number = document_data.Total_Value
         number_in_words = num2words(number)
         print(number_in_words)
-        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words})
+        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words,"doc_data":doc_data})
 
 
     user_data=request.session.get('user_data', {})
-    print(user_data['role'])
-    doc_data=[]
-    if user_data['role'] == 'Staff':
-        print('Staff-----------------------------')
-        technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
-        for technician in technicians:
-            approvals = e_approval.objects.filter(staff_id=technician.staff_id ,Staff = 'Pending',HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
-            print('Staff2-----------------------------')
+    
+    def filtere(user_data):
+        global doc_data 
+        doc_data=[]
+        if user_data['role'] == 'Staff':
+            print('Staff-----------------------------')
+            technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
+            for technician in technicians:
+                approvals = e_approval.objects.filter(staff_id=technician.staff_id ,Staff = 'Pending',HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
+                print('Staff2-----------------------------')
 
-            if  approvals:
-                print('Staff3-----------------------------')
+                if  approvals:
+                    print('Staff3-----------------------------')
 
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-    elif user_data['role'] == 'HOD':
-        technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending').filter(staff_id=technician.staff_id ,HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+        elif user_data['role'] == 'HOD':
+            technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending').filter(staff_id=technician.staff_id ,HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
 
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-    elif user_data['role'] == 'GM':
-        technicians = User.objects.filter(
-            role__in=['Technician','HOD','office']  # Use role__in for multiple roles
-         )
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+        elif user_data['role'] == 'GM':
+            technicians = User.objects.filter(
+                role__in=['Technician','HOD','office']  # Use role__in for multiple roles
+            )
 
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending').filter(staff_id=technician.staff_id,GM='Pending',vice_principal='Pending',principal='Pending')
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending').filter(staff_id=technician.staff_id,GM='Pending',vice_principal='Pending',principal='Pending')
 
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-
-
-    elif user_data['role'] == 'vice_principal':
-        technicians = User.objects.filter(
-            role__in=['Technician', 'GM','HOD','office']  # Use role__in for multiple roles
-         )
-
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending').filter(staff_id=technician.staff_id,vice_principal='Pending',principal='Pending')
-
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
 
 
-    elif user_data['role'] == 'Principal':
-        technicians = User.objects.filter(
-            role__in=['Technician', 'GM', 'vice_principal','HOD','office']  # Use role__in for multiple roles
-         )
-        print('principal',technicians)
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending',vice_principal='Pending').filter(staff_id=technician.staff_id ,principal='Pending')
-            print(approvals)
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-    print('doc_data',doc_data)
+        elif user_data['role'] == 'vice_principal':
+            technicians = User.objects.filter(
+                role__in=['Technician', 'GM','HOD','office']  # Use role__in for multiple roles
+            )
+
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending').filter(staff_id=technician.staff_id,vice_principal='Pending',principal='Pending')
+
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+
+
+        elif user_data['role'] == 'Principal':
+            technicians = User.objects.filter(
+                role__in=['Technician', 'GM', 'vice_principal','HOD','office']  # Use role__in for multiple roles
+            )
+            print('principal',technicians)
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending',vice_principal='Pending').filter(staff_id=technician.staff_id ,principal='Pending')
+                print(approvals)
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+    filtere(user_data)
     if request.method == 'POST':
         form = auth_form(request.POST)
         if form.is_valid():
@@ -427,35 +431,37 @@ def clarification(request):
     department=user_data['Department']
     name=user_data["name"]
     user_name=user_data["user_name"]
-    print(user_name)
 
     document_data_value = request.GET.get('document_data_value')
-
     if document_data_value:
         key, value = document_data_value.split('|')
         doc_no = value  # Update the global variable value
-        # Now you can use key and value as needed
-        print("Key:", key)
-        print("Value:", value)
-        document_data = e_approval.objects.get(Document_no= value)
-        remarks_document_data = doc_remarks.objects.get(Document_no=key, doc_clarification_status='Pending')
 
-        print(document_data)
+        document_data = e_approval.objects.get(Document_no= value)
+
+        print("******************************************")
+
+        remarks_document_data = doc_remarks.objects.get(Document_no=key, doc_clarification_status='Pending')
+        document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending')
+
+
         return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department})
 
 
-    doc_data = {}
+    
     user_data = request.session.get('user_data', {})
-    document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending')
+    doc_data={}    
+    document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending') 
+    print("__________________________________________")
     for doc in document_data_list:
         pattern = r"^(.*?)@"
         match = re.search(pattern, doc.Document_no)
         if match:
             document_data_value = match.group(1)
             doc_data[doc.Document_no] = document_data_value
-    print(doc_data)
-
-    return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"user_name":user_name,"department":department})
+    return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"user_name":user_name,"department":department,"document_data_list":document_data_list})
+    
+    
 
 
 
@@ -612,7 +618,7 @@ def view_approval(request):
     if Tran_No:
         Tran_No = e_approval.objects.get(Tran_No=Tran_No)
         tran_no=e_approval.objects.filter(staff_id=staff_id)
-        print(Tran_No,'!-------------------------!')
+        print(tran_no,'!-------------------------!')
         return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":approval_user,"Name":name,"role":role,"department":Department,"tran_no":tran_no})
 
     doc_data=[]

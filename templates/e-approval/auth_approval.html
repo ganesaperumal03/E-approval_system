@@ -140,13 +140,13 @@
           <li class="nav-item">
             <a href="{% url 'create_form' %}" class="nav-link text-dark">
               <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
-              Create E-Approval
+              Create
             </a>
           </li>
           <li class="nav-item">
             <a href="{% url 'auth_approval' %}" class="nav-link bg-info text-white">
               <i class="fa fa-check-square mr-3 text-primary fa-fw"></i>
-              Authorize E approval
+              Authorize
             </a>
           </li>
           <li class="nav-item">
@@ -162,7 +162,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'logout' %}" class="nav-link text-dark">
+            <a href="{% url 'login' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
               Log Out
             </a>
@@ -170,246 +170,239 @@
         </ul>
       </div>
 
-      
-      <div class="container border" style="margin: 0%; max-width: 100%; line-height: 2;">
-        <div class="col-md-12 mt-5 align-items justify content-between border">
-          <div class="document-details col-md-6">
-            <div class="document-head">
-              <label class="doc-1">Document</label>
+
+        <div class="container border" style="margin: 0%; max-width: 100%; line-height: 2;">
+          <div class="col-md-12 mt-5 align-items justify content-between border">
+            <div class="document-details col-md-8">
+              <div class="document-head">
+                <label class="doc-1">Document</label>
+              </div>
+              <div class="document-body form-group row">
+                <div class="col-md-6">
+                  <div class="form-row ">
+                    <div class="col d-flex align-items justify-content-between">
+                        <label id="tags">Document no</label>
+                        <div class="col-sm-8">
+                          <form action="{% url 'auth_approval' %}" class="form-group row" method="GET">
+                            <div class ="col">
+                              <select class="form-control" name="Document_no">
+                                <option value="" hidden>Select Document</option>
+                                {% for d in doc_data %}
+                                <option value="{{ d.Document_no }}">
+                                  {{ d.Document_no }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="col">
+                              <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
+                            </div>
+                          </form>
+                        </div>
+                    </div>
+
+                  </div>
+                  <div class="doc-con form-group row mt-2">
+                    <label id="tags" class="col-sm-4 col-form-label">Date:</label>
+                    <div >
+                      <span id="tag-ans">{{ Document_no.date }}</span>
+                    </div>
+                  </div>
+                  <div class="doc-con form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Priority:</label>
+                    <div>
+                      <span id="tag-ans">{{ Document_no.Priority }}</span>
+                    </div>
+                  </div>
+                  <div class="doc-con form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Status:</label>
+                    <div>
+                      <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.principal}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="doc-con form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Org.Unit:</label>
+                    <div>
+                      <span id="tag-ans" >{{ Document_no.Org_Unit }}</span> 
+                    </div>
+                  </div>
+                  <div class="doc-con form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Department:</label>
+                    <div>
+                      <span id="tag-ans">{{ Document_no.Department }}</span>
+                    </div>
+                  </div>
+                  <div class="doc-con form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Category:</label>
+                    <div>
+                      <textarea id="tag-ans" style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;">{{ Document_no.Category }}</textarea> 
+                    </div>
+                  </div>
+                  <div class="doc-con form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Sub category:</label>
+                    <div>
+                      <textarea wrap="off" id="tag-ans" style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;">{{ Document_no.Sub_Category }}</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="document-body form-group row">
-              <div class="col-md-6">
-                <div class="form-row ">
-                  <div class="col d-flex align-items justify-content-between">
-                      <label id="tags">Document no</label>
+            <div class="ref-document-details col-md-4">
+              <div class="ref-document-head">
+                <label id="tag-ans mr-2">Ref Document Details</label>
+              </div>
+
+                <div class="col-md-12">
+                  <div class="doc-con form-group row justify content-between">
+                      <label id="tags" class="col-sm-4 col-form-label">Fin commitment:</label>
+                      <span id="tag-ans">{{ Document_no.fin_commit }}</span>
+                  </div>
+                  <div class="doc-con form-group row mt-2">
+                    <label id="tags" class="col-sm-4 col-form-label">Transaction No:</label>
+                    <div>
+                      <textarea wrap="off" id="tag-ans"style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;">{{ Document_no.Tran_No }}</textarea>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+          <div class="col-md-12 align-items justify content-between border">
+            <form method="POST" id="auth_approval" autocomplete="off">
+              {% csrf_token %}
+              <div class="doc-remarks mt-4 border col" style="margin: 0%; max-width: 100%;">
+                <div class="doc-remarks-details col-md-10">
+                  <div class="doc-remarks-head">
+                    <label class="doc-remarks-1">Document Remarks</label>
+                    <input type="hidden" name="Document_no" value="{{ Document_no.Document_no }}">
+                    <input type="hidden" name="doc_applied_staff_id" value="{{ Document_no.staff_id }}">
+                  </div>
+                  <div class="doc-remarks-body">
+                    <div class="doc-remarks-con form-group row">
+                      <label class="col-sm-2 col-form-label" id="tags">Subject</label>
                       <div class="col-sm-8">
-                        <form action="{% url 'auth_approval' %}" class="form-group row" method="GET">
-                          <div class ="col-md-9">
-                            <select class="form-control" name="Document_no">
-                              <option value="" hidden>Select Document</option>
-                              {% for d in doc_data %}
-                              <option value="{{ d.Document_no }}">
-                                {{ d.Document_no }}
-                              </option>
-                              {% endfor %}
-                            </select>
-                          </div>
-                          <div class="col-md-2">
-                            <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
-                          </div>
-                        </form>
+                        <textarea id="tag-ans" class="form-control" style="resize: none;">{{ Document_no.remarks_Subject }}</textarea>
                       </div>
+                    </div>
+                    <div class="doc-remarks-con form-group row">
+                      <label class="col-sm-2 col-form-label" id="tags">Remarks</label>
+                      <div class="col-sm-8">
+                        <textarea id="tag-ans" class="form-control" name="doc_remarks" required style="resize: none;"></textarea>
+                      </div>
+                    </div>
+                    <div class="doc-remarks-con form-group row">
+                      <label class="col-sm-2 col-form-label" id="tags">Attachment</label>
+                      <div class="col-sm-8">
+                        {% if Document_no.Tran_No %}
+                        <a href="{% url 'pdf_show' Document_no.Tran_No %}" target="_blank">
+                          <button type="button" class="btn btn-danger ml-2">
+                            <i class="bi bi-file-pdf"></i> FILE
+                          </button>
+                        </a>
+                        {% endif %}
+                      </div>
+                    </div>
                   </div>
+                </div>
+                <div class="clarification my-5 form-group col-md-2 my-2">
+                  <button type="submit" class="btn btn-warning my-5 align-items-center">Clarification</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+                  
+                  
+
+
+                  
+          </div>
+          <div class="same-div row mt-4 border" style="margin: 0%; max-width: 100%;">
+            <div class="finance col-md-5">
+              <div class="finance-details">
+                <div class="finance-head">
+                  <label class="finance-doc-1">Financial details</label>
+                </div>
+                <div class="finance-body">
+                  <div class="doc-row form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Amount (INR):</label>
+                    <div class="col-sm-8">
+                      <span id="tag-ans">{{ Document_no.Total_Value }}</span>
+                    </div>
+                  </div>
+                  <div class="doc-row form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Tolerance:</label>
+                    <div class="col-sm-8">
+                      <span id="tag-ans"> {{ Document_no.Tolerance }} </span>
+                    </div>
+                  </div>
+                  {% comment %} <div class="doc-row form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">Total Amount (INR):</label>
+                    <div class="col-sm-8">
+                      <span id="tag-ans">10000 </span>
+                    </div>
+                  </div> {% endcomment %}
+                  <div class="doc-row form-group row">
+                    <label id="tags" class="col-sm-4 col-form-label">In Words:</label>
+                    <div class="col-sm-8">
+                      <span id="tags">{{number_in_words}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="approve-reject col-md-7 mt-4 border" style="margin: 0%; max-width: 100%;">
+              <div class="approve-body">
+                <div class="approve-row form-group row">
+                  <div class="form-inline col">
+                    <form action="{% url 'form_approval' %}" class="col-md-12"method="POST">
+                        {% csrf_token %}
+                      <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
+                      <textarea type='text' class="form-control mt-2 col" name='approval_Remarks' placeholder="Remarks" style="height: 70px;width:85%; resize: none;"></textarea>
+                      <button type="submit" id="approvement"  class="approvement btn btn-success btn-sm ml-2">Approve</button>
+                    </form>
+
+                  </div>            
 
                 </div>
-                <div class="doc-con form-group row mt-2">
-                  <label id="tags" class="col-sm-4 col-form-label">Date:</label>
-                  <div >
-                    <span id="tag-ans">{{ Document_no.date }}</span>
-                  </div>
-                </div>
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Priority:</label>
-                  <div>
-                    <span id="tag-ans">{{ Document_no.Priority }}</span>
-                  </div>
-                </div>
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Status:</label>
-                  <div>
-                    <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.principal}}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Org.Unit:</label>
-                  <div>
-                    <span id="tag-ans" >{{ Document_no.Org_Unit }}</span> 
-                  </div>
-                </div>
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Department:</label>
-                  <div>
-                    <span id="tag-ans">{{ Document_no.Department }}</span>
-                  </div>
-                </div>
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Category:</label>
-                  <div>
-                    <span id="tag-ans">{{ Document_no.Category }}</span> 
-                  </div>
-                </div>
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Sub category:</label>
-                  <div>
-                    <span id="tag-ans">{{ Document_no.Sub_Category }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="ref-document-details col-md-6">
-            <div class="ref-document-head">
-              <label id="tag-ans mr-2">Ref Document Details</label>
-            </div>
-            <div class="form-row">
-              <div class="col-md-6">
-                <div class="doc-con form-group row justify content-between">
-                  <label id="tags" class="col-sm-4 col-form-label">Fin commitment:</label>
-                  <div>
-                    <span id="tag-ans">{{ Document_no.fin_commit }}</span>
-                  </div>
-                </div>
-                <div class="doc-con form-group row mt-2">
-                  <label id="tags" class="col-sm-4 col-form-label">Transaction No:</label>
-                  <div>
-                    <span id="tag-ans">{{ Document_no.Tran_No }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="doc-con form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Base Tran creation:</label>
-                  <div>
-                    <select class="form-control">
-                      <option>dd-mm-yyyy</option>
-                    </select>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12 align-items justify content-between border">
-          <form method="POST" id="auth_approval" autocomplete="off">
-            {% csrf_token %}
-            <div class="doc-remarks mt-4 border col" style="margin: 0%; max-width: 100%;">
-              <div class="doc-remarks-details col-md-10">
-                <div class="doc-remarks-head">
-                  <label class="doc-remarks-1">Document Remarks</label>
-                  <input type="hidden" name="Document_no" value="{{ Document_no.Document_no }}">
-                  <input type="hidden" name="doc_applied_staff_id" value="{{ Document_no.staff_id }}">
-                </div>
-                <div class="doc-remarks-body">
-                  <div class="doc-remarks-con form-group row">
-                    <label class="col-sm-2 col-form-label" id="tags">Subject</label>
-                    <div class="col-sm-8">
-                      <textarea id="tag-ans" class="form-control" style="resize: none;">{{ Document_no.remarks_Subject }}</textarea>
-                    </div>
-                  </div>
-                  <div class="doc-remarks-con form-group row">
-                    <label class="col-sm-2 col-form-label" id="tags">Remarks</label>
-                    <div class="col-sm-8">
-                      <textarea id="tag-ans" class="form-control" name="doc_remarks" required style="resize: none;"></textarea>
-                    </div>
-                  </div>
-                  <div class="doc-remarks-con form-group row">
-                    <label class="col-sm-2 col-form-label" id="tags">Attachment</label>
-                    <div class="col-sm-8">
-                      {% if Document_no.Tran_No %}
-                      <a href="{% url 'pdf_show' Document_no.Tran_No %}" target="_blank">
-                        <button type="button" class="btn btn-danger ml-2">
-                          <i class="bi bi-file-pdf"></i> FILE
-                        </button>
-                      </a>
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="clarification my-5 form-group col-md-2 my-2">
-                <button type="submit" class="btn btn-warning my-5 align-items-center">Clarification</button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="same-div row mt-4 border" style="margin: 0%; max-width: 100%;">
-          <div class="finance col-md-5">
-            <div class="finance-details">
-              <div class="finance-head">
-                <label class="finance-doc-1">Financial details</label>
-              </div>
-              <div class="finance-body">
-                <div class="doc-row form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Amount (INR):</label>
-                  <div class="col-sm-8">
-                    <span id="tag-ans">{{ Document_no.Total_Value }}</span>
-                  </div>
-                </div>
-                <div class="doc-row form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Tolerance:</label>
-                  <div class="col-sm-8">
-                    <span id="tag-ans"> {{ Document_no.Tolerance }} </span>
-                  </div>
-                </div>
-                {% comment %} <div class="doc-row form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">Total Amount (INR):</label>
-                  <div class="col-sm-8">
-                    <span id="tag-ans">10000 </span>
-                  </div>
-                </div> {% endcomment %}
-                <div class="doc-row form-group row">
-                  <label id="tags" class="col-sm-4 col-form-label">In Words:</label>
-                  <div class="col-sm-8">
-                    <span id="tags">{{number_in_words}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="approve-reject col-md-7 mt-4 border" style="margin: 0%; max-width: 100%;">
-            <div class="approve-body">
-              <div class="approve-row form-group row">
-                <div class="form-inline col">
-                  <form action="{% url 'form_approval' %}" class="col-md-12"method="POST">
+                <div class="approve-row form-group row">
+                  <div class="form-inline col">
+                    <form action="{% url 'form_approval' %}" class="col-md-12" method="POST">
                       {% csrf_token %}
-                    <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
-                    <textarea type='text' class="form-control mt-2 col" name='approval_Remarks' placeholder="Remarks" style="height: 70px;width:85%; resize: none;"></textarea>
-                    <button type="submit" id="approvement"  class="approvement btn btn-success btn-sm ml-2">Approve</button>
-                  </form>
-
-                </div>            
-
-              </div>
-              <div class="approve-row form-group row">
-                <div class="form-inline col">
-                  <form action="{% url 'form_approval' %}" class="col-md-12" method="POST">
-                    {% csrf_token %}
-                    <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
-                    <textarea type='text' class="form-control mt-2 col" name='approval_Reason' placeholder="Reason" style="height: 70px; width:85%; resize: none;"></textarea>
-                    <button type="submit"id="rejection" class="rejection btn btn-danger btn-sm ml-2">Return/Reject</button>
-                  </form>
+                      <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
+                      <textarea type='text' class="form-control mt-2 col" name='approval_Reason' placeholder="Reason" style="height: 70px; width:85%; resize: none;"></textarea>
+                      <button type="submit"id="rejection" class="rejection btn btn-danger btn-sm ml-2">Reject</button>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          </div>
+          <div class="table-section table-responsive mt-4 border" style="margin: 0%; max-width: 100%;">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Approval</th>
+                  <th>Authoriztion Date</th>
+                  <th>Approver Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in approval_user%}
+                <tr>
+                  <td>{{p.Approval}}</td>
+                  <td>{{p.date}}</td>
+                  <td>{{p.remarks}}</td>
+  
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
-
-        <div class="table-section  table-responsive mt-4 border" style="margin: 0%; max-width: 100%;">
-          <table class="table table-bordered ">
-            <thead>
-              <tr>
-                <th>Approval</th>
-                <th>Authoriztion Date</th>
-                <th>Approver Remarks</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for p in approval_user%}
-              <tr>
-                <td>{{p.Approval}}</td>
-                <td>{{p.date}}</td>
-                <td>{{p.remarks}}</td>
-
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
     </div>
     <script>
       $(function() {

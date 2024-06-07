@@ -126,13 +126,13 @@
           <li class="nav-item">
             <a href="{% url 'create_form' %}" class="nav-link text-dark" >
                       <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
-                      Create E-Approval
+                      Create
                   </a>
           </li>
           <li class="nav-item">
             <a href="{% url 'auth_approval' %}"class="nav-link text-dark">
                       <i class="fa fa-check-square mr-3 text-primary fa-fw"></i>
-                      Authorize E approval
+                      Authorize
                   </a>
           </li>
           <li class="nav-item">
@@ -149,7 +149,7 @@
                   </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'logout' %}" class="nav-link text-dark">
+            <a href="{% url 'login' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
               Log Out
             </a>
@@ -213,7 +213,7 @@
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Upadate the document</label>
-                  <input id="tag-ans"  name='update_document' type='file' class="mt-2" name="update_document" >
+                  <input id="tag-ans"  name='update_document' type='file' class="col mt-2" name="update_document" >
                 </div>
               </div>
               <div class="doc col-md-4">
@@ -231,7 +231,7 @@
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Trans no</label>
-                  <span id="tag-ans"  name='Tran_No' class="mt-2">{{document_data.Tran_No}}</span>
+                  <textarea id="tag-ans" name='Tran_No' wrap="off" class="mt-2" class="form-control mr-2"  readonly style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;">{{document_data.Tran_No}}</textarea>
                 </div>
               </div>
               <div class="doc col-md-4">
@@ -239,12 +239,12 @@
                 <input type="text" hidden name="remarks_document_data"  value="{{remarks_document_data.Document_no}}">
 
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Fin commitment</label>
-                  <input id="tag-ans" class="mt-2" name="fin_commit" value="{{document_data.fin_commit}}">
+                     <label class="col-sm-4 col-form-label" id="tags">Fin commitment</label>
+                     <input id="tag-ans" class="mt-2" name="fin_commit" value="{{document_data.fin_commit}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags"> Amount (INR) </label>
-                  <input id="tag-ans" class="mt-2" name="Total_Value" value="{{document_data.Total_Value}}">
+                      <label class="col-sm-4 col-form-label" id="tags"> Amount (INR) </label>
+                    <input id="tag-ans" class="mt-2" name="Total_Value" value="{{document_data.Total_Value}}">
                 </div>
               </div>
             </div>

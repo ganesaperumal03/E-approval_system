@@ -13,8 +13,8 @@ from application.views.approval import (
     process_department,
     pdf,
     generate_pdf,
-    logout,
-   
+    logout
+    
 )
 
 __all__ = [

@@ -217,13 +217,13 @@
             <li class="nav-item">
               <a href="{% url 'create_form' %}" class="nav-link text-dark" >
                         <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
-                        Create E-Approval
+                        Create
                     </a>
             </li>
             <li class="nav-item">
               <a href="{% url 'auth_approval' %}"class="nav-link text-dark">
                         <i class="fa fa-check-square mr-3 text-primary fa-fw"></i>
-                        Authorize E approval
+                        Authorize
                     </a>
             </li>
             <li class="nav-item">
@@ -241,7 +241,7 @@
             </li>
 
             <li class="nav-item">
-                <a href="{% url 'logout' %}" class="nav-link text-dark">
+                <a href="{% url 'login' %}" class="nav-link text-dark">
                   <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
                   Log Out
                 </a>
@@ -286,12 +286,12 @@
                         </div>
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="Category" class="mr-2">Category</label>
-                            <span type="text" id="catagory" name="catagory"  class="" >{{Tran_No.Category}}</span>
+                            <textarea wrap="off" type="text" id="catagory" name="catagory" style="resize: none; height: 3.5em; border: none; overflow-x: scroll; overflow-y: hidden;" class="" >{{Tran_No.Category}}</textarea>
                         </div>
                         
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="SubCategory" class="mr-2">Sub Category</label>
-                            <span type="text" id="subcatagory" name="subcatagory" class="col-md-6" >{{Tran_No.Sub_Category}}</span>
+                            <textarea wrap="off" type="text" id="subcatagory" name="subcatagory" style="resize:none; height: 3.5em; border: none; overflow-x: scroll; overflow-y: hidden;" class="form control col-md-6" >{{Tran_No.Sub_Category}}</textarea>
                         </div>
                     </div>
                     <div class="form-row align-items-center justify-content-between">
@@ -301,7 +301,7 @@
                         </div>
                         <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="tranno" class="mr-2">Trans No</label>
-                            <span type="text" id="transno" name="transno"   style="width: 60%;">{{Tran_No.Tran_No}}</span>
+                            <textarea type="text" id="transno"  wrap="off" name="transno" style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;" >{{Tran_No.Tran_No}}</textarea>
                         </div>
                     </div>
                 </div>

@@ -656,9 +656,9 @@ from django.core.mail import send_mail #type:ignore
 def send_email(request):
     subject = 'Hello from Django'
     message = 'This is a test email sent from Django.'
-    recipient_list = ['953621243053@ritrjpm.ac.in']  # Replace with the recipient's email address
-
-    send_mail(subject, message, 'ganeshperumal256@gmail.com', recipient_list)
+    recipient_list = ['jjayaraj715@gmail.com']  # Replace with the recipient's email address
+    print('Mail funciton called *********************************************************')
+    send_mail(subject, message, 'jjayaraj715@gmail.com', recipient_list)
     return HttpResponse('Email sent successfully.')
 
 
@@ -695,7 +695,7 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-from PIL import Image
+from PIL import Image #type:ignore
 from io import BytesIO  # Add this import statement
 import os
 

@@ -705,7 +705,6 @@ def generate_pdf(request,Tran_No):
     buffer = BytesIO()
     Document_no = e_approval.objects.get(Tran_No=Tran_No)
 
-<<<<<<< Updated upstream
     user = User.objects.get(Department=Document_no.Department,role='Technician')
     user1 = User.objects.get(Department=Document_no.Department,role='Staff')
     user2 = User.objects.get(Department=Document_no.Department,role='HOD')
@@ -716,12 +715,6 @@ def generate_pdf(request,Tran_No):
     staff_id = User.objects.get(staff_id=Document_no.staff_id)
     role=staff_id.role
 
-=======
-    user = User.objects.get(Department=Document_no.Department,role='HOD')
-    user1 = User.objects.get(Department=Document_no.Department,role='Staff')
-    print(user.Name)
-    print(user1.Name)
->>>>>>> Stashed changes
 
     # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer, pagesize=A4)
@@ -750,12 +743,8 @@ def generate_pdf(request,Tran_No):
     p.drawString(70, height - 300, "Amount (INR) ")
     p.drawString(155, height - 300, ":")
 
-<<<<<<< Updated upstream
 
     p.setFont("Times-Roman", 12)
-=======
-    p.setFont("Times-Roman", 13)
->>>>>>> Stashed changes
     p.drawString(145, height - 120, Document_no.Department)
     p.drawString(145, height - 150, Document_no.Tran_No)
     p.drawString(145, height - 180, Document_no.Category)
@@ -771,7 +760,6 @@ def generate_pdf(request,Tran_No):
     p.drawString(320, height - 180, "Sub-category ")
     p.drawString(400, height - 180, ":")
 
-<<<<<<< Updated upstream
 
     image_path = "static/image/RIT_logo.png"
     if os.path.isfile(image_path):
@@ -779,75 +767,6 @@ def generate_pdf(request,Tran_No):
         img_reader = ImageReader(img)
         p.drawImage(img_reader, 70, height - 100, width=70, height=70)  # Adjust the coordinates and size as needed
 
-=======
-    # Approval List Table
-    if Document_no.role=='Technician':
-        p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
-        p.drawString(60, height - 450, "")
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, Document_no.Document_no)
-        p.drawString(60, height - 480, user.Name)
-        p.drawString(210, height - 480, "Hod")
-        p.drawString(360, height - 480, Document_no.HOD_date)
-        p.drawString(60, height - 510, user1.Name)
-        p.drawString(210, height - 510, "Staff Incharge")
-        p.drawString(360, height - 510, Document_no.Staff_date)
-
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
-        p.line(50, height - 490, 550, height - 490)
-        p.line(50, height - 520, 550, height - 520)
-
-
-        p.line(50, height - 340, 50, height - 520)
-        p.line(200, height - 340, 200, height - 520)
-        p.line(350, height - 340, 350, height - 520)
-        p.line(550, height - 340, 550, height - 520)
-    if Document_no.role=='Staff':
-        p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
-        p.drawString(60, height - 450, "")
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, Document_no.Document_no)
-        p.drawString(60, height - 480, user.Name)
-        p.drawString(210, height - 480, "Hod")
-        p.drawString(360, height - 480, Document_no.Document_no)
-
-
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
-        p.line(50, height - 490, 550, height - 490)
-        p.line(50, height - 520, 550, height - 520)
-
-
-        p.line(50, height - 340, 50, height - 520)
-        p.line(200, height - 340, 200, height - 520)
-        p.line(350, height - 340, 350, height - 520)
-        p.line(550, height - 340, 550, height - 520)
->>>>>>> Stashed changes
 
     if role=='Technician':
         p.setFont("Courier-Bold", 14)

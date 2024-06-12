@@ -40,15 +40,9 @@ class e_approval(models.Model):
 
 class User(models.Model):
     Name = models.CharField(max_length=100)
-    user_name = models.CharField(max_length=100)
-    staff_id = models.CharField(max_length=100)
-    Department = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
-    role = models.CharField(max_length=100)
-    Password = models.CharField(max_length=100)
-    confirm_Password = models.CharField(max_length=100)
 
-class auth_list(models.Model):
+
+
     Document_no = models.CharField(max_length=200, primary_key=True)
 
 
@@ -89,7 +83,7 @@ class clarification(models.Model):
     reroute_clarification = models.CharField(max_length=500, blank=True, null=True)
 
 
-class auth_remarks(models.Model):
+class auth_list(models.Model):
     Document_no = models.CharField(max_length=200, primary_key=True)
     auth_approval=models.CharField(max_length=100,blank=True, null=True)
     auth_remarks=models.CharField(max_length=100,blank=True, null=True)

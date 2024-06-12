@@ -180,9 +180,9 @@
               <div class="doc col-md-4">
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Document no</label>
-                  <div class="col-sm-5 mb-2">
+                  <div class="col-sm-8 mb-2 form-group">
                     <form  action="{% url 'clarification' %}" class="form-group row" method="GET">
-                      <div class="col">
+                      <div class="col-md-7">
                         <select class="form-control" id="document_data_select" name="document_data_value" aria-label="Default select example">
                           {% for key, value in document_data_value.items %}
                           <option value="{{ key }}|{{ value }}">{{ value }}</option>

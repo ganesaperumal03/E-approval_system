@@ -86,21 +86,21 @@ def create_form(request):
             # Set approval status based on role
             if role == 'Technician':
                 user.Technician = None
-                user.staff = 'Pending'
+                user.Staff = 'Pending'
                 user.HOD = 'Pending'
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
             elif role == 'Staff':
                 user.Technician = None
-                user.staff = None
+                user.Staff = None
                 user.HOD = 'Pending'
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
             elif role == 'HOD':
                 user.Technician = None
-                user.staff = None
+                user.Staff = None
                 user.HOD = None
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
@@ -108,21 +108,21 @@ def create_form(request):
 
             elif role == 'office':
                 user.Technician = None
-                user.staff = None
+                user.Staff = None
                 user.HOD = None
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
             elif role == 'GM':
                 user.Technician = None
-                user.staff = None
+                user.Staff = None
                 user.HOD = None
                 user.GM = None
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
             elif role == 'vice_principal':
                 user.Technician = None
-                user.staff = None
+                user.Staff = None
                 user.HOD = None
                 user.GM = None
                 user.vice_principal = None
@@ -141,7 +141,7 @@ def create_form(request):
         ia = role_list.index(role)
         print(department,role,ia)
         approval_user = []
-        for i in role_list[ia+1]:
+        for i in role_list[ia]:
             print(i)
             if i == "Staff":
                 approval_user.append(User.objects.filter(Department=department, role=i).first())  # Use .first() to get the first object or None
@@ -359,7 +359,7 @@ def auth_approval(request):
                     approval.staff_name = staff.Name
                     doc_data.append(approval)
     elif user_data['role'] == 'HOD':
-        technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
+        technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician','Staff'])
         for technician in technicians:
             approvals = e_approval.objects.exclude(Staff='Pending').filter(staff_id=technician.staff_id ,HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
 
@@ -440,7 +440,7 @@ def clarification(request):
         document_data = e_approval.objects.get(Document_no= value)
         remarks_document_data = doc_remarks.objects.get(Document_no=key, doc_clarification_status='Pending')
 
-        print(document_data)
+        print(document_data,"+++++++++++++")
         return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department})
 
 
@@ -453,7 +453,7 @@ def clarification(request):
         if match:
             document_data_value = match.group(1)
             doc_data[doc.Document_no] = document_data_value
-    print(doc_data)
+    print(doc_data,"______________________________")
 
     return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"user_name":user_name,"department":department})
 
@@ -733,23 +733,18 @@ def generate_pdf(request,Tran_No):
     p.setFont("Times-Bold", 13)
     
     p.drawString(70, height - 120, "Department :")
-    p.line(140, height - 125, 550, height - 125)
     p.drawString(70, height - 150, "Trans NO ")
-    p.rect(140,height - 155, 150, 20)
     p.drawString(70, height - 180, "Category ")
     p.drawString(140, height - 180, ":")
-    p.line(140, height - 185, 300, height - 185)
     p.drawString(70, height - 210, "Subject ")
     p.drawString(140, height - 210, ":")
-    p.line(140, height - 215, 300, height - 215)
     p.drawString(70, height - 240, "Remarks ")
     p.drawString(140, height - 240, ":")
-    p.line(140, height - 245, 300, height - 245)
     p.drawString(70, height - 300, "Amount (INR) ")
     p.drawString(155, height - 300, ":")
-    p.line(160, height - 305, 300, height - 305)
 
-    p.setFont("Times-Roman", 13)
+
+    p.setFont("Times-Roman", 12)
     p.drawString(145, height - 120, Document_no.Department)
     p.drawString(145, height - 150, Document_no.Tran_No)
     p.drawString(145, height - 180, Document_no.Category)
@@ -762,123 +757,80 @@ def generate_pdf(request,Tran_No):
     
     p.setFont("Times-Bold", 13)
     p.drawString(320, height - 150, "Doc NO ")
-    p.rect(400,height - 155, 150, 20)
     p.drawString(320, height - 180, "Sub-category ")
     p.drawString(400, height - 180, ":")
-    p.line(400, height - 185, 550, height - 185)
 
-    # Approval List Table
+
+    image_path = "static/image/RIT_logo.png"
+    if os.path.isfile(image_path):
+        img = Image.open(image_path)
+        img_reader = ImageReader(img)
+        p.drawImage(img_reader, 70, height - 100, width=70, height=70)  # Adjust the coordinates and size as needed
+
+
     if role=='Technician':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, user5.Name)
-        p.drawString(210, height - 390, 'Principal')
-        p.drawString(360, height - 390, str(Document_no.principal_date))
-        p.drawString(60, height - 420, user4.Name)
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(60, height - 450, user3.Name)
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, str(Document_no.GM_date))
-        p.drawString(60, height - 480, user2.Name)
-        p.drawString(210, height - 480, "Hod")
-        p.drawString(360, height - 480, str(Document_no.HOD_date))
-        p.drawString(60, height - 510, user1.Name)
-        p.drawString(210, height - 510, "Staff Incharge")
-        p.drawString(360, height - 510, str(Document_no.Staff_date))
+        p.drawString(200, height - 360, "Name")
+        p.drawString(350, height - 360, "Date")
+        p.drawString(170, height - 390, user5.Name)
+        p.drawString(320, height - 390, str(Document_no.principal_date))
+        p.drawString(170, height - 420, user4.Name)
+        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
+        p.drawString(170, height - 450, user3.Name)
+        p.drawString(320, height - 450, str(Document_no.GM_date))
+        p.drawString(170, height - 480, user2.Name)
+        p.drawString(320, height - 480, str(Document_no.HOD_date))
+        p.drawString(170, height - 510, user1.Name)
+        p.drawString(320, height - 510, str(Document_no.Staff_date))
 
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
-        p.line(50, height - 490, 550, height - 490)
-        p.line(50, height - 520, 550, height - 520)
+        p.line(150, height - 340, 450, height - 340)
+        p.line(150, height - 370, 450, height - 370)
+        p.line(150, height - 400, 450, height - 400)
+        p.line(150, height - 430, 450, height - 430)
+        p.line(150, height - 460, 450, height - 460)
+        p.line(150, height - 490, 450, height - 490)
+        p.line(150, height - 520, 450, height - 520)
 
 
-        p.line(50, height - 340, 50, height - 520)
-        p.line(200, height - 340, 200, height - 520)
-        p.line(350, height - 340, 350, height - 520)
-        p.line(550, height - 340, 550, height - 520)
+        p.line(150, height - 340, 150, height - 520)
+        p.line(300, height - 340, 300, height - 520)
+        p.line(450, height - 340, 450, height - 520)
     elif role=='Staff':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
-        p.drawString(60, height - 450, "")
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, Document_no.Document_no)
-        p.drawString(60, height - 480, user.Name)
-        p.drawString(210, height - 480, "Hod")
-        p.drawString(360, height - 480, Document_no.Document_no)
+        p.drawString(200, height - 360, "Name")
+        p.drawString(350, height - 360, "Date")
+        p.drawString(170, height - 390, user5.Name)
+        p.drawString(320, height - 390, str(Document_no.principal_date))
+        p.drawString(170, height - 420, user4.Name)
+        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
+        p.drawString(170, height - 450, user3.Name)
+        p.drawString(320, height - 450, str(Document_no.GM_date))
+        p.drawString(170, height - 480, user2.Name)
+        p.drawString(320, height - 480, str(Document_no.HOD_date))
 
 
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
-        p.line(50, height - 490, 550, height - 490)
+        p.line(150, height - 340, 450, height - 340)
+        p.line(150, height - 370, 450, height - 370)
+        p.line(150, height - 400, 450, height - 400)
+        p.line(150, height - 430, 450, height - 430)
+        p.line(150, height - 460, 450, height - 460)
+        p.line(150, height - 490, 450, height - 490)
 
 
-        p.line(50, height - 340, 50, height - 490)
-        p.line(200, height - 340, 200, height - 490)
-        p.line(350, height - 340, 350, height - 490)
-        p.line(550, height - 340, 550, height - 490)
+        p.line(150, height - 340, 150, height - 490)
+        p.line(300, height - 340, 300, height - 490)
+        p.line(450, height - 340, 450, height - 490)
     elif role=='HOD':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
-        p.drawString(60, height - 450, "")
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, Document_no.Document_no)
-        p.drawString(60, height - 480, user.Name)
-        p.drawString(210, height - 480, "Hod")
-        p.drawString(360, height - 480, Document_no.Document_no)
-
-
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
-        p.line(50, height - 490, 550, height - 490)
-
-
-        p.line(50, height - 340, 50, height - 490)
-        p.line(200, height - 340, 200, height - 490)
-        p.line(350, height - 340, 350, height - 490)
-        p.line(550, height - 340, 550, height - 490)
-
-    elif role=='HOD':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
-        p.drawString(60, height - 450, "Name")
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, Document_no.Document_no)
+        p.drawString(200, height - 360, "Name")
+        p.drawString(350, height - 360, "Date")
+        p.drawString(170, height - 390, user5.Name)
+        p.drawString(320, height - 390, str(Document_no.principal_date))
+        p.drawString(170, height - 420, user4.Name)
+        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
+        p.drawString(170, height - 450, user3.Name)
+        p.drawString(320, height - 450, str(Document_no.GM_date))
 
 
 
@@ -889,26 +841,23 @@ def generate_pdf(request,Tran_No):
         p.line(50, height - 460, 550, height - 460)
 
 
-        p.line(50, height - 340, 50, height - 460)
-        p.line(200, height - 340, 200, height - 460)
-        p.line(350, height - 340, 350, height - 460)
-        p.line(550, height - 340, 550, height - 460)
+        p.line(150, height - 340, 150, height - 460)
+        p.line(300, height - 340, 300, height - 460)
+        p.line(450, height - 340, 450, height - 460)
+    
 
 
     elif role=='office':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
-        p.drawString(60, height - 450, "Name")
-        p.drawString(210, height - 450, "GM Admin")
-        p.drawString(360, height - 450, Document_no.Document_no)
+        p.setFont("Courier-Bold", 14)
+        p.drawString(200, height - 360, "Name")
+        p.drawString(350, height - 360, "Date")
+        p.drawString(170, height - 390, user5.Name)
+        p.drawString(320, height - 390, str(Document_no.principal_date))
+        p.drawString(170, height - 420, user4.Name)
+        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
+        p.drawString(170, height - 450, user3.Name)
+        p.drawString(320, height - 450, str(Document_no.GM_date))
 
 
 
@@ -919,21 +868,19 @@ def generate_pdf(request,Tran_No):
         p.line(50, height - 460, 550, height - 460)
 
 
-        p.line(50, height - 340, 50, height - 460)
-        p.line(200, height - 340, 200, height - 460)
-        p.line(350, height - 340, 350, height - 460)
-        p.line(550, height - 340, 550, height - 460)
+        p.line(150, height - 340, 150, height - 460)
+        p.line(300, height - 340, 300, height - 460)
+        p.line(450, height - 340, 450, height - 460)
+    
     elif role=='GM':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
-        p.drawString(60, height - 420, "Name")
-        p.drawString(210, height - 420, "Vice Principal")
-        p.drawString(360, height - 420, Document_no.Document_no)
+        p.setFont("Courier-Bold", 14)
+        p.drawString(200, height - 360, "Name")
+        p.drawString(350, height - 360, "Date")
+        p.drawString(170, height - 390, user5.Name)
+        p.drawString(320, height - 390, str(Document_no.principal_date))
+        p.drawString(170, height - 420, user4.Name)
+        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
 
 
 
@@ -945,18 +892,18 @@ def generate_pdf(request,Tran_No):
 
 
 
-        p.line(50, height - 340, 50, height - 430)
-        p.line(200, height - 340, 200, height - 430)
-        p.line(350, height - 340, 350, height - 430)
-        p.line(550, height - 340, 550, height - 430)
+        p.line(150, height - 340, 150, height - 430)
+        p.line(300, height - 340, 300, height - 430)
+        p.line(450, height - 340, 450, height - 430)
+    
     elif role=='vice_principal':
         p.setFont("Courier-Bold", 14)
-        p.drawString(60, height - 360, "Name")
-        p.drawString(210, height - 360, "Role")
-        p.drawString(360, height - 360, "Date")
-        p.drawString(60, height - 390, "Name")
-        p.drawString(210, height - 390, "Principal")
-        p.drawString(360, height - 390, Document_no.Document_no)
+        p.setFont("Courier-Bold", 14)
+        p.drawString(200, height - 360, "Name")
+        p.drawString(350, height - 360, "Date")
+        p.drawString(170, height - 390, user5.Name)
+        p.drawString(320, height - 390, str(Document_no.principal_date))
+
 
 
 
@@ -966,10 +913,10 @@ def generate_pdf(request,Tran_No):
 
 
 
-        p.line(50, height - 340, 50, height - 400)
-        p.line(200, height - 340, 200, height - 400)
-        p.line(350, height - 340, 350, height - 400)
-        p.line(550, height - 340, 550, height - 400)
+        p.line(150, height - 340, 150, height - 400)
+        p.line(300, height - 340, 300, height - 400)
+        p.line(450, height - 340, 450, height - 400)
+    
     
     # Footer
     p.setFont("Helvetica-Oblique", 10)
@@ -979,111 +926,111 @@ def generate_pdf(request,Tran_No):
     p.showPage()
    
 
-    # Add watermark text
-    watermark_text = "Ramco Institute of Technology"
-    p.setFont("Times-Roman", 36)
-    p.setFillColorRGB(0.9, 0.9, 0.9)  # Light gray color for the watermark
-    p.saveState()
-    p.translate(300, 613)
-    p.rotate(33)
-    p.drawCentredString(0, 0, watermark_text)
-    p.restoreState()
+    # # Add watermark text
+    # watermark_text = "Ramco Institute of Technology"
+    # p.setFont("Times-Roman", 36)
+    # p.setFillColorRGB(0.9, 0.9, 0.9)  # Light gray color for the watermark
+    # p.saveState()
+    # p.translate(300, 613)
+    # p.rotate(33)
+    # p.drawCentredString(0, 0, watermark_text)
+    # p.restoreState()
 
-    # Title
-    p.setFont("Times-Roman", 12)
-    p.setFillColorRGB(0, 0, 0)
-    p.drawString(190, height - 50, "Ramco Institute of Technology")
-    p.setFont("Times-Roman", 10)
-    p.drawString(230, height - 60, "Rajapalayam")
-    p.drawString(220, height - 70, "Fuel Requisition Slip")
-    p.drawString(80, height - 90, "To :")
-    p.drawString(100, height - 100, "P.A.C.R. SETHURAMAMMAL CHARITY TRUST,")
-    p.drawString(150, height - 110, "BPCL, DEALERS @ 236463,")
-    p.drawString(100, height - 120, "P.A.C. RAMASAMY RAJASALAI, RAJAPALAYAM.")
+    # # Title
+    # p.setFont("Times-Roman", 12)
+    # p.setFillColorRGB(0, 0, 0)
+    # p.drawString(190, height - 50, "Ramco Institute of Technology")
+    # p.setFont("Times-Roman", 10)
+    # p.drawString(230, height - 60, "Rajapalayam")
+    # p.drawString(220, height - 70, "Fuel Requisition Slip")
+    # p.drawString(80, height - 90, "To :")
+    # p.drawString(100, height - 100, "P.A.C.R. SETHURAMAMMAL CHARITY TRUST,")
+    # p.drawString(150, height - 110, "BPCL, DEALERS @ 236463,")
+    # p.drawString(100, height - 120, "P.A.C. RAMASAMY RAJASALAI, RAJAPALAYAM.")
     
-    p.setFont("Times-Roman", 10)
-    p.drawString(360, height - 50, 'Recipt No :')
-    p.drawString(422, height - 30, '')
+    # p.setFont("Times-Roman", 10)
+    # p.drawString(360, height - 50, 'Recipt No :')
+    # p.drawString(422, height - 30, '')
 
-    # Car Details
-    p.setFont("Times-Roman", 10)
-    p.drawString(100, height - 150, "Please Supply for vehicle No")
-    p.drawString(260, height - 150, ":")
-    p.drawString(270, height - 150, '')
-    p.drawString(380, height - 150, "Date&Time")
-    p.drawString(435, height - 150, ":")
-    p.drawString(440, height - 150, '')
+    # # Car Details
+    # p.setFont("Times-Roman", 10)
+    # p.drawString(100, height - 150, "Please Supply for vehicle No")
+    # p.drawString(260, height - 150, ":")
+    # p.drawString(270, height - 150, '')
+    # p.drawString(380, height - 150, "Date&Time")
+    # p.drawString(435, height - 150, ":")
+    # p.drawString(440, height - 150, '')
     
-    # Items
-    p.setFont("Times-Roman", 10)
-    p.drawString(130, height - 170, "Fuel Type")
-    p.drawString(185, height - 170, ":")
-    p.drawString(276, height - 160, '')
+    # # Items
+    # p.setFont("Times-Roman", 10)
+    # p.drawString(130, height - 170, "Fuel Type")
+    # p.drawString(185, height - 170, ":")
+    # p.drawString(276, height - 160, '')
 
-    p.drawString(130, height - 190, "Vehicle Type")
-    p.drawString(185, height - 190, ":")
-    p.drawString(276, height - 160, '')
+    # p.drawString(130, height - 190, "Vehicle Type")
+    # p.drawString(185, height - 190, ":")
+    # p.drawString(276, height - 160, '')
 
 
-    p.drawString(130, height - 210, "Fuel Quantity")
-    p.drawString(185, height - 210, ":")
-    p.drawString(195, height - 210, "Tank Full")
+    # p.drawString(130, height - 210, "Fuel Quantity")
+    # p.drawString(185, height - 210, ":")
+    # p.drawString(195, height - 210, "Tank Full")
 
-    p.drawString(130, height - 230, "Engine Oil")
-    p.drawString(185, height - 230, ":")
-    # if data.engine_oil_quantity == 'None':
-    #     p.drawString(276, height - 200, 'None')
-    # else:
-    #     p.drawString(276, height - 200, ' Liter')
+    # p.drawString(130, height - 230, "Engine Oil")
+    # p.drawString(185, height - 230, ":")
+    # # if data.engine_oil_quantity == 'None':
+    # #     p.drawString(276, height - 200, 'None')
+    # # else:
+    # #     p.drawString(276, height - 200, ' Liter')
 
-    p.drawString(130, height - 250, "Grease Type")
-    p.drawString(185, height - 250, ":")
-    p.drawString(276, height - 250, '')
+    # p.drawString(130, height - 250, "Grease Type")
+    # p.drawString(185, height - 250, ":")
+    # p.drawString(276, height - 250, '')
 
-    # if data.grease_quantity != 'None':
-    #     p.drawString(180, height - 240, "Grease")
-    #     p.drawString(265, height - 240, ":")
-    #     p.drawString(276, height - 240, ' kG')
+    # # if data.grease_quantity != 'None':
+    # #     p.drawString(180, height - 240, "Grease")
+    # #     p.drawString(265, height - 240, ":")
+    # #     p.drawString(276, height - 240, ' kG')
 
-    # if data.grease_quantity == 'None' and data.distilled_water_quantity != 'None':
-    #     p.drawString(180, height - 240, "Distilled Water")
-    #     p.drawString(265, height - 240, ":")
-    #     p.drawString(276, height - 240, data.distilled_water_quantity + ' Liter')
-    # else:
-    #     p.drawString(180, height - 260, "Distilled Water")
-    #     p.drawString(265, height - 260, ":")
-    #     p.drawString(276, height - 260,  data.distilled_water_quantity + ' Liter')
+    # # if data.grease_quantity == 'None' and data.distilled_water_quantity != 'None':
+    # #     p.drawString(180, height - 240, "Distilled Water")
+    # #     p.drawString(265, height - 240, ":")
+    # #     p.drawString(276, height - 240, data.distilled_water_quantity + ' Liter')
+    # # else:
+    # #     p.drawString(180, height - 260, "Distilled Water")
+    # #     p.drawString(265, height - 260, ":")
+    # #     p.drawString(276, height - 260,  data.distilled_water_quantity + ' Liter')
 
-    # Signature and Address
-    p.setFont("Times-Roman", 12)
-    p.drawString(110, height - 320, "Transport Incharge")
-    p.drawString(100, height - 330, "N.Govindaraju/Rit2500")
-    p.drawString(420, height - 320, "GM Admin")
-    p.drawString(400, height - 330, "Selva Raj/Rit2369")
+    # # Signature and Address
+    # p.setFont("Times-Roman", 12)
+    # p.drawString(110, height - 320, "Transport Incharge")
+    # p.drawString(100, height - 330, "N.Govindaraju/Rit2500")
+    # p.drawString(420, height - 320, "GM Admin")
+    # p.drawString(400, height - 330, "Selva Raj/Rit2369")
 
-    # Rectangle for the main content
-    p.rect(50, 500, 500, 310)
+    # # Rectangle for the main content
+    # p.rect(50, 500, 500, 310)
 
-    # Seal (simulated by drawing an ellipse and text)
-    image_path = "static/images/imag1.jpg"
-    if os.path.isfile(image_path):
-        img = Image.open(image_path)
-        img_reader = ImageReader(img)
-        p.drawImage(img_reader, 340, height - 310, width=70, height=70)  # Adjust the coordinates and size as needed
+    # # Seal (simulated by drawing an ellipse and text)
+    # image_path = "static/images/imag1.jpg"
+    # if os.path.isfile(image_path):
+    #     img = Image.open(image_path)
+    #     img_reader = ImageReader(img)
+    #     p.drawImage(img_reader, 340, height - 310, width=70, height=70)  # Adjust the coordinates and size as needed
 
-    # Finalize the PDF
-    p.showPage()
-    p.save()
+    # # Finalize the PDF
+    # p.showPage()
+    # p.save()
 
-    # Get the value of the buffer and close it
-    pdf = buffer.getvalue()
-    buffer.close()
+    # # Get the value of the buffer and close it
+    # pdf = buffer.getvalue()
+    # buffer.close()
 
-    # Create the HttpResponse object with the appropriate PDF headers
-    response = HttpResponse(pdf, content_type='application/pdf')
-    # response['Content-Disposition'] = f'attachment; filename="{}.pdf"'   # This will prompt a download
+    # # Create the HttpResponse object with the appropriate PDF headers
+    # response = HttpResponse(pdf, content_type='application/pdf')
+    # # response['Content-Disposition'] = f'attachment; filename="{}.pdf"'   # This will prompt a download
 
-    return response
+    # return response
 
 
 

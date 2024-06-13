@@ -434,8 +434,12 @@ def clarification(request):
     department=user_data['Department']
     name=user_data["name"]
     user_name=user_data["user_name"]
+<<<<<<< Updated upstream
     print(user_name)
 
+=======
+ 
+>>>>>>> Stashed changes
     document_data_value = request.GET.get('document_data_value')
 
     if document_data_value:
@@ -446,14 +450,25 @@ def clarification(request):
         print("Value:", value)
         document_data = e_approval.objects.get(Document_no= value)
         remarks_document_data = doc_remarks.objects.get(Document_no=key, doc_clarification_status='Pending')
+<<<<<<< Updated upstream
 
         print(document_data,"+++++++++++++")
         return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department})
+=======
+        return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department,"docdata":docdata})
+>>>>>>> Stashed changes
 
 
     doc_data = {}
     user_data = request.session.get('user_data', {})
+<<<<<<< Updated upstream
     document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending')
+=======
+    
+    doc_data={}
+    document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending') 
+    print("__________________________________________")
+>>>>>>> Stashed changes
     for doc in document_data_list:
         pattern = r"^(.*?)@"
         match = re.search(pattern, doc.Document_no)

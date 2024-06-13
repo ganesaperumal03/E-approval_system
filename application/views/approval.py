@@ -277,6 +277,7 @@ def auth_approval(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
+     
 
     print(user_data['role'])
     if request.method == 'POST':
@@ -306,8 +307,7 @@ def auth_approval(request):
 
 
     Document_no = request.GET.get('Document_no')
-
-
+    print("+======-==-")
     if Document_no:
         role=staff_role
         role_list = ['Staff','HOD','GM','vice_principal','Principal']
@@ -333,17 +333,21 @@ def auth_approval(request):
             if j.principal!='Pending':
                 approval_user.append({"date":j.principal_date,'Approval':'principal',
                 'remarks':j.principal})
-
         document_data = e_approval.objects.get(Document_no=Document_no)
         number = document_data.Total_Value
         number_in_words = num2words(number)
         print(number_in_words)
-        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words})
+        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words,"doc_data":doc_data})
 
 
     user_data=request.session.get('user_data', {})
     print(user_data['role'])
-    doc_data=[]
+
+    def filtere(user_data):
+        global doc_data
+        doc_data=[]
+    filtere(user_data)
+    
     if user_data['role'] == 'Staff':
         print('Staff-----------------------------')
         technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
@@ -371,7 +375,7 @@ def auth_approval(request):
     elif user_data['role'] == 'GM':
         technicians = User.objects.filter(
             role__in=['Technician','HOD','office']  # Use role__in for multiple roles
-         )
+        )
 
         for technician in technicians:
             approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending').filter(staff_id=technician.staff_id,GM='Pending',vice_principal='Pending',principal='Pending')
@@ -386,7 +390,7 @@ def auth_approval(request):
     elif user_data['role'] == 'vice_principal':
         technicians = User.objects.filter(
             role__in=['Technician', 'GM','HOD','office']  # Use role__in for multiple roles
-         )
+        )
 
         for technician in technicians:
             approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending').filter(staff_id=technician.staff_id,vice_principal='Pending',principal='Pending')
@@ -401,7 +405,7 @@ def auth_approval(request):
     elif user_data['role'] == 'Principal':
         technicians = User.objects.filter(
             role__in=['Technician', 'GM', 'vice_principal','HOD','office']  # Use role__in for multiple roles
-         )
+        )
         print('principal',technicians)
         for technician in technicians:
             approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending',vice_principal='Pending').filter(staff_id=technician.staff_id ,principal='Pending')
@@ -411,13 +415,16 @@ def auth_approval(request):
                     staff = User.objects.filter(staff_id=approval.staff_id).first()
                     approval.staff_name = staff.Name
                     doc_data.append(approval)
-    print('doc_data',doc_data)
+        print('doc_data',doc_data)
+    
     if request.method == 'POST':
         form = auth_form(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             role = staff.role
-    return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department})
+    print("trtioeriorhoih")
+    
+    return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department,"doc_data":doc_data})
 
 doc_no = None # Declare the global variable outside the function
 

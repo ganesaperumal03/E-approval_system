@@ -13,7 +13,6 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
       />
-      <link rel="stylesheet" href="">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -173,10 +172,15 @@
         </ul>
       </div>
       <div>
+
         <form  method="POST"  id='create_form' class="border"  autocomplete="off" enctype="multipart/form-data">
           {% csrf_token %}
+          <div class="alert alert-success alert-dismissible">
+            <strong>Submitted!!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+          </div>
           <div class="container-fluid">
-            <div class="container1 ">
+            <div class="container1 border">
               <div class="document-container col-md-6 .ms-md-auto border">
                 <div class="heading"><h3>Document Detail</h3></div>
                 <div class="document-details">
@@ -190,7 +194,7 @@
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Category</label>
-                    <select required class="detail-value col-md-5" name="Category">
+                    <select class="detail-value col-md-5" name="Category">
 
                       <option value="" disabled hidden selected>Select Category</option>
       
@@ -200,19 +204,19 @@
                     </select>
       
                   </div>
-                  <div class="detail-section">
+                  <!-- <div class="detail-section">
                     <label class="detail-label">Sub Category</label>
-                    <select required class="detail-value col-md-5" name="Sub_Category">
+                    <select class="detail-value col-md-5" name="Sub_Category">
 
                       <option value="" disabled hidden selected>Select Category</option>
                       {% for c in category %}
                       <option value="{{ c }}">{{ c }}</option>
                       {% endfor %}
                     </select>
-                  </div>
+                  </div> -->
                   <div class="detail-section">
                     <label class="detail-label">Priority</label>
-                    <select required class="detail-value col-md-5" name="Priority">
+                    <select class="detail-value col-md-5" name="Priority" required>
   
                       <option value="" disabled hidden selected>Select Priority</option>
         
@@ -241,13 +245,28 @@
 
               </div>
             </div>
-            <div class="container2 ">
+            <div class="container2 border">
               <div class="financial-details col-md-6 .ms-md-auto border">
                 <div class="heading">
                 <h3>Financial Details</h3></div>
                 <div class="detail-section">
+                  <label class="detail-label">Head_of_account</label>
+                    <select class="detail-value col-md-5" name=" Head_of_account">
+
+                      <option value="" disabled hidden selected>Select  Head_of_account</option>
+                      <option value="Capital Goods">Capital Goods</option>
+                      <option value="Lab Equipment / Software /Tools">Lab Equipment / Software /Tools</option>
+                      <option value="Infrastructure /Furniture">Infrastructure /Furniture </option>
+                      <option value="Infrastructure / Building">Infrastructure / Building</option>
+                      <option value="Lab Consumables">Lab Consumables</option>
+                      <option value="Maintenance/Services/Spares/AMC /Licences"> Maintenance/Services/Spares/AMC /Licences</option>
+
+
+                    </select>
+                </div>
+                <div class="detail-section">
                   <span class="detail-label">Fin.Commitment</span>
-                  <select required class="detail-value col-md-5" name="fin_commit">
+                  <select class="detail-value col-md-5" name="fin_commit">
 
                     <option value="" disabled hidden selected>Select</option>
                     <option value="Yes">Yes</option>
@@ -282,28 +301,8 @@
           </div class="border">
           <div class="container my-3" style="text-align: center;">
             <!-- Trigger the modal with a button -->
-            <button href="{% url 'send_email' %}" type="submit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color: #00407b;">Create</button>
-          
+            <button type="submit" class="btn btn-info btn-lg" style="background-color: #00407b;">Create</button>
             <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
-              <div class="modal-dialog">
-              
-                <!-- Modal content-->
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <div class="modal-body">
-                    <p>Some Details are Missing ??</p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="background-color: red; color: #fff;">Close</button>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-            
           </div>
         
       
@@ -356,7 +355,11 @@
         </form>
       </div>
     </div>
-  
+  <div>
+    {% if sample %}
+    pop up
+    {% endif %}
+  </div>
     <script>
       $(function() { 
         $('#sidebarCollapse').on('click', function() {
@@ -364,5 +367,30 @@
         });
       });
     </script>
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function(){
+  // Get the button and the alert
+          var btn = document.querySelector(".btn-info");
+          var alert = document.querySelector(".alert");
+
+          // Initially hide the alert
+          alert.style.display = 'none';
+
+          // Add click event to the button
+          btn.addEventListener('click', function() {
+            // Show the alert
+            alert.style.display = 'block';
+          });
+
+          // Add click event to the close button of the alert
+          document.querySelector(".btn-close").addEventListener('click', function() {
+            // Hide the alert
+              alert.style.display = 'none';
+            });
+        });
+
+
+    </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

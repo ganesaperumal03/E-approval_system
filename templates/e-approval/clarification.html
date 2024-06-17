@@ -71,11 +71,6 @@
           color:#a82707 !important;
 
       }
-      .ml-2, 
-      .mx-2 {
-        margin-bottom: 2px;
-
-      }
       @media (max-width: 768px) {
         #sidebar {
           margin-left: -23rem;
@@ -164,22 +159,13 @@
       <div class="container" style="max-width:100%; margin: none;">
         <div class="document col " style="line-height: 2;">
           <div class="document-clarification col mb-2 border" style="max-width:100%;">
-
-
             <div class="document-head">
               <label class="doc-1">Document Clarificaton</label>
             </div>
-            <div class="doc-conform-group row mt-2 mb-2">
-              <label class="col-sm-4 col-form-label" id="tags">Attached document</label>
-              {%if document_data.Tran_No %}
-              <a href="{% url 'pdf_show' document_data.Tran_No  %}" target="_blank">
-                                <button class=" btn btn-danger ml-2">
-                  <i class="bi bi-file-pdf"></i> FILE
-                </button>                  
-              </a>
-              {%endif %}
+            <div class="doc-con form-group row mt-2">
+              <label class="col-sm-1 col-form-label" id="tags">Department</label>
+              <span id="tag-ans"name='Department'  class="mt-2">{{document_data.Department}}</span>
             </div>
-
 
             <div class="document-body row">
               <div class="doc col-md-4">
@@ -204,7 +190,8 @@
                 </div>
                 <form  method="POST" action="{% url 'updateapproval' %}" autocomplete="off" enctype="multipart/form-data">
                   {% csrf_token %}
-                  <div class="doc-con form-group row mt-2">
+
+                <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Date-</label>
                   <input id="tag-ans" name='date' class="mt-2"value="{{document_data.date}}">
                 </div>
@@ -212,31 +199,21 @@
                   <label class="col-sm-4 col-form-label" id="tags">Priority</label>
                   <input id="tag-ans"name='date'  class="mt-2" name="Priority" value="{{document_data.Priority}}">
                 </div>
-                <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Status</label>
-                  <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.principal}}</span>
-                </div>
-                <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Upadate the document</label>
-                  <input id="tag-ans"  name='update_document' type='file' class="col mt-2" name="update_document" >
-                </div>
+
+
               </div>
               <div class="doc col-md-4">
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Department</label>
-                  <input id="tag-ans"name='Department'  class="mt-2"value="{{document_data.Department}}">
+                  <label class="col-sm-4 col-form-label" id="tags">Status</label>
+                  <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.principal}}</span>
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Category</label>
                   <input id="tag-ans" name='Category'  class="mt-2" name="Category" value="{{document_data.Category}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Sub category</label>
-                  <input id="tag-ans"  name='Sub_Category' class="mt-2" name="Sub_Category" value="{{document_data.Sub_Category}}">
-                </div>
-                <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Trans no</label>
-                  <textarea id="tag-ans" name='Tran_No' wrap="off" class="mt-2" class="form-control mr-2"  readonly style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;">{{document_data.Tran_No}}</textarea>
+                  <label class="col-sm-4 col-form-label" id="tags">Upadate the document</label>
+                  <input id="tag-ans"  name='update_document' type='file' class="col mt-2" name="update_document" >
                 </div>
               </div>
               <div class="doc col-md-4">
@@ -251,25 +228,45 @@
                       <label class="col-sm-4 col-form-label" id="tags"> Amount (INR) </label>
                     <input id="tag-ans" class="mt-2" name="Total_Value" value="{{document_data.Total_Value}}">
                 </div>
+               
               </div>
             </div>
+            <div class="doc-con form-group row mt-2">
+              <label class="col-sm-1 col-form-label" id="tags">Trans no</label>
+              <span id="tag-ans" name='Tran_No' class="mt-2" class="form-control mr-2"  readonly>{{document_data.Tran_No}}</span>
+            </div>
+            <div class="doc-con form-group row mt-2">
+              <label class="col-sm-4 col-form-label" id="tags">Head of Account</label>
+              <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.Head_of_account}}</span>
+            </div>
+            <div class="doc-conform-group row mt-2 mb-2">
+              <label class="col-sm-1 col-form-label" id="tags">Attached document</label>
+              {%if document_data.Tran_No %}
+              <a href="{% url 'pdf_show' document_data.Tran_No  %}" target="_blank">
+                                <button class=" btn btn-danger ml-2">
+                  <i class="bi bi-file-pdf"></i> FILE
+                </button>                  
+              </a>
+              {%endif %}
+            </div>
+
           
           </div>
           <!--end of document clarificaiton-->
           <div class="second-sec row-12 border mb-2">
             <div class="document-remarks row-12 ">
               <div class="document-head">
-                <label class="row-sm-6 ml-2 col-form-label">Document remarks</label>
+                <label class="row-md-2 ml-2">Document remarks</label>
               </div>
-              <div class="remarks-body ">
+              <div class="remarks-body border">
                 <div class="remarks row">
-                  <label id="tags" class="col-sm-2 ml-2 col-form-label">Remarks</label>
+                  <label id="tags" class="col-sm-2 ml-4 col-form-label">Remarks</label>
                   <div class="col-sm-9">
                     <textarea class="form-control mt-2 col-10" placeholder="Remarks" style="height: 70px; resize:none;"></textarea>
                   </div>
                 </div>
                 <div class="subject row mt-2">
-                  <label id="tags" class="col-sm-2 ml-2 col-form-label">Subject</label>
+                  <label id="tags" class="col-sm-2 ml-4 col-form-label">Subject</label>
                   <div class="col-sm-9  mb-2">
                     <textarea class="form-control mt-2 col-10" placeholder="Subject" style="resize: none;"></textarea>
                   </div>
@@ -277,32 +274,32 @@
               </div>
             </div>
 
-            <div class="responsibe-user border row-4">
+            <div class="responsibe-user row-4">
               <div class="document-head">
                 <label class="row-sm-6 ml-2 col-form-label">Responsibe user</label>
               </div>
               <div class="responsibe-body">
                 <div class="subject row">
-                  <label class="col-sm-4 ml-2 col-form-label" id="tags">Full name</label>
+                  <label class="col-sm-4 ml-4 col-form-label" id="tags">Name</label>
                   <div class="body-response ml-5">
                     <span>{{Name}}</span>
                   </div>
                 </div>
                 <div class="subject row">
-                  <label id="tags" class="col-sm-4 ml-2 col-form-label">Role</label>
+                  <label id="tags" class="col-sm-4 ml-4 col-form-label">Role</label>
                   <div class="body-response ml-5">
                     <span>{{role}}</span>
                   </div>
                 </div>
-                <div class="subject row">
-                  <label id="tags" class="col-sm-4 ml-2 col-form-label">User name</label>
+                <!-- <div class="subject row">
+                  <label id="tags" class="col-sm-4 ml-4 col-form-label">User name</label>
                   <div class="body-response ml-5">
                     <span>{{user_name}}</span>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
-            <div class="reroute-comments row-3 ">
+            <div class="reroute-comments row-3 border">
               <div class="comments-body">
                 <label class="reroutes-text ml-2">Reroute comments</label>
                 <div class="body-response">
@@ -310,50 +307,51 @@
                 </div>
               </div>
             </div>
-          </div>
-          <!-- end of second sec-->
-          <div class="third-sec border mt-2">
-            <label class="row-sm-6 col-form-label">Clarification given</label>
-            <div class="click-body row">
-              <div class="click col-md-4"style="text-align: center;">
-                <label class="mx-4"for="myCheckbox" id="tags">click</label>
-                <input type="checkbox" id="myCheckbox" required />
-              </div>
-              <div class="reroute-tag col-md-4">
-                <label id="tags" class="col-sm-4 col-form-label">Reroute Clarification</label>
-                <div>
-                  <textarea class="form-control mt-2 col-10" name='doc_clarifictaions_reason' placeholder="Reroute Clarification" style="height: 70px; resize: none;" required></textarea>
+            <div class="third-sec border mt-2">
+              <label class="row-sm-6 col-form-label">Clarification given</label>
+              <div class="click-body row">
+                <div class="click col-md-4"style="text-align: center;">
+                  <label class="mx-4"for="myCheckbox" id="tags">click</label>
+                  <input type="checkbox" id="myCheckbox" required />
+                </div>
+                <div class="reroute-tag col-md-4">
+                  <label id="tags" class="col-sm-4 col-form-label">Reroute Clarification</label>
+                  <div>
+                    <textarea class="form-control mt-2 col-10" name='doc_clarifictaions_reason' placeholder="Reroute Clarification" style="height: 70px; resize: none;" required></textarea>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- end of clarificaition given-->
-          <div class="submit border mt-2 mb-2" style="text-align: center;">
-            <button type="submit"class="btn btn-success btn-lg ">Submit</button>
-          </div>
-          <!--end of click-->
-          <div class="data border">
-            <div class="col-md-6">
-              <div class="doc-row" >
-                <label class="row-sm-6 col-form-label" id="tags">Created by:</label>
-                <span id="tags">-</span>
-              </div>
-              <div class="doc-row">
-                <label class="row-sm-6 col-form-label" id="tags">Created date:</label>
-                <span id="tags">-</span>
-              </div>
+            <!-- end of clarificaition given-->
+            <div class="submit border mt-2 mb-2" style="text-align: center;">
+              <button type="submit"class="btn btn-success btn-lg ">Submit</button>
             </div>
-            {% comment %} <div class="col-md-6">
-              <div class="doc-row">
-                <label class="row-sm-6 col-form-label" id="tags">Modified by:</label>
-                <span id="tags">-</span>
+            <!--end of click-->
+            <div class="data border">
+              <div class="col-md-6">
+                <div class="doc-row" >
+                  <label class="row-sm-6 col-form-label" id="tags">Created by:</label>
+                  <span id="tags">-</span>
+                </div>
+                <div class="doc-row">
+                  <label class="row-sm-6 col-form-label" id="tags">Created date:</label>
+                  <span id="tags">-</span>
+                </div>
               </div>
-              <div class="doc-row">
-                <label class="row-sm-6 col-form-label" id="tags">Modified date:</label>
-                <span id="tags">-</span>
-              </div>
-            </div> {% endcomment %}
+              {% comment %} <div class="col-md-6">
+                <div class="doc-row">
+                  <label class="row-sm-6 col-form-label" id="tags">Modified by:</label>
+                  <span id="tags">-</span>
+                </div>
+                <div class="doc-row">
+                  <label class="row-sm-6 col-form-label" id="tags">Modified date:</label>
+                  <span id="tags">-</span>
+                </div>
+              </div> {% endcomment %}
+            </div>
           </div>
+          <!-- end of second sec-->
+          
         </div>
       </div>
     </div>

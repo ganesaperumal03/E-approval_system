@@ -10,12 +10,12 @@ import os
 from django.core.paginator import Paginator    #type:ignore
 from django.conf import settings     #type:ignore
 from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,DocRemarksUpdateForm,ClarificationUpdateForm    #type:ignore
-from application.models import e_approval,User,doc_remarks     #type:ignore
+from application.models import e_approval,User,doc_remarks,status     #type:ignore
 from django.contrib import messages #type:ignore
 from django.db.models import Q  #type:ignore
 import pandas as pd  
 from num2words import num2words   
-
+from django.core.mail import send_mail
 
 def save_uploaded_pdfs(file_dict):
     profile_images_directory = os.path.join('media')
@@ -51,7 +51,14 @@ def create_form(request):
 
 
     excel_file_path = 'category.csv'
-    # Read the Excel file
+    # excel_file_path1 = 'Book1.csv'
+    # try:
+    #     head_of_account=pd.read_csv("excel_file_path1")
+    #     head_of_account.head(2)
+    # except pd.errors.EmptyDataError:
+    #          df = pd.DataFrame(columns=['Sub_category'])
+    # Head_of_account = head_of_account['Head of account'].tolist()
+    # # Read the Excel file
     try:
         df = pd.read_csv(excel_file_path)
     except pd.errors.EmptyDataError:
@@ -63,17 +70,26 @@ def create_form(request):
         if form.is_valid():
             Department = form.cleaned_data['Department']
             Category = form.cleaned_data['Category']
-            Sub_Category = form.cleaned_data['Sub_Category']
+            # Head_of_account = form.cleaned_data['Sub_Category']
+            dept_code={"ARTIFICIAL INTELLIGENCE AND DATA SCIENCE":"AD",
+                       "CIVIL ENGINEERING":"CE",
+                       "COMPUTER SCIENCE AND BUSINESS SYSTEM":"CB",
+                       "COMPUTER SCIENCE AND ENGINEERING":"CSE",
+                       "ELECRICAL AND ELECTRONICS ENGINEERING":"EEE",
+                       "ELECTRONICS AND COMMUNICATION ENGINEERING":"ECE",
+                       "INFORMATION TECHNOLOGY":"IT",
+                       "MECHANICAL ENGINEERING":"MECH",}
             # Calculate count and format as strings with leading zeros
             count = e_approval.objects.count() + 1
             print(count)
             count_no = f"{count:05d}"
             tran_count = e_approval.objects.filter(Department=Department).count() + 1
             tran_count_no = f"{tran_count:05d}"
-
             # Construct document and transaction numbers
-            doc_no = f'rit/ac{Department}/{Category}/{Sub_Category}/{count_no}'
-            tran_no = f'rit/ac{Department}/{Category}/{Sub_Category}/{tran_count_no}'
+            if dept_code[Department] == dept_code[Department]:
+                doc_no = f'RIT/AC/{dept_code[Department]}/{Category}/{tran_count_no}'
+            print(doc_no)
+            tran_no = f'RIT/AC/{dept_code[Department]}/{Category}/{count_no}'
             staff = User.objects.get(staff_id=staff_id)
             user = form.save(commit=False)
             role = staff.role
@@ -127,9 +143,8 @@ def create_form(request):
                 user.GM = None
                 user.vice_principal = None
                 user.principal = 'Pending'
-
             user.save()
-            return redirect('create_form')  # Redirect to a success page
+            return redirect('create_form')
         else:
             return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name})
     else:
@@ -229,7 +244,6 @@ def login(request):
             'confirm_Password' : user.confirm_Password           }
             
             request.session['user_data'] = user_dict
-
             return redirect('create_form')
         else:
             # Passwords don't match, show an error message
@@ -238,6 +252,7 @@ def login(request):
     else:
         return render(request, "auth/login.html")
 def logout(request):
+    
     print('logout function called')
     auth_logout(request)
     messages.success(request,'You were logged out')
@@ -277,7 +292,6 @@ def auth_approval(request):
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
-     
 
     print(user_data['role'])
     if request.method == 'POST':
@@ -307,13 +321,15 @@ def auth_approval(request):
 
 
     Document_no = request.GET.get('Document_no')
-    print("+======-==-")
+
+
     if Document_no:
         role=staff_role
         role_list = ['Staff','HOD','GM','vice_principal','Principal']
         ia = role_list.index(role)
         print(department,role,ia)
         approval_user = []
+        print(approval_user,"!!!!!!!!!!!!!")
         date=None
 
         auth_list = e_approval.objects.filter(Document_no=Document_no)
@@ -333,98 +349,94 @@ def auth_approval(request):
             if j.principal!='Pending':
                 approval_user.append({"date":j.principal_date,'Approval':'principal',
                 'remarks':j.principal})
+
         document_data = e_approval.objects.get(Document_no=Document_no)
         number = document_data.Total_Value
         number_in_words = num2words(number)
         print(number_in_words)
-        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words,"doc_data":doc_data})
+        return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words,'doc_data':doc_data})
 
 
     user_data=request.session.get('user_data', {})
     print(user_data['role'])
-
-    def filtere(user_data):
+    def filler(user_data):
         global doc_data
         doc_data=[]
-    filtere(user_data)
-    
-    if user_data['role'] == 'Staff':
-        print('Staff-----------------------------')
-        technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
-        for technician in technicians:
-            approvals = e_approval.objects.filter(staff_id=technician.staff_id ,Staff = 'Pending',HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
-            print('Staff2-----------------------------')
+        if user_data['role'] == 'Staff':
+            print('Staff-----------------------------')
+            technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician'])
+            for technician in technicians:
+                approvals = e_approval.objects.filter(staff_id=technician.staff_id ,Staff = 'Pending',HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
+                print('Staff2-----------------------------')
 
-            if  approvals:
-                print('Staff3-----------------------------')
+                if  approvals:
+                    print('Staff3-----------------------------')
 
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-    elif user_data['role'] == 'HOD':
-        technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician','Staff'])
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending').filter(staff_id=technician.staff_id ,HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+        elif user_data['role'] == 'HOD':
+            technicians = User.objects.filter(Department=user_data['Department'], role__in=['Technician','Staff'])
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending').filter(staff_id=technician.staff_id ,HOD = 'Pending',GM='Pending',vice_principal='Pending',principal='Pending')
 
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-    elif user_data['role'] == 'GM':
-        technicians = User.objects.filter(
-            role__in=['Technician','HOD','office']  # Use role__in for multiple roles
-        )
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+        elif user_data['role'] == 'GM':
+            technicians = User.objects.filter(
+                role__in=['Technician','HOD','office']  # Use role__in for multiple roles
+            )
 
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending').filter(staff_id=technician.staff_id,GM='Pending',vice_principal='Pending',principal='Pending')
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending').filter(staff_id=technician.staff_id,GM='Pending',vice_principal='Pending',principal='Pending')
 
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
 
 
-    elif user_data['role'] == 'vice_principal':
-        technicians = User.objects.filter(
-            role__in=['Technician', 'GM','HOD','office']  # Use role__in for multiple roles
-        )
+        elif user_data['role'] == 'vice_principal':
+            technicians = User.objects.filter(
+                role__in=['Technician', 'GM','HOD','office']  # Use role__in for multiple roles
+            )
 
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending').filter(staff_id=technician.staff_id,vice_principal='Pending',principal='Pending')
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending').filter(staff_id=technician.staff_id,vice_principal='Pending',principal='Pending')
 
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
 
 
-    elif user_data['role'] == 'Principal':
-        technicians = User.objects.filter(
-            role__in=['Technician', 'GM', 'vice_principal','HOD','office']  # Use role__in for multiple roles
-        )
-        print('principal',technicians)
-        for technician in technicians:
-            approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending',vice_principal='Pending').filter(staff_id=technician.staff_id ,principal='Pending')
-            print(approvals)
-            if  approvals:
-                for approval in approvals:  # Iterate through the queryset
-                    staff = User.objects.filter(staff_id=approval.staff_id).first()
-                    approval.staff_name = staff.Name
-                    doc_data.append(approval)
-        print('doc_data',doc_data)
-    
+        elif user_data['role'] == 'Principal':
+            technicians = User.objects.filter(
+                role__in=['Technician', 'GM', 'vice_principal','HOD','office']  # Use role__in for multiple roles
+            )
+            print('principal',technicians)
+            for technician in technicians:
+                approvals = e_approval.objects.exclude(Staff='Pending',HOD='Pending',GM='Pending',vice_principal='Pending').filter(staff_id=technician.staff_id ,principal='Pending')
+                print(approvals)
+                if  approvals:
+                    for approval in approvals:  # Iterate through the queryset
+                        staff = User.objects.filter(staff_id=approval.staff_id).first()
+                        approval.staff_name = staff.Name
+                        doc_data.append(approval)
+
     if request.method == 'POST':
         form = auth_form(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             role = staff.role
-    print("trtioeriorhoih")
-    
-    return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department,"doc_data":doc_data})
+    filler(user_data)
+    return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department,'doc_data':doc_data})
 
 doc_no = None # Declare the global variable outside the function
 
@@ -485,7 +497,7 @@ def updateapproval(request):
         remarks_Document_no = request.POST.get('remarks_document_data')
 
         Category = request.POST.get('Category')
-        Sub_Category = request.POST.get('Sub_Category')
+        # Sub_Category = request.POST.get('Sub_Category')
         fin_commit = request.POST.get('fin_commit')
         Total_Value = request.POST.get('Total_Value')
         doc_clarifictaions_reason = request.POST.get('doc_clarifictaions_reason')
@@ -494,7 +506,7 @@ def updateapproval(request):
         doc_data = get_object_or_404(doc_remarks,Document_no=remarks_Document_no)
         approval_data.Priority = Priority
         approval_data.Category = Category
-        approval_data.Sub_Category = Sub_Category
+        # approval_data.Sub_Category = Sub_Category
         approval_data.fin_commit = fin_commit
         approval_data.Total_Value = Total_Value
         approval_data.Attachment = file_paths.get('Attachment')
@@ -517,11 +529,15 @@ def updateapproval(request):
 
 
 def form_approval(request):
+    user_data=request.session.get('user_data', {})
     approval_Remarks = request.POST.get('approval_Remarks')
     Document_no = request.POST.get('Document_no')
     now = datetime.now()
     print("dsd------------------------------------------------------------")
-
+    staff_role=user_data['role']
+    department=user_data['Department']
+    name=user_data["name"]
+    user_name=user_data["user_name"]
     # Format the date and time as a string
     current_date_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -581,7 +597,7 @@ def form_approval(request):
         approval_data.principal_date = current_date_time
         approval_data.save()
 
-    return render(request, "e-approval/auth_approval.html")
+    return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name})
 
 
 def view_approval(request):
@@ -594,28 +610,28 @@ def view_approval(request):
 
     approval_user = []
     date=None
-
-    role_list = ['Staff','HOD','GM','vice_principal','Principal']
     approval_user = []
+
     date=None
 
     auth_list = e_approval.objects.filter(Document_no=Tran_No)
     for i,j in enumerate(auth_list):
-        if j.Staff!='Pending':
-            approval_user.append({"date":j.Staff_date,'Approval':'Staff',
-            'user':User.objects.filter(Department=Department, role='Staff').first()})
-        if j.HOD!='Pending':
-            approval_user.append({"date":j.HOD_date,'Approval':'HOD',
-            'user':User.objects.filter(Department=Department, role='HOD').first()})
-        if j.GM!='Pending':
-            approval_user.append({"date":j.GM_date,'Approval':'GM',
-            'user':User.objects.filter( role='GM').first()})
-        if j.vice_principal!='Pending':
-            approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
-            'user':User.objects.filter( role='vice_principal').first()})
-        if j.principal!='Pending':
-            approval_user.append({"date":j.principal_date,'Approval':'principal',
-            'user':User.objects.filter( role='principal').first()})
+        # if j.Staff!='Pending':
+        approval_user.append({"date":j.Staff_date,'Approval':'Staff',
+        'user':User.objects.filter(Department=Department, role='Staff').first()})
+        # if j.HOD!='Pending':
+        approval_user.append({"date":j.HOD_date,'Approval':'HOD',
+        'user':User.objects.filter(Department=Department, role='HOD').first()})
+        # if j.GM!='Pending':
+        approval_user.append({"date":j.GM_date,'Approval':'GM',
+        'user':User.objects.filter( role='GM').first()})
+        # if j.vice_principal!='Pending':
+        approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
+        'user':User.objects.filter( role='vice_principal').first()})
+        # if j.principal!='Pending':
+        approval_user.append({"date":j.principal_date,'Approval':'principal',
+        'user':User.objects.filter( role='principal').first()})
+    print(approval_user,"65555555555")
     if Tran_No:
         Tran_No = e_approval.objects.get(Tran_No=Tran_No)
         tran_no=e_approval.objects.filter(staff_id=staff_id)
@@ -661,11 +677,20 @@ from django.shortcuts import HttpResponse #type:ignore
 from django.core.mail import send_mail #type:ignore
 
 def send_email(request):
-    subject = 'Hello from Django'
-    message = 'This is a test email sent from Django.'
-    recipient_list = ['jjayaraj715@gmail.com']  # Replace with the recipient's email address
-    print('Mail funciton called *********************************************************')
-    send_mail(subject, message, 'jjayaraj715@gmail.com', recipient_list)
+    user_data=request.session.get('user_data', {})
+    Tran_No = request.GET.get('Tran_No')
+    email=user_data["email"]
+    subject_create = 'Hello from Django'
+    message_create = 'This is a test email sent from Django.'
+ # Replace with the recipient's email address
+
+    send_mail(
+    subject_create,
+    message_create,
+    "ganeshperumal256@gmail.com",
+    ["dhaneshponraj@gmail.com","dhanesh1109@outlook.com"],
+    fail_silently=False,
+    )
     return HttpResponse('Email sent successfully.')
 
 
@@ -702,10 +727,10 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-from PIL import Image #type:ignore
+from PIL import Image
 from io import BytesIO  # Add this import statement
 import os
-
+from datetime import datetime
 def generate_pdf(request,Tran_No):
     print(Tran_No)
     # Create a file-like buffer to receive PDF data.
@@ -728,44 +753,56 @@ def generate_pdf(request,Tran_No):
 
     # Draw the content on the PDF
     width, height = A4
-
+    Generated_date=datetime.now()
+    Generated_date_str = Generated_date.strftime('%Y-%m-%d/%H:%M')
+        
+    print(Generated_date)
     # Title
     p.setFont("Helvetica-Bold", 16)
     p.drawString(175, height - 50, "Ramco Institute of Technology")
     p.setFont("Helvetica-Bold", 14)
     p.drawString(245, height - 80, "E-approval")
     p.drawString(50, height - 330, "Approval List")
-
+    
     # Labels
     p.setFont("Times-Bold", 13)
     
     p.drawString(70, height - 120, "Department :")
+    p.drawString(210, height - 170, ":")
     p.drawString(70, height - 150, "Trans NO ")
-    p.drawString(70, height - 180, "Category ")
-    p.drawString(140, height - 180, ":")
+    p.drawString(210, height - 150, ":")
+    p.drawString(70, height - 190, "Category ")
+    p.drawString(210, height - 190, ":")
     p.drawString(70, height - 210, "Subject ")
-    p.drawString(140, height - 210, ":")
-    p.drawString(70, height - 240, "Remarks ")
-    p.drawString(140, height - 240, ":")
-    p.drawString(70, height - 300, "Amount (INR) ")
-    p.drawString(155, height - 300, ":")
+    p.drawString(210, height - 210, ":")
+    p.drawString(70, height - 250, "Remarks ")
+    p.drawString(210, height - 250, ":")
+    p.drawString(70, height - 270, "Approval Date")
+    p.drawString(210, height - 270, ":")
+    p.drawString(70, height - 230, "Approved Request Date")
+    p.drawString(210, height - 230, ":")
+    p.drawString(70, height - 310, "Amount (INR) ")
+    p.drawString(210, height - 310, ":")
 
 
     p.setFont("Times-Roman", 12)
-    p.drawString(145, height - 120, Document_no.Department)
-    p.drawString(145, height - 150, Document_no.Tran_No)
-    p.drawString(145, height - 180, Document_no.Category)
-    p.drawString(405, height - 180, Document_no.Sub_Category)
-    p.drawString(145, height - 210, Document_no.remarks_Subject)
-    p.drawString(160, height - 300, Document_no.Total_Value)
-    p.drawString(405, height - 150, Document_no.Document_no)    
+    p.drawString(180, height - 120, Document_no.Department)
+    p.drawString(220, height - 150, Document_no.Tran_No)
+    p.drawString(220, height - 190, Document_no.Category)
+    p.drawString(220, height - 290, Document_no.Head_of_account)
+    p.drawString(220, height - 210, Document_no.remarks_Subject)
+    p.drawString(220, height - 250, Document_no.remarks_Subject1)
+    p.drawString(220, height - 230, str(Document_no.date))
+    p.drawString(220, height - 270, str(Document_no.vice_principal_date))
+    p.drawString(220, height - 310, Document_no.Total_Value)
+    p.drawString(220, height - 170, Document_no.Document_no)    
 
     
     
     p.setFont("Times-Bold", 13)
-    p.drawString(320, height - 150, "Doc NO ")
-    p.drawString(320, height - 180, "Sub-category ")
-    p.drawString(400, height - 180, ":")
+    p.drawString(70, height - 170, "Doc NO ")
+    p.drawString(70, height - 290, "Head of Account")
+    p.drawString(210, height - 290, ":")
 
 
     image_path = "static/image/RIT_logo.png"
@@ -779,78 +816,78 @@ def generate_pdf(request,Tran_No):
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
         p.drawString(350, height - 360, "Date")
-        p.drawString(170, height - 390, user5.Name)
+        p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(170, height - 420, user4.Name)
+        p.drawString(150, height - 420, user4.Name)
         p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(170, height - 450, user3.Name)
+        p.drawString(150, height - 450, user3.Name)
         p.drawString(320, height - 450, str(Document_no.GM_date))
-        p.drawString(170, height - 480, user2.Name)
+        p.drawString(150, height - 480, user2.Name)
         p.drawString(320, height - 480, str(Document_no.HOD_date))
-        p.drawString(170, height - 510, user1.Name)
+        p.drawString(150, height - 510, user1.Name)
         p.drawString(320, height - 510, str(Document_no.Staff_date))
 
-        p.line(150, height - 340, 450, height - 340)
-        p.line(150, height - 370, 450, height - 370)
-        p.line(150, height - 400, 450, height - 400)
-        p.line(150, height - 430, 450, height - 430)
-        p.line(150, height - 460, 450, height - 460)
-        p.line(150, height - 490, 450, height - 490)
-        p.line(150, height - 520, 450, height - 520)
+        p.line(100, height - 340, 500, height - 340)
+        p.line(100, height - 370, 500, height - 370)
+        p.line(100, height - 400, 500, height - 400)
+        p.line(100, height - 430, 500, height - 430)
+        p.line(100, height - 460, 500, height - 460)
+        p.line(100, height - 490, 500, height - 490)
+        p.line(100, height - 520, 500, height - 520)
 
 
-        p.line(150, height - 340, 150, height - 520)
+        p.line(100, height - 340, 100, height - 520)
         p.line(300, height - 340, 300, height - 520)
-        p.line(450, height - 340, 450, height - 520)
+        p.line(500, height - 340, 500, height - 520)
     elif role=='Staff':
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
         p.drawString(350, height - 360, "Date")
-        p.drawString(170, height - 390, user5.Name)
+        p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(170, height - 420, user4.Name)
+        p.drawString(150, height - 420, user4.Name)
         p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(170, height - 450, user3.Name)
+        p.drawString(150, height - 450, user3.Name)
         p.drawString(320, height - 450, str(Document_no.GM_date))
-        p.drawString(170, height - 480, user2.Name)
+        p.drawString(150, height - 480, user2.Name)
         p.drawString(320, height - 480, str(Document_no.HOD_date))
 
 
-        p.line(150, height - 340, 450, height - 340)
-        p.line(150, height - 370, 450, height - 370)
-        p.line(150, height - 400, 450, height - 400)
-        p.line(150, height - 430, 450, height - 430)
-        p.line(150, height - 460, 450, height - 460)
-        p.line(150, height - 490, 450, height - 490)
+        p.line(100, height - 340, 500, height - 340)
+        p.line(100, height - 370, 500, height - 370)
+        p.line(100, height - 400, 500, height - 400)
+        p.line(100, height - 430, 500, height - 430)
+        p.line(100, height - 460, 500, height - 460)
+        p.line(100, height - 490, 500, height - 490)
 
 
-        p.line(150, height - 340, 150, height - 490)
+        p.line(100, height - 340, 100, height - 490)
         p.line(300, height - 340, 300, height - 490)
-        p.line(450, height - 340, 450, height - 490)
+        p.line(500, height - 340, 500, height - 490)
     elif role=='HOD':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
         p.drawString(350, height - 360, "Date")
-        p.drawString(170, height - 390, user5.Name)
+        p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(170, height - 420, user4.Name)
+        p.drawString(150, height - 420, user4.Name)
         p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(170, height - 450, user3.Name)
+        p.drawString(150, height - 450, user3.Name)
         p.drawString(320, height - 450, str(Document_no.GM_date))
 
 
 
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
+        p.line(100, height - 340, 500, height - 340)
+        p.line(100, height - 370, 500, height - 370)
+        p.line(100, height - 400, 500, height - 400)
+        p.line(100, height - 430, 500, height - 430)
+        p.line(100, height - 460, 500, height - 460)
 
 
-        p.line(150, height - 340, 150, height - 460)
+        p.line(100, height - 340, 100, height - 460)
         p.line(300, height - 340, 300, height - 460)
-        p.line(450, height - 340, 450, height - 460)
+        p.line(500, height - 340, 500, height - 460)
     
 
 
@@ -859,34 +896,34 @@ def generate_pdf(request,Tran_No):
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
         p.drawString(350, height - 360, "Date")
-        p.drawString(170, height - 390, user5.Name)
+        p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(170, height - 420, user4.Name)
+        p.drawString(150, height - 420, user4.Name)
         p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(170, height - 450, user3.Name)
+        p.drawString(150, height - 450, user3.Name)
         p.drawString(320, height - 450, str(Document_no.GM_date))
 
 
 
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
-        p.line(50, height - 460, 550, height - 460)
+        p.line(100, height - 340, 500, height - 340)
+        p.line(100, height - 370, 500, height - 370)
+        p.line(100, height - 400, 500, height - 400)
+        p.line(100, height - 430, 500, height - 430)
+        p.line(100, height - 460, 500, height - 460)
 
 
-        p.line(150, height - 340, 150, height - 460)
+        p.line(100, height - 340, 100, height - 460)
         p.line(300, height - 340, 300, height - 460)
-        p.line(450, height - 340, 450, height - 460)
+        p.line(500, height - 340, 500, height - 460)
     
     elif role=='GM':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
         p.drawString(350, height - 360, "Date")
-        p.drawString(170, height - 390, user5.Name)
+        p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(170, height - 420, user4.Name)
+        p.drawString(150, height - 420, user4.Name)
         p.drawString(320, height - 420, str(Document_no.vice_principal_date))
 
 
@@ -899,16 +936,16 @@ def generate_pdf(request,Tran_No):
 
 
 
-        p.line(150, height - 340, 150, height - 430)
+        p.line(100, height - 340, 100, height - 430)
         p.line(300, height - 340, 300, height - 430)
-        p.line(450, height - 340, 450, height - 430)
+        p.line(500, height - 340, 500, height - 430)
     
     elif role=='vice_principal':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
         p.drawString(350, height - 360, "Date")
-        p.drawString(170, height - 390, user5.Name)
+        p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
 
 
@@ -920,14 +957,15 @@ def generate_pdf(request,Tran_No):
 
 
 
-        p.line(150, height - 340, 150, height - 400)
+        p.line(100, height - 340, 100, height - 400)
         p.line(300, height - 340, 300, height - 400)
-        p.line(450, height - 340, 450, height - 400)
+        p.line(500, height - 340, 500, height - 400)
     
     
     # Footer
     p.setFont("Helvetica-Oblique", 10)
-    p.drawString(50, 50, "Created by E-approval System")
+    p.drawString(50, 50, "Created by E-approval System/")
+    p.drawString(190, 50, Generated_date_str)
 
     # Close the PDF object cleanly.
     p.showPage()

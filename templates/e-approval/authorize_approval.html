@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Approval System</title>
+    <link rel="stylesheet" href="authorizeapproval.css">
+</head>
+<body>
+    <nav>
+    </nav>
+    <div class="side-panel">
+        <label for="to-approve">To Approve:</label>
+        <select id="to-approve" name="to-approve" required>
+        </select>
+    </div>
+    <section class="main-content">
+        <div class="document-details">
+            <label for ="docdetail">Document Details <button type="button" id="view">View</button></label>
+            <label for ="refdocdetails">Ref Document Details</label><br>
+            <label for="document-no">Document No:</label>
+            <select id="document-no" name="document-no" required>
+            </select>
+            <label for="date">Date</label>
+            <label for="Priority">Priority</label>
+            <label for="Status">Status</label>
+            <label for="FinCommitment">FinCommitment</label>
+            <label for="Doctype">DocType</label><br>
+            <label for="OrgUnit">Org.Unit</label>
+            <label for="Department">Department</label>
+            <label for="Category">Category</label>
+            <label for="SubCategory">Sub Category</label>
+            <label for="basetranscreation">Base Trans Creation </label>
+            <select id="Basetranscreation" name="basetranscreation" required>
+            </select>
+            <label for="TransNo">Trans No</label>
+        </div>
+        <div class="document-remarks">
+            <h2>Document Remarks</h2>
+            <form>
+              <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+              </div>
+              <div class="form-group">
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" name="remarks" required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="attachment">Attachment:</label>
+                <input type="text" id="attachment" name="attachment" readonly>
+              </div>
+              <div class="form-group">
+                <button type="button" id="clarification">Clarification</button>
+              </div>
+            </form>
+        </div>
+        <div class="container">
+            <div class="financial-details">
+                <h2>Financial Details</h2>
+                <label for="Value">Value</label>
+                <label for="Tolerance">Tolerance</label><br>
+                <label for="Value +">Value +</label><br>
+                <label for="Total">Total</label>
+            </div>
+            <div class="regards">
+                <div class="approved">
+                    <form>
+                        <div class="form-group">
+                            <label for="remarks">Remarks</label>
+                            <textarea id="remarks" name="remarks" required></textarea>
+                        </div>
+                    </form>
+                    <button type="button" id="Approve">Approve</button>
+                </div>
+                <div class="reject">
+                    <form>
+                        <div class="form-group">
+                            <label for="remarksReject">Reject/Return</label>
+                            <textarea id="remarksReject" name="remarksReject" required></textarea>
+                        </div>
+                    </form>
+                    <button type="button" id="rejectreturn">Reject/Return</button>
+                </div>
+            </div>
+
+        </div>
+
+        <table class="table">
+            <thead class="thead">
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Authorization Date</th>
+                    <th>Approver Remarks</th>
+                    <th>Return Reason</th>
+                    <th>Return Clarification</th>
+                </tr>
+            </thead>
+            <tbody id="approvalTableBody">
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </section>
+
+</body>
+</html>

@@ -6,10 +6,11 @@ class e_approval(models.Model):
     Department = models.CharField(max_length=100)
     Org_Unit = models.CharField(max_length=100)
     Category = models.CharField(max_length=100)
-    Sub_Category = models.CharField(max_length=100)
+    Head_of_account = models.CharField(max_length=100)
     remarks_Subject = models.CharField(max_length=100)
+    remarks_Subject1 = models.CharField(max_length=100,blank=True,null=True)
     Priority = models.CharField(max_length=100)
-    Tran_No = models.CharField(max_length=100)
+    Tran_No = models.CharField(max_length=200)
     fin_commit = models.CharField(max_length=100)
     staff_id = models.CharField(max_length=10,blank=True,null=True)
     Tolerance = models.CharField(max_length=100)
@@ -33,24 +34,30 @@ class e_approval(models.Model):
     principal = models.CharField(max_length=100,blank=True,null=True)
     principal_date = models.CharField(max_length=100,blank=True,null=True)
 
-
     def __str__(self):
         return self.Document_no
 
-
+class status(models.Model):
+    Document_no = models.CharField(max_length=200, primary_key=True)
+    staff = models.CharField(max_length=100, blank=True, null=True)
+    HOD = models.CharField(max_length=100,blank=True,null=True)
+    GM = models.CharField(max_length=100,blank=True,null=True)
+    vice_principal = models.CharField(max_length=100,blank=True,null=True)
+    principal = models.CharField(max_length=100,blank=True,null=True)
 class User(models.Model):
     Name = models.CharField(max_length=100)
     user_name = models.CharField(max_length=100)
     staff_id = models.CharField(max_length=100)
     Department = models.CharField(max_length=100)
+    Department_code=models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     Password = models.CharField(max_length=100)
     confirm_Password = models.CharField(max_length=100)
 
+
 class auth_list(models.Model):
     Document_no = models.CharField(max_length=200, primary_key=True)
-
 
     staff = models.CharField(max_length=100, blank=True, null=True)
     staff_date = models.CharField(max_length=100, blank=True, null=True)
@@ -96,7 +103,7 @@ class auth_remarks(models.Model):
     auth_reason=models.CharField(max_length=100,blank=True,null=True)
 
 class doc_remarks(models.Model):
-    Document_no = models.CharField(max_length=100, primary_key=True)
+    Document_no = models.CharField(max_length=200, primary_key=True)
     doc_date_and_time = models.DateField(auto_now_add=True)
     doc_approval_id =models.CharField(max_length=20, blank=True,null=True)
     doc_applied_staff_id =models.CharField(max_length=20, blank=True,null=True)

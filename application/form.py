@@ -5,20 +5,20 @@ class EApprovalForm(forms.ModelForm):
     class Meta:
         model = e_approval
         fields = [
-            'Document_no', 'Department', 'Org_Unit', 'Category', 'Sub_Category',"staff_id","Attachment",
+            'Document_no', 'Department', 'Org_Unit', 'Category',"staff_id","Attachment",'Department_code','Head_of_account','remarks_Subject1',
             'remarks_Subject', 'Priority', 'Tolerance', 'Attachment_details', 'Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
             "GM_date","vice_principal","vice_principal_date","principal","principal_date"
  ]
-        exclude=['Document_no',"Tran_No","Attachment",]
+        exclude=['Document_no',"Tran_No","Attachment",'Department_code']
 
 class userform(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'Name', 'user_name', 'staff_id', 'Department', 'email',
+            'Name', 'user_name', 'staff_id', 'Department', 'email','Department_code',
             'role', 'Password', 'confirm_Password'
  ]
-
+        exclude=['Department_code']
 
 class auth_form(forms.ModelForm):
     class Meta:
@@ -43,7 +43,7 @@ class ClarificationUpdateForm(forms.ModelForm):
     class Meta:
         model = e_approval
         fields = [
-            'Category', 'Sub_Category',
+            'Category',
             'Priority', 'Total_Value', 'fin_commit'
         ]
 
@@ -53,3 +53,4 @@ class DocRemarksUpdateForm(forms.ModelForm):
         fields = [
             'doc_clarification_status'
         ]
+# l

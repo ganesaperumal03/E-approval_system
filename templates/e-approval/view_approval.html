@@ -98,7 +98,7 @@
         height: 27px;
         width: 100%;
         background: gray;
-        align-items: center;
+
     }
     .header1{
         line-height: 3;
@@ -111,7 +111,7 @@
         margin-bottom: 15px;
     }
     .form-group label {
-        display: inline-block;
+   
         margin-bottom: 5px;
     }
 
@@ -270,38 +270,44 @@
                             <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
                         </div>
                     </form>
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="date" class="mr-2">Date</label>
-                            <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Tran_No.date}}</span>
+                        <div class="col-md-3  align-items-center justify-content-between">
+                            <label for="date" class="ml-5">Date:</label>
+                            <span type="text" id="date" name="date" class="" aria-label="Date" aria-describedby="date-addon" >{{Tran_No.date}}</span>
                         </div>
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="status" class="mr-2">Status</label>
-                            <span type="text" id="status" name="status" class="col-md-6">{{Tran_No.principal}}</span>
+                        <div class="col-md-3  align-items-center justify-content-between">
+                            <label for="priority" class="mr-2">Priority:</label>
+                            <span type="text" id="priority" name="priority" class="" >{{Tran_No.Priority}}</span>
+                        </div>
+                        <div class="col-md-3 align-items-center justify-content-between">
+                            <label for="status" class="mr-2">Status:</label>
+                            <span type="text" id="status" name="status" class="">{{Tran_No.principal}}</span>
                         </div>
                     </div>
                     <div class="form-row align-items-center justify-content-between">
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="department" class="mr-2">Department</label>
-                            <textarea type="text" wrap="off" readonly id="department" name="department" style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;" class="col-md-6" >{{Tran_No.Department}}</textarea>
+                        <div class="col-md-6 align-items-center justify-content-between">
+                            <label for="department" class="mr-2">Department:</label>
+                            <span type="text" id="department" name="department" class="" >{{Tran_No.Department}}</span>
                         </div>
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="Category" class="mr-2">Category</label>
-                            <textarea wrap="off" type="text" id="catagory" name="catagory" style="resize: none; height: 3.5em; border: none; overflow-x: scroll; overflow-y: hidden;" class="" >{{Tran_No.Category}}</textarea>
+                        <div class="col-md-6  align-items-center justify-content-between">
+                            <label for="tranno" class="mr-2">Trans No:</label>
+                            <span type="text" id="transno" class="" name="transno" >{{Tran_No.Tran_No}}</span>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div class="form-row align-items justify-content-between">
+
+                        <div class="col-md-6 align-items-center justify-content-between">
+                            <label for="Category" class="mr-2">Category:</label>
+                            <span type="text"  id="catagory" name="catagory">{{Tran_No.Category}}</span>
                         </div>
                         
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
+                        <!-- <div class="col-md-6  align-items-center justify-content-between">
                             <label for="SubCategory" class="mr-2">Sub Category</label>
-                            <textarea wrap="off" type="text" id="subcatagory" name="subcatagory" style="resize:none; height: 3.5em; border: none; overflow-x: scroll; overflow-y: hidden;" class="form control col-md-6" >{{Tran_No.Sub_Category}}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-row align-items-center justify-content-between">
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="priority" class="mr-2">Priority</label>
-                            <span type="text" id="priority" name="priority"  class="col-md-6" >{{Tran_No.Priority}}</span>
-                        </div>
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="tranno" class="mr-2">Trans No</label>
-                            <textarea type="text" id="transno"  wrap="off" name="transno" style="resize: none; height: 3.5em; border:none; overflow-x: scroll; overflow-y: hidden;" >{{Tran_No.Tran_No}}</textarea>
+                            <span type="text" id="subcatagory"  name="subcatagory" class="" >{{Tran_No.Sub_Category}}</span>
+                        </div> -->
+                        <div class="col-md-6  align-items-center justify-content-between">
+                            <label for="SubCategory" class="mr-2">Head of Account:</label>
+                            <span type="text" id="subcatagory"  name="subcatagory" class="" >{{Tran_No.Head_of_account}}</span>
                         </div>
                     </div>
                 </div>
@@ -309,17 +315,17 @@
                     <div class="form-row align-items-center justify-content-between mb-3">
                       <div class="col-md-6 d-flex align-items-center justify-content-between">
                         <label for="subject" class="col-md-3">Subject</label>
-                        <textarea id="subject" name="subject" class="form-control" style="resize: none;"></textarea>
+                        <textarea id="subject" name="subject" class="form-control" style="resize: none;">{{Tran_No.remarks_Subject}}</textarea>
                       </div>
                       <div class="col-md-6 d-flex align-items-center justify-content-between">
                         <label for="remarks" class="col-md-3">Remarks</label>
-                        <textarea id="remarks" name="remarks" class="form-control" style="resize: none;"></textarea>
+                        <textarea id="remarks" name="remarks" class="form-control" style="resize: none;">{{Tran_No.remarks_Subject1}}</textarea>
                       </div>
                     </div>
                     <div class="form-row align-items-center justify-content-between mb-3">
                       <div class="col-md-6 d-flex align-items-center justify-content-between">
                         <label for="attachedDocuments2" class="col-md-3">Attached Remarks</label>
-                        <textarea id="attachedDocuments2" name="attachedDocuments2" class="form-control" style="resize: none;"></textarea>
+                        <textarea id="attachedDocuments2" name="attachedDocuments2" class="form-control" style="resize: none;">{{Tran_No.Attachment_details}}</textarea>
                       </div>
                       <div class="col-md-6 d-flex align-items-center justify-content-between">
                         <label for="attachmentRemarks2" class="col-md-3">Attachment Documents</label>
@@ -335,25 +341,10 @@
                       </div>
                     </div>
                 </form>
-                  
-
-                    
-                <form class="form-group2 border mb-3">
-                    <div class="form-row align-items-center justify-content-between">
-                        <div class="col-md-6 d-flex align-items-center justify-content-between">
-                            <label for="returnforclarification" class="col-md-3">Return For Clarification</label>
-                            <textarea type="text" id="attachedDocuments2" name="attachedDocuments2"  class="form-control" style="resize: none;"></textarea>
-                        </div>
-                        <div class="col-md-6 d-flex align-items-center justify-content-between">
-                            <label for="returnforreason" class="col-md-3">Return for Reason</label>
-                            <textarea type="text" id="attachmentRemarks2" name="attachmentRemarks2"  class="form-control" style="resize: none;"></textarea>
-                        </div>
-                    </div>
-                </form>
                 <form class="form-group3">
                     <div class="approvallist">
                         <div class="row">
-                            <div class="col my-2 ml-3">
+                            <div class="col">
                                 <h3>Approval list</h3>
                             </div>
                             
@@ -379,11 +370,11 @@
                                 <tbody id="approvalTableBody">
                                     {% for value in approval_user%}
                                     <tr>
-                                    <td>{{value.user.user_name}}</td>
-                                    <td>{{value.user.Name}}</td>
-                                    <td>{{value.user.role}}</td>
-                                    <td>{{value.user.email}}</td>
-                                    <td>{{value.date}}</td>
+                                        <td>{{value.user.user_name}}</td>
+                                        <td>{{value.user.Name}}</td>
+                                        <td>{{value.user.role}}</td>
+                                        <td>{{value.user.email}}</td>
+                                        <td>{{value.date}}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

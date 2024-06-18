@@ -966,7 +966,8 @@ def generate_pdf(request,Tran_No):
     p.setFont("Helvetica-Oblique", 10)
     p.drawString(50, 50, "Created by E-approval System/")
     p.drawString(190, 50, Generated_date_str)
-
+    p.drawString(420, 820, "DATE:")
+    p.drawString(460, 820, Generated_date_str)
     # Close the PDF object cleanly.
     p.showPage()
    

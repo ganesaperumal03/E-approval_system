@@ -15,7 +15,7 @@ class e_approval(models.Model):
     staff_id = models.CharField(max_length=10,blank=True,null=True)
     Tolerance = models.CharField(max_length=100)
     Total_Value = models.CharField(max_length=100)
-    In_words = models.CharField(max_length=200,blank=True,null=True)
+    In_words = models.IntegerField(blank=True,null=True)
     Attachment = models.FileField(upload_to='')
     date = models.DateField()
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)

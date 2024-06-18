@@ -148,6 +148,14 @@
                       View Appoval
                   </a>
           </li>
+          {% if "Principal" == role or "GM" == role %}
+            <li class="nav-item">
+                <a href="{% url 'view_approval' %}"class="nav-link text-dark">
+                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+                        Analysis Report
+                    </a>
+            </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{% url 'login' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->

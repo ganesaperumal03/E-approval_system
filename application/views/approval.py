@@ -48,29 +48,33 @@ def create_form(request):
     Name=user_data["name"]
     Department=user_data["Department"]
     role=user_data["role"]
+    email=user_data['email']
 
 
     excel_file_path = 'category.csv'
-    # excel_file_path1 = 'Book1.csv'
-    # try:
-    #     head_of_account=pd.read_csv("excel_file_path1")
-    #     head_of_account.head(2)
-    # except pd.errors.EmptyDataError:
-    #          df = pd.DataFrame(columns=['Sub_category'])
-    # Head_of_account = head_of_account['Head of account'].tolist()
+    excel_file_path1 = 'Book1.csv'
+    try:
+        head = pd.read_csv(excel_file_path1)
+    except pd.errors.EmptyDataError:
+        # Handle the case where the Excel file is empty
+        head = pd.DataFrame(columns=['Head of account'])
     # # Read the Excel file
     try:
         df = pd.read_csv(excel_file_path)
     except pd.errors.EmptyDataError:
         # Handle the case where the Excel file is empty
         df = pd.DataFrame(columns=['Sub_category'])
+
     category = df['Sub_category'].tolist()
+    head_account = head['Head of account'].tolist()
+
+    print(head_account,'--------------------------------------------------')
+
     if request.method == 'POST':
         form = EApprovalForm(request.POST)
         if form.is_valid():
             Department = form.cleaned_data['Department']
             Category = form.cleaned_data['Category']
-            # Head_of_account = form.cleaned_data['Sub_Category']
             dept_code={"ARTIFICIAL INTELLIGENCE AND DATA SCIENCE":"AD",
                        "CIVIL ENGINEERING":"CE",
                        "COMPUTER SCIENCE AND BUSINESS SYSTEM":"CB",
@@ -96,6 +100,8 @@ def create_form(request):
             user.staff_id = staff_id
             user.Document_no = doc_no
             user.Tran_No = tran_no
+            user.creator=role
+
             file_paths = save_uploaded_pdfs(request.FILES)
             print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
@@ -107,6 +113,7 @@ def create_form(request):
                 user.GM = 'Pending'
                 user.vice_principal = 'Pending'
                 user.principal = 'Pending'
+
             elif role == 'Staff':
                 user.Technician = None
                 user.Staff = None
@@ -143,10 +150,53 @@ def create_form(request):
                 user.GM = None
                 user.vice_principal = None
                 user.principal = 'Pending'
+            
             user.save()
+       
+            
+
+            send_email(request,email)
+            approval_user = []
+            date=None
+            approval_user = []
+            new_approval_user=[]
+            date=None
+
+            auth_list = e_approval.objects.filter(Document_no=tran_no)
+            print(auth_list,"gfgdfgdsfgdfdfgdgf")
+            for i,j in enumerate(auth_list):
+                # if j.Staff!='Pending':
+                new_approval_user.append({"date":j.Staff_date,'Approval':'Staff',
+                'user':User.objects.filter(Department=Department, role='Staff').first()})
+                # if j.HOD!='Pending':
+                new_approval_user.append({"date":j.HOD_date,'Approval':'HOD',
+                'user':User.objects.filter(Department=Department, role='HOD').first()})
+                # if j.GM!='Pending':
+                new_approval_user.append({"date":j.GM_date,'Approval':'GM',
+                'user':User.objects.filter( role='GM').first()})
+                # if j.vice_principal!='Pending':
+                new_approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
+                'user':User.objects.filter( role='vice_principal').first()})
+                # if j.principal!='Pending':
+                new_approval_user.append({"date":j.principal_date,'Approval':'principal',
+                'user':User.objects.filter( role='principal').first()})
+                new_approval_user.reverse()
+                for i in range(0,len(new_approval_user)):
+                    if new_approval_user[i]['Approval']!=j.creator:
+                        if new_approval_user[i]['date'] == None:
+                            new_approval_user[i]['date']="Pending"
+                            approval_user.append(new_approval_user[i])
+                        else:
+                            approval_user.append(new_approval_user[i])
+                    else:
+                        break
+                send_approval=approval_user[-1]['user'].email
+                send_email(request, send_approval)
+                print(send_approval,"------------")
             return redirect('create_form')
+
         else:
-            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name})
+            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account})
     else:
         form = EApprovalForm()
         staff_user = User.objects.get(staff_id=staff_id)
@@ -171,7 +221,7 @@ def create_form(request):
             # return render(request, "e-approval/index.html", {'form': form, 'gm_user': gm_user, 'vice_principal_user': vice_principal_user,
             #                                                 'principal_user': principal_user, 'HOD': HOD_user
             #                                              })
-        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name
+        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,
                                                          })
 
 
@@ -306,7 +356,6 @@ def auth_approval(request):
             # Combine the document number and date-time string
             doc_no = f"{Document_no}@{date_time}"
             print(doc_no)
-
             # Save the form data to the database
             user = form.save(commit=False)
 
@@ -314,7 +363,11 @@ def auth_approval(request):
             user.doc_approval_id = user_data.get('staff_id')  # Use 'get' to avoid KeyError
             user.Document_no = doc_no
             user.doc_clarification_status = 'Pending'
-
+            # auth_list = e_approval.objects.filter(Document_no=Document_no)
+            # for i,j in enumerate(auth_list):
+            #     if j.creator == j.creator:
+            #         print(j.email)
+            print("fdsfdsfdsfdsfdsfdddfdfdssdfddf")
             user.save()
         else:
             return render(request, "e-approval/error.html", {'form': form})
@@ -353,7 +406,7 @@ def auth_approval(request):
         document_data = e_approval.objects.get(Document_no=Document_no)
         number = document_data.Total_Value
         number_in_words = num2words(number)
-        print(number_in_words)
+        print(auth_list)
         return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words,'doc_data':doc_data})
 
 
@@ -388,7 +441,7 @@ def auth_approval(request):
                         doc_data.append(approval)
         elif user_data['role'] == 'GM':
             technicians = User.objects.filter(
-                role__in=['Technician','HOD','office']  # Use role__in for multiple roles
+                role__in=['Technician',"Staff",'HOD','office']  # Use role__in for multiple roles
             )
 
             for technician in technicians:
@@ -403,7 +456,7 @@ def auth_approval(request):
 
         elif user_data['role'] == 'vice_principal':
             technicians = User.objects.filter(
-                role__in=['Technician', 'GM','HOD','office']  # Use role__in for multiple roles
+                role__in=['Technician',"Staff", 'GM','HOD','office']  # Use role__in for multiple roles
             )
 
             for technician in technicians:
@@ -418,7 +471,7 @@ def auth_approval(request):
 
         elif user_data['role'] == 'Principal':
             technicians = User.objects.filter(
-                role__in=['Technician', 'GM', 'vice_principal','HOD','office']  # Use role__in for multiple roles
+                role__in=['Technician', 'GM',"Staff", 'vice_principal','HOD','office']  # Use role__in for multiple roles
             )
             print('principal',technicians)
             for technician in technicians:
@@ -436,6 +489,7 @@ def auth_approval(request):
             user = form.save(commit=False)
             role = staff.role
     filler(user_data)
+    print(doc_data,"#$#$#$#$#$#$#$#$#$#$")
     return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department,'doc_data':doc_data})
 
 doc_no = None # Declare the global variable outside the function
@@ -460,21 +514,22 @@ def clarification(request):
         remarks_document_data = doc_remarks.objects.get(Document_no=key, doc_clarification_status='Pending')
 
         print(document_data,"+++++++++++++")
-        return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department})
-
-
-    doc_data = {}
+        return render(request, "e-approval/clarification.html", {"document_data": document_data,"remarks_document_data":remarks_document_data,"Name":name,"user_name":user_name,"role":staff_role,"department":department,"document_data_value": doc_data})
     user_data = request.session.get('user_data', {})
-    document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending')
-    for doc in document_data_list:
-        pattern = r"^(.*?)@"
-        match = re.search(pattern, doc.Document_no)
-        if match:
-            document_data_value = match.group(1)
-            doc_data[doc.Document_no] = document_data_value
-    print(doc_data,"______________________________")
+    def fillerer(user_data):
+        global doc_data
+        doc_data = {}
+        
+        document_data_list = doc_remarks.objects.filter(doc_applied_staff_id=user_data['staff_id'], doc_clarification_status='Pending')
+        for doc in document_data_list:
+            pattern = r"^(.*?)@"
+            match = re.search(pattern, doc.Document_no)
+            if match:
+                document_data_value = match.group(1)
+                doc_data[doc.Document_no] = document_data_value
+    fillerer(user_data)
 
-    return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"user_name":user_name,"department":department})
+    return render(request, "e-approval/clarification.html", {"document_data_value": doc_data,"Name":name,"role":staff_role,"user_name":user_name,"department":department,"document_data_value": doc_data})
 
 
 
@@ -529,15 +584,28 @@ def updateapproval(request):
 
 
 def form_approval(request):
+    Tran_No = request.GET.get('Tran_No')
     user_data=request.session.get('user_data', {})
     approval_Remarks = request.POST.get('approval_Remarks')
     Document_no = request.POST.get('Document_no')
+    default=["GM",'vice_principal','Principal']
+    roles=['Technician','Staff','HOD']
+    if user_data['role'] in roles :
+        start_index = roles.index(user_data['role'])
+        toallist = [User.objects.filter(role=i, Department=user_data['Department']).values_list('email', flat=True).first() for i in roles[start_index+1:]]+[User.objects.filter(role=i).values_list('email', flat=True).first() for i in default]
+    else:
+        # Handle the case where user_role is not in the roles list
+        start_index = default.index(user_data['role'])
+        print('***************')
+        toallist = [User.objects.filter(role=i).values_list('email', flat=True).first() for i in default[start_index+1:]]
+    print('$$$$$$$$$',toallist)
     now = datetime.now()
     print("dsd------------------------------------------------------------")
     staff_role=user_data['role']
     department=user_data['Department']
     name=user_data["name"]
     user_name=user_data["user_name"]
+    Department=user_data['Department']
     # Format the date and time as a string
     current_date_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -596,14 +664,18 @@ def form_approval(request):
         approval_data.principal = approval_Reason
         approval_data.principal_date = current_date_time
         approval_data.save()
+    print('wewwwewewewewewewewewe',toallist[0])
+    send_email(request,toallist[0])
 
-    return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name})
+
+    return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name,"doc_data":doc_data})
 
 
 def view_approval(request):
     Tran_No = request.GET.get('Tran_No')
     user_data=request.session.get('user_data', {})
     role=user_data['role']
+    Document_no=request.GET.get('Tran_No')
     Department=user_data['Department']
     staff_id=user_data['staff_id']
     name=user_data["name"]
@@ -611,35 +683,55 @@ def view_approval(request):
     approval_user = []
     date=None
     approval_user = []
-
+    new_approval_user=[]
     date=None
 
-    auth_list = e_approval.objects.filter(Document_no=Tran_No)
+    auth_list = e_approval.objects.filter(Document_no=Document_no)
+    print(auth_list,"gfgdfgdsfgdfdfgdgf")
     for i,j in enumerate(auth_list):
         # if j.Staff!='Pending':
-        approval_user.append({"date":j.Staff_date,'Approval':'Staff',
-        'user':User.objects.filter(Department=Department, role='Staff').first()})
+        new_approval_user.append({"date":j.Staff_date,'Approval':'Staff',
+        'user':User.objects.filter( role='Staff').first()})
         # if j.HOD!='Pending':
-        approval_user.append({"date":j.HOD_date,'Approval':'HOD',
-        'user':User.objects.filter(Department=Department, role='HOD').first()})
+        new_approval_user.append({"date":j.HOD_date,'Approval':'HOD',
+        'user':User.objects.filter( role='HOD').first()})
         # if j.GM!='Pending':
-        approval_user.append({"date":j.GM_date,'Approval':'GM',
+        new_approval_user.append({"date":j.GM_date,'Approval':'GM',
         'user':User.objects.filter( role='GM').first()})
         # if j.vice_principal!='Pending':
-        approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
+        new_approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
         'user':User.objects.filter( role='vice_principal').first()})
         # if j.principal!='Pending':
-        approval_user.append({"date":j.principal_date,'Approval':'principal',
+        new_approval_user.append({"date":j.principal_date,'Approval':'principal',
         'user':User.objects.filter( role='principal').first()})
-    print(approval_user,"65555555555")
+        new_approval_user.reverse()
+        print(new_approval_user)
+        for i in range(0,len(new_approval_user)):
+            if new_approval_user[i]['Approval']!=j.creator:
+                if new_approval_user[i]['date'] == None:
+                    new_approval_user[i]['date']="Pending"
+                    approval_user.append(new_approval_user[i])
+                else:
+                    approval_user.append(new_approval_user[i])
+            else:
+                break
+                
+    print(approval_user)
+
     if Tran_No:
         Tran_No = e_approval.objects.get(Tran_No=Tran_No)
-        tran_no=e_approval.objects.filter(staff_id=staff_id)
+        if role == "GM"or role == "vice_principal" or role == "Principal":
+            tran_no=e_approval.objects.filter()
+        else:
+            tran_no=e_approval.objects.filter(Department=Department)
         print(Tran_No,'!-------------------------!')
         return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":approval_user,"Name":name,"role":role,"department":Department,"tran_no":tran_no})
 
     doc_data=[]
-    tran_no=e_approval.objects.filter(staff_id=staff_id)
+    if role == "GM"or role == "vice_principal" or role == "Principal":
+            tran_no=e_approval.objects.filter()
+    else:
+        tran_no=e_approval.objects.filter(Department=Department)
     print(tran_no,'-------------------------')
     return render(request, "e-approval/view_approval.html",{"tran_no":tran_no,"Name":name,"role":role,"department":Department})
 
@@ -676,19 +768,19 @@ def pdf_show(request,Tran_No):
 from django.shortcuts import HttpResponse #type:ignore
 from django.core.mail import send_mail #type:ignore
 
-def send_email(request):
+def send_email(request,email):
     user_data=request.session.get('user_data', {})
     Tran_No = request.GET.get('Tran_No')
-    email=user_data["email"]
-    subject_create = 'Hello from Django'
+
+    subject_create = ''
     message_create = 'This is a test email sent from Django.'
- # Replace with the recipient's email address
+
 
     send_mail(
     subject_create,
     message_create,
     "ganeshperumal256@gmail.com",
-    ["dhaneshponraj@gmail.com","dhanesh1109@outlook.com"],
+    [email],
     fail_silently=False,
     )
     return HttpResponse('Email sent successfully.')
@@ -791,7 +883,7 @@ def generate_pdf(request,Tran_No):
     p.drawString(220, height - 190, Document_no.Category)
     p.drawString(220, height - 290, Document_no.Head_of_account)
     p.drawString(220, height - 210, Document_no.remarks_Subject)
-    p.drawString(220, height - 250, Document_no.remarks_Subject1)
+    p.drawString(220, height - 250, str(Document_no.remarks_Subject1))
     p.drawString(220, height - 230, str(Document_no.date))
     p.drawString(220, height - 270, str(Document_no.vice_principal_date))
     p.drawString(220, height - 310, Document_no.Total_Value)
@@ -815,7 +907,7 @@ def generate_pdf(request,Tran_No):
     if role=='Technician':
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(302, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -842,7 +934,7 @@ def generate_pdf(request,Tran_No):
     elif role=='Staff':
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -868,7 +960,7 @@ def generate_pdf(request,Tran_No):
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -895,7 +987,7 @@ def generate_pdf(request,Tran_No):
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -920,7 +1012,7 @@ def generate_pdf(request,Tran_No):
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -944,7 +1036,7 @@ def generate_pdf(request,Tran_No):
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
 

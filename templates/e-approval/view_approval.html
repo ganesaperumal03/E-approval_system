@@ -336,7 +336,7 @@
                         <textarea id="attachedDocuments2" name="attachedDocuments2" class="form-control" style="resize: none;">{{Tran_No.Attachment_details}}</textarea>
                       </div>
                       <div class="col-md-6 d-flex align-items-center justify-content-between">
-                        <label for="attachmentRemarks2" class="col-md-3">Attachment Documents/Status</label>
+                        <label for="attachmentRemarks2" class="col-md-4">Attachment Documents</label>
                         <div class="col-sm-8">
                           {% if Tran_No %}
                           <a href="{% url 'pdf_show' Tran_No %}" target="_blank">
@@ -357,7 +357,7 @@
                             </div>
                             
                             <div class="col">
-                                {% if Tran_No.principal %}
+                                {% if Tran_No.principal != None %}
                                     <a href="{% url 'generate_pdf' Tran_No.Tran_No %}" target="_blank">
                                         <button type="button" class="btn btn-primary">Generate PDF</button>
                                     </a>
@@ -377,19 +377,12 @@
                                     </tr>
                                 </thead>
                                 <tbody id="approvalTableBody">
-                                    {% for value in approval_user%}
+                                    {% for value in approval_user %}
                                     <tr>
 
                                         <td>{{value.user.Name}}</td>
                                         <td>{{value.user.role}}</td>
-                                        {% if value.date == None %}
-                                             
-                                            <td>Pending</td>
-                                        
-                                        {% else %}
-                                            <td>{{value.date}}</td>
-
-                                        {% endif %}
+                                        <td>{{value.date}}</td>
                                         <td>{{value.user.email}}</td>
                                         
                                     </tr>

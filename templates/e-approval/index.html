@@ -268,13 +268,10 @@
                   <label class="detail-label">Head_of_account</label>
                     <select class="detail-value col-md-5" name=" Head_of_account">
 
-                      <option value="" disabled hidden selected>Select  Head_of_account</option>
-                      <option value="Capital Goods">Capital Goods</option>
-                      <option value="Lab Equipment / Software /Tools">Lab Equipment / Software /Tools</option>
-                      <option value="Infrastructure /Furniture">Infrastructure /Furniture </option>
-                      <option value="Infrastructure / Building">Infrastructure / Building</option>
-                      <option value="Lab Consumables">Lab Consumables</option>
-                      <option value="Maintenance/Services/Spares/AMC /Licences"> Maintenance/Services/Spares/AMC /Licences</option>
+                      
+                      {% for c in head_account %}
+                      <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
 
 
                     </select>

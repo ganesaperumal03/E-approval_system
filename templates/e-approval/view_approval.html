@@ -264,9 +264,9 @@
         
                     <div class="form-row align-items-center justify-content-between">
         
-                        <div class="col-md-3 d-flex align-items-center justify-content-between">
-                            <label for="search" class="mr-2">Transaction No:</label>
-                                <select class=" form-control col-md-5" name="Tran_No" >
+                        <div class="col-md-4 d-flex align-items-center justify-content-between">
+                            <label for="search" class="">Transaction No:</label>
+                                <select class=" form-control col-md-6" name="Tran_No" >
                                   <option value="" hidden>Select Document</option>
                                   
                                   {% for d in tran_no %}
@@ -278,17 +278,17 @@
                             <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
                         </div>
                     </form>
-                        <div class="col-md-3  align-items-center justify-content-between">
-                            <label for="date" class="ml-5">Date:</label>
-                            <span type="text" id="date" name="date" class="" aria-label="Date" aria-describedby="date-addon" >{{Tran_No.date}}</span>
+                        <div class="col-md-2  d-flex align-items-center justify-content-between">
+                            <label for="date" class="form-label mr-2">Date:</label>
+                            <span type="text" id="date" name="date" class="col-md-5" aria-label="Date" aria-describedby="date-addon" >{{Tran_No.date}}</span>
                         </div>
-                        <div class="col-md-3  align-items-center justify-content-between">
+                        <div class="col-md-3 d-flex align-items-center justify-content-between">
                             <label for="priority" class="mr-2">Priority:</label>
-                            <span type="text" id="priority" name="priority" class="" >{{Tran_No.Priority}}</span>
+                            <span type="text" id="priority" name="priority" class="col-md-5" >{{Tran_No.Priority}}</span>
                         </div>
-                        <div class="col-md-3 align-items-center justify-content-between">
+                        <div class="col-md-3  d-flex align-items-center justify-content-between">
                             <label for="status" class="mr-2">Status:</label>
-                            <span type="text" id="status" name="status" class="">{{Tran_No.principal}}</span>
+                            <span type="text" id="status" name="status" class="col-md-5">{{Tran_No.principal}}</span>
                         </div>
                     </div>
                     <div class="form-row align-items-center justify-content-between">

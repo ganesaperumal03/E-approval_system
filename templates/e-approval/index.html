@@ -129,7 +129,6 @@
         </div>
       
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
-      
         <ul class="nav flex-column bg-white mb-0">
           <li class="nav-item">
             <a href="#" class="nav-link text-dark">
@@ -179,7 +178,16 @@
         </ul>
       </div>
       <div>
+        <div class="doc col">
+            <label class="detail">DOC NO:</label>
+            <span>fdggfdg</span>
 
+        </div>
+        <div class="doc col">
+          <label class="detail">Trans NO:</label>
+          <span>{{tran_no}}</span>
+
+      </div>
         <form  method="POST"  id='create_form' class="border"  autocomplete="off" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="alert alert-success alert-dismissible">
@@ -293,7 +301,7 @@
                 <h3>Attachment Details</h3></div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Attachment</label>
-                  <input type="file" name='Attachment'class="detail-value col-md-5" style="border: none;" />
+                  <input type="file" name='Attachment'class="detail-value col-md-5" accept=".pdf" style="border: none;" />
                 </div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Attachment-details</label>
@@ -371,6 +379,37 @@
         });
       });
     </script>
+    <script>
+      const multer = require('multer');
+      const upload = multer({
+        fileFilter: (req, file, cb) => {
+          const allowedTypes = ['application/pdf'];
+          if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+          } else {
+            cb(new Error('Invalid file type'), false);
+          }
+        }
+      });
+
+      app.post('/upload', upload.single('file'), (req, res) => {
+        // Handle file upload
+        res.send('File uploaded successfully');
+      });
+    </script>
+    <script>
+      document.querySelector('input[type="file"]').addEventListener('change', function(event) {
+        const allowedTypes = ['application/pdf'];
+        const file = event.target.files[0];
+        if (!allowedTypes.includes(file.type)) {
+          alert('Invalid file type');
+          event.target.value = ''; // Clear the input
+        }
+      });
+    </script>
+
+
+
     <!-- <script>
         document.addEventListener("DOMContentLoaded", function(){
   // Get the button and the alert

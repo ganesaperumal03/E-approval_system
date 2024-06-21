@@ -89,6 +89,7 @@ def create_form(request):
                 doc_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{tran_count_no}'
             print(doc_no)
             tran_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{count_no}'
+            tran_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{count_no}'
             staff = User.objects.get(staff_id=staff_id)
             user = form.save(commit=False)
             role = staff.role
@@ -96,10 +97,8 @@ def create_form(request):
             user.Document_no = doc_no
             user.Tran_No = tran_no
             file_paths = save_uploaded_pdfs(request.FILES)
-
             print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
-            
             # Set approval status based on role
             if role == 'Technician':
                 user.Technician = None
@@ -172,7 +171,7 @@ def create_form(request):
             # return render(request, "e-approval/index.html", {'form': form, 'gm_user': gm_user, 'vice_principal_user': vice_principal_user,
             #                                                 'principal_user': principal_user, 'HOD': HOD_user
             #                                              })
-        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name
+        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,
                                                          })
 
 
@@ -315,7 +314,11 @@ def auth_approval(request):
             user.doc_approval_id = user_data.get('staff_id')  # Use 'get' to avoid KeyError
             user.Document_no = doc_no
             user.doc_clarification_status = 'Pending'
-
+            # auth_list = e_approval.objects.filter(Document_no=Document_no)
+            # for i,j in enumerate(auth_list):
+            #     if j.creator == j.creator:
+            #         print(j.email)
+            print("fdsfdsfdsfdsfdsfdddfdfdssdfddf")
             user.save()
         else:
             return render(request, "e-approval/error.html", {'form': form})
@@ -540,6 +543,7 @@ def form_approval(request):
     department=user_data['Department']
     name=user_data["name"]
     user_name=user_data["user_name"]
+    Department=user_data['Department']
     # Format the date and time as a string
     current_date_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -862,7 +866,7 @@ def generate_pdf(request,Tran_No):
     elif role=='Staff':
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date")
+        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)

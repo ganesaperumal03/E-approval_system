@@ -80,6 +80,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ganeshperumal256@gmail.com'  # Your Gmail email address
 EMAIL_HOST_PASSWORD = 'idokrftlbpbnuhsx'  
+EMAIL_HOST_PASSWORD = 'idokrftlbpbnuhsx'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

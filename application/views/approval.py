@@ -79,17 +79,16 @@ def create_form(request):
                        "ELECTRONICS AND COMMUNICATION ENGINEERING":"ECE",
                        "INFORMATION TECHNOLOGY":"IT",
                        "MECHANICAL ENGINEERING":"MECH",}
-            # Calculate count and format as strings with leading zeros
             count = e_approval.objects.count() + 1
             print(count)
+            year = datetime.now().strftime("%Y")
             count_no = f"{count:05d}"
             tran_count = e_approval.objects.filter(Department=Department).count() + 1
             tran_count_no = f"{tran_count:05d}"
-            # Construct document and transaction numbers
             if dept_code[Department] == dept_code[Department]:
-                doc_no = f'RIT/AC/{dept_code[Department]}/{Category}/{tran_count_no}'
+                doc_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{tran_count_no}'
             print(doc_no)
-            tran_no = f'RIT/AC/{dept_code[Department]}/{Category}/{count_no}'
+            tran_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{count_no}'
             staff = User.objects.get(staff_id=staff_id)
             user = form.save(commit=False)
             role = staff.role
@@ -97,8 +96,10 @@ def create_form(request):
             user.Document_no = doc_no
             user.Tran_No = tran_no
             file_paths = save_uploaded_pdfs(request.FILES)
+
             print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
+            
             # Set approval status based on role
             if role == 'Technician':
                 user.Technician = None
@@ -335,21 +336,22 @@ def auth_approval(request):
         auth_list = e_approval.objects.filter(Document_no=Document_no)
         for i,j in enumerate(auth_list):
             if j.Staff!='Pending':
-                approval_user.append({"date":j.Staff_date,'Approval':'Staff',
+                approval_user.append({"date":j.Staff_date,'Approval':'Staff','name':j.Staff_name,
                 'remarks':j.Staff})
             if j.HOD!='Pending':
-                approval_user.append({"date":j.HOD_date,'Approval':'HOD',
+                approval_user.append({"date":j.HOD_date,'Approval':'HOD','name':j.HOD_name,
                 'remarks':j.HOD})
             if j.GM!='Pending':
-                approval_user.append({"date":j.GM_date,'Approval':'GM',
+                approval_user.append({"date":j.GM_date,'Approval':'GM','name':j.GM_name,
                 'remarks':j.GM})
             if j.vice_principal!='Pending':
-                approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal',
+                approval_user.append({"date":j.vice_principal_date,'Approval':'vice_principal','name':j.vp_name,
                 'remarks':j.vice_principal})
             if j.principal!='Pending':
-                approval_user.append({"date":j.principal_date,'Approval':'principal',
+                approval_user.append({"date":j.principal_date,'Approval':'principal','name':j.principal_name,
                 'remarks':j.principal})
-
+            for a in approval_user:
+                print(approval_user)
         document_data = e_approval.objects.get(Document_no=Document_no)
         number = document_data.Total_Value
         number_in_words = num2words(number)
@@ -548,51 +550,61 @@ def form_approval(request):
     approval_data = get_object_or_404(e_approval,Document_no=Document_no)
 
     if approval_Remarks and role=='Staff':
+        approval_data.Staff_name=user_name
         approval_data.Staff = approval_Remarks
         approval_data.Staff_date = current_date_time
         approval_data.save()
 
     if approval_Remarks and role=='HOD':
+        approval_data.HOD_name=user_name
         approval_data.HOD = approval_Remarks
         approval_data.HOD_date = current_date_time
         approval_data.save()
 
     if approval_Remarks and role=='GM':
+        approval_data.GM_name=user_name
         approval_data.GM = approval_Remarks
         approval_data.GM_date = current_date_time
         approval_data.save()
 
     if approval_Remarks and role=='vice_principal':
+        approval_data.vp_name=user_name
         approval_data.vice_principal = approval_Remarks
         approval_data.vice_principal_date = current_date_time
         approval_data.save()
 
     if approval_Remarks and role=='Principal':
+        approval_data.principal_name=user_name
         approval_data.principal = approval_Remarks
         approval_data.principal_date = current_date_time
         approval_data.save()
     
     if approval_Reason and role=='Staff':
+        approval_data.Staff_name=user_name
         approval_data.Staff = approval_Reason
         approval_data.Staff_date = current_date_time
         approval_data.save()
 
     if approval_Reason and role=='HOD':
+        approval_data.HOD_name=user_name
         approval_data.HOD = approval_Reason
         approval_data.HOD_date = current_date_time
         approval_data.save()
 
     if approval_Reason and role=='GM':
+        approval_data.GM_name=user_name
         approval_data.GM = approval_Reason
         approval_data.GM_date = current_date_time
         approval_data.save()
 
     if approval_Reason and role=='vice_principal':
+        approval_data.vp_name=user_name
         approval_data.principal = approval_Reason
         approval_data.vice_principal_date = current_date_time
         approval_data.save()
 
     if approval_Reason and role=='Principal':
+        approval_data.principal_name=user_name
         approval_data.principal = approval_Reason
         approval_data.principal_date = current_date_time
         approval_data.save()
@@ -731,6 +743,9 @@ from PIL import Image
 from io import BytesIO  # Add this import statement
 import os
 from datetime import datetime
+from PyPDF2 import PdfMerger
+from reportlab.pdfgen import canvas
+
 def generate_pdf(request,Tran_No):
     print(Tran_No)
     # Create a file-like buffer to receive PDF data.
@@ -748,6 +763,11 @@ def generate_pdf(request,Tran_No):
     role=staff_id.role
 
 
+
+    # def handle_uploaded_file(f):
+    #     with open('{Tran_No.Attachment}', 'wb+') as destination:
+    #         for chunk in f.chunks():
+    #             destination.write(chunk)
     # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer, pagesize=A4)
 

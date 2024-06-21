@@ -209,7 +209,7 @@
 
                     </div>
                     
-                    <div class="doc-con form-group row">
+                    <div class="doc-con form-group  align-items justify content-between row">
                       <label id="tags" class="col-sm-4 col-form-label">Status:</label>
                       <div>
                         <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.principal}}</span>
@@ -217,14 +217,14 @@
                     </div>
                   </div>
                   <div class="col-md-8">
-                    <div class="doc-con form-group row">
+                    <div class="doc-con form-group row align-items justify content-between">
                       <label id="tags" class="col-sm-2 col-form-label">Org.Unit:</label>
                       <div>
                         <span id="tag-ans" >{{ Document_no.Org_Unit }}</span> 
                       </div>
                     </div>
                     <div class="doc-con form-group row">
-                      <label id="tags" class="col-sm-2 col-form-label">Department:</label>
+                      <label id="tags" class="col-sm-2 col-form-label align-items justify content-between">Department:</label>
                       <div>
                         <span id="tag-ans">{{ Document_no.Department }}</span>
                       </div>
@@ -234,13 +234,13 @@
               </div>
               <div class="col-md-2 mt-4">
             
-                <div class="doc-con form-group row mt-2">
+                <div class="doc-con form-group row mt-2 align-items justify content-between">
                   <label id="tags" class="col-sm-4 col-form-label">Date:</label>
                   <div >
                     <span id="tag-ans">{{ Document_no.date }}</span>
                   </div>
                 </div>
-                <div class="doc-con form-group row">
+                <div class="doc-con form-group row align-items justify content-between">
                   <label id="tags" class="col-sm-4 col-form-label">Priority:</label>
                   <div>
                     <span id="tag-ans">{{ Document_no.Priority }}</span>
@@ -252,9 +252,9 @@
               </div>
               
             </div>
-            <div class="col-md-12  border-bottom">
-              <div class="doc-con form-group row ml-2">
-                <label id="tags" class="col-sm-2 col-form-label">Category:</label>
+            <div class="col-md-12  border-bottom mr-3">
+              <div class="doc-con form-group row ml-1 align-items justify content-between">
+                <label id="tags" class="col-sm-1 col-form-label">Category:</label>
                 <div>
                   <span id="tag-ans" >{{ Document_no.Category }}</span> 
                 </div>
@@ -266,7 +266,7 @@
                 </div>
               </div>
             </div> -->
-            <div class="ref-document-details col-md-12 ml-4">
+            <div class="ref-document-details col-md-12 align-items justify content-between">
               <div class="ref-document-head">
                 <label id="tag-ans mr-2">Ref Document Details</label>
               </div>
@@ -405,14 +405,17 @@
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th>Approval</th>
+                    <th>Name</th>
+                    <th>Desgination</th>
                     <th>Authoriztion Date</th>
                     <th>Approver Remarks</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
                   {% for p in approval_user%}
                   <tr>
+                    <td>{{p.name}}</td>
                     <td>{{p.Approval}}</td>
                     <td>{{p.date}}</td>
                     <td>{{p.remarks}}</td>
@@ -448,13 +451,13 @@
       document.getElementById('auth_approval').addEventListener('submit', function(event) {
           if (!buttonClicked) {
               event.preventDefault(); // Prevent form from submitting
-              alert('Please Verify the Document');
+              alert('Please Verify the Attachment');
           }
       });
       document.getElementById('auth_option').addEventListener('submit', function(event) {
           if (!buttonClicked) {
               event.preventDefault(); // Prevent form from submitting
-              alert('Please Verify the Document');
+              alert('Please Verify the Attachment');
           }
       });
     </script>

@@ -20,17 +20,19 @@ class e_approval(models.Model):
     date = models.DateField()
     Attachment_details = models.CharField(max_length=100,blank=True,null=True)
     Technician = models.CharField(max_length=100,blank=True,null=True)
+    Staff_name=models.CharField(max_length=100,blank=True,null=True)
     Staff = models.CharField(max_length=100,blank=True,null=True)
     Staff_date = models.CharField(max_length=100,blank=True,null=True)
+    HOD_name=models.CharField(max_length=100,blank=True,null=True)
     HOD = models.CharField(max_length=100,blank=True,null=True)
     HOD_date = models.CharField(max_length=100,blank=True,null=True)
-
+    GM_name=models.CharField(max_length=100,blank=True,null=True)
     GM = models.CharField(max_length=100,blank=True,null=True)
     GM_date = models.CharField(max_length=100,blank=True,null=True)
-
+    vp_name=models.CharField(max_length=100,blank=True,null=True)
     vice_principal = models.CharField(max_length=100,blank=True,null=True)
     vice_principal_date = models.CharField(max_length=100,blank=True,null=True)
-
+    principal_name=models.CharField(max_length=100,blank=True,null=True)
     principal = models.CharField(max_length=100,blank=True,null=True)
     principal_date = models.CharField(max_length=100,blank=True,null=True)
 

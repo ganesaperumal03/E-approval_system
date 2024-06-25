@@ -190,10 +190,7 @@
       </div>
         <form  method="POST"  id='create_form' class="border"  autocomplete="off" enctype="multipart/form-data">
           {% csrf_token %}
-          <div class="alert alert-success alert-dismissible">
-            <strong>Submitted!!</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-          </div>
+
           <div class="container-fluid">
             <div class="container1 border">
               <div class="document-container col-md-6 .ms-md-auto border">
@@ -408,7 +405,20 @@
       });
     </script>
 
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('create_form');
 
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            alert('Form submitted successfully!');
+
+                    // Optionally, you can submit the form programmatically here
+                    // form.submit();
+        });
+      });
+    </script>
 
     <!-- <script>
         document.addEventListener("DOMContentLoaded", function(){

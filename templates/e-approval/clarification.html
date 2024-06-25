@@ -176,13 +176,13 @@
             </div>
             <div class="doc-conform-group row mt-2 mb-2">
               <label class="col-sm-1 col-form-label" id="tags">Attached document</label>
-              {%if document_data.Tran_No %}
+              {% if document_data.Tran_No %}
               <a href="{% url 'pdf_show' document_data.Tran_No  %}" target="_blank">
                                 <button class=" btn btn-danger ml-2">
                   <i class="bi bi-file-pdf"></i> FILE
                 </button>                  
               </a>
-              {%endif %}
+              {% endif %}
             </div>
             <div class="document-body row">
               <div class="doc col-md-4">

@@ -98,6 +98,7 @@ def create_form(request):
             role = staff.role
             user.staff_id = staff_id
             user.Document_no = doc_no
+            print(user.Document_no,"erererwerwreer")
             user.Tran_No = tran_no
             user.creator=role
             
@@ -1104,7 +1105,11 @@ def generate_pdf(request,Tran_No):
     # Close the PDF object cleanly.
     p.showPage()
    
-
+    pdf = get_object_or_404(e_approval,Tran_No=Tran_No)
+    print(pdf)
+        
+    pdf_paths = pdf.Attachment
+    pdf_path=str(pdf_paths)
     # # Add watermark text
     # watermark_text = "Ramco Institute of Technology"
     # p.setFont("Times-Roman", 36)
@@ -1216,75 +1221,20 @@ def generate_pdf(request,Tran_No):
     p.save()
 
     # Get the value of the BytesIO buffer and write it to the response.
-    pdf = buffer.getvalue()
-    buffer.close()
-    
+    buffer.seek(0)
+    report_pdf_path = "generated_report.pdf"
+    with open(report_pdf_path, "wb") as f:
+        f.write(buffer.getvalue())
+    merger = PdfMerger()
+    # Add the generated PDF
+    merger.append(report_pdf_path)
+    other_pdf_path = pdf_path
+    with open(other_pdf_path, "rb") as f:
+        other_pdf = BytesIO(f.read())
+    merger.append(other_pdf)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="e_approval.pdf"'
-    response.write(pdf)
-    return response
-
-def temp_create_form(request):
-    doc_status="Fresher"
-    user_data=request.session.get('user_data', {})
-    staff_id=user_data["staff_id"]
-    Name=user_data["name"]
-    Department=user_data["Department"]
-    role=user_data["role"]
-    email=user_data['email']
-    dept_code={"ARTIFICIAL INTELLIGENCE AND DATA SCIENCE":"AD",
-                "CIVIL ENGINEERING":"CE",
-                "COMPUTER SCIENCE AND BUSINESS SYSTEM":"CB",
-                "COMPUTER SCIENCE AND ENGINEERING":"CSE",
-                "ELECRICAL AND ELECTRONICS ENGINEERING":"EEE",
-                "ELECTRONICS AND COMMUNICATION ENGINEERING":"ECE",
-                "INFORMATION TECHNOLOGY":"IT",
-                "MECHANICAL ENGINEERING":"MECH",}
-
-    excel_file_path = 'category.csv'
-    excel_file_path1 = 'Book1.csv'
-    try:
-        head = pd.read_csv(excel_file_path1)
-    except pd.errors.EmptyDataError:
-        # Handle the case where the Excel file is empty
-        head = pd.DataFrame(columns=['Head of account'])
-    # # Read the Excel file
-    try:
-        df = pd.read_csv(excel_file_path)
-    except pd.errors.EmptyDataError:
-        # Handle the case where the Excel file is empty
-        df = pd.DataFrame(columns=['Sub_category'])
-
-    category = df['Sub_category'].tolist()
+    merger.write(response)
+    merger.close()
     
-    head_account =head['Head of account'].tolist()
-    print(head_account,'--------------------------------------------------')
-
-    if request.method == 'POST':
-        form = EApprovalForm(request.POST)
-        if form.is_valid():
-            Department = form.cleaned_data['Department']
-            Category = form.cleaned_data['Category']
-
-            count = e_approval.objects.count() + 1
-            print(count)
-            year = datetime.now().strftime("%Y")
-            count_no = f"{count:05d}"
-            tran_count = e_approval.objects.filter(Department=Department).count() + 1
-            tran_count_no = f"{tran_count:05d}"
-            if dept_code[Department] == dept_code[Department]:
-                doc_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{tran_count_no}'
-
-            staff = User.objects.get(staff_id=staff_id)
-            user = form.save(commit=False)
-            role = staff.role
-            user.staff_id = staff_id
-            user.Document_no = doc_no
-            user.Tran_No = tran_no
-            user.creator=role
-            
-
-            file_paths = save_uploaded_pdfs(request.FILES)
-
-            print(".......................................................",file_paths.get('Attachment'))
-            user.Attachment = file_paths.get('Attachment')
+    return response

@@ -49,7 +49,14 @@ def create_form(request):
     Department=user_data["Department"]
     role=user_data["role"]
     email=user_data['email']
-
+    dept_code={"ARTIFICIAL INTELLIGENCE AND DATA SCIENCE":"AD",
+                "CIVIL ENGINEERING":"CE",
+                "COMPUTER SCIENCE AND BUSINESS SYSTEM":"CB",
+                "COMPUTER SCIENCE AND ENGINEERING":"CSE",
+                "ELECRICAL AND ELECTRONICS ENGINEERING":"EEE",
+                "ELECTRONICS AND COMMUNICATION ENGINEERING":"ECE",
+                "INFORMATION TECHNOLOGY":"IT",
+                "MECHANICAL ENGINEERING":"MECH",}
 
     excel_file_path = 'category.csv'
     excel_file_path1 = 'Book1.csv'
@@ -66,8 +73,8 @@ def create_form(request):
         df = pd.DataFrame(columns=['Sub_category'])
 
     category = df['Sub_category'].tolist()
-    head_account = head['Head of account'].tolist()
-
+    
+    head_account =head['Head of account'].tolist()
     print(head_account,'--------------------------------------------------')
 
     if request.method == 'POST':
@@ -75,14 +82,7 @@ def create_form(request):
         if form.is_valid():
             Department = form.cleaned_data['Department']
             Category = form.cleaned_data['Category']
-            dept_code={"ARTIFICIAL INTELLIGENCE AND DATA SCIENCE":"AD",
-                       "CIVIL ENGINEERING":"CE",
-                       "COMPUTER SCIENCE AND BUSINESS SYSTEM":"CB",
-                       "COMPUTER SCIENCE AND ENGINEERING":"CSE",
-                       "ELECRICAL AND ELECTRONICS ENGINEERING":"EEE",
-                       "ELECTRONICS AND COMMUNICATION ENGINEERING":"ECE",
-                       "INFORMATION TECHNOLOGY":"IT",
-                       "MECHANICAL ENGINEERING":"MECH",}
+
             count = e_approval.objects.count() + 1
             print(count)
             year = datetime.now().strftime("%Y")
@@ -100,13 +100,13 @@ def create_form(request):
             user.Document_no = doc_no
             user.Tran_No = tran_no
             user.creator=role
+            
 
             file_paths = save_uploaded_pdfs(request.FILES)
 
             print(".......................................................",file_paths.get('Attachment'))
             user.Attachment = file_paths.get('Attachment')
-            
-            # Set approval status based on role
+
             if role == 'Technician':
                 user.Technician = None
                 user.Staff = 'Pending'
@@ -197,7 +197,7 @@ def create_form(request):
             return redirect('create_form')
 
         else:
-            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account})
+            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,"dept_code":dept_code})
     else:
         form = EApprovalForm()
         staff_user = User.objects.get(staff_id=staff_id)
@@ -223,7 +223,7 @@ def create_form(request):
             #                                                 'principal_user': principal_user, 'HOD': HOD_user
             #                                              })
         print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,
+        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,"dept_code":dept_code
                                                          })
 
 
@@ -608,7 +608,7 @@ def form_approval(request):
     Department=user_data['Department']
     print(user_name,"approval")
     # Format the date and time as a string
-    current_date_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    current_date_time = now.strftime("%d-%m-%Y %H:%M:%S")
 
     approval_Reason = request.POST.get('approval_Reason')
     print(approval_Remarks,Document_no,approval_Reason)
@@ -675,8 +675,9 @@ def form_approval(request):
         approval_data.principal = approval_Reason
         approval_data.principal_date = current_date_time
         approval_data.save()
-    print('wewwwewewewewewewewewe',toallist[0])
-    send_email(request,toallist[0])
+    if role != 'Principal':
+        print('wewwwewewewewewewewewe',toallist[0])
+        send_email(request,toallist[0])
 
 
     return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name,"doc_data":doc_data})
@@ -790,7 +791,7 @@ def send_email(request,email):
     send_mail(
     subject_create,
     message_create,
-    "ganeshperumal256@gmail.com",
+    "953622243021@ritrjpm.ac.in",
     [email],
     fail_silently=False,
     )
@@ -837,6 +838,7 @@ from datetime import datetime
 from PyPDF2 import PdfMerger
 from reportlab.pdfgen import canvas
 
+
 def generate_pdf(request,Tran_No):
     print(Tran_No)
     # Create a file-like buffer to receive PDF data.
@@ -853,13 +855,6 @@ def generate_pdf(request,Tran_No):
     staff_id = User.objects.get(staff_id=Document_no.staff_id)
     role=staff_id.role
 
-
-
-    # def handle_uploaded_file(f):
-    #     with open('{Tran_No.Attachment}', 'wb+') as destination:
-    #         for chunk in f.chunks():
-    #             destination.write(chunk)
-    # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer, pagesize=A4)
 
     # Draw the content on the PDF
@@ -873,7 +868,8 @@ def generate_pdf(request,Tran_No):
     p.drawString(175, height - 50, "Ramco Institute of Technology")
     p.setFont("Helvetica-Bold", 14)
     p.drawString(245, height - 80, "E-approval")
-    p.drawString(50, height - 330, "Approval List")
+    p.drawString(50, height - 330, "Approval List:")
+    p.drawString(50, height-580, "Comments:")
     
     # Labels
     p.setFont("Times-Bold", 13)
@@ -905,7 +901,7 @@ def generate_pdf(request,Tran_No):
     p.drawString(220, height - 250, str(Document_no.remarks_Subject1))
     p.drawString(220, height - 230, str(Document_no.date))
     p.drawString(220, height - 270, str(Document_no.vice_principal_date))
-    p.drawString(220, height - 310, Document_no.Total_Value)
+    p.drawString(220, height - 310, f"Rs. {Document_no.Total_Value}")
     p.drawString(220, height - 170, Document_no.Document_no)    
 
     
@@ -925,88 +921,108 @@ def generate_pdf(request,Tran_No):
 
     if role=='Technician':
         p.setFont("Courier-Bold", 14)
-        p.drawString(200, height - 360, "Name")
-        p.drawString(302, height - 360, "Date(YYYY-mm-dd) & Time")
-        p.drawString(150, height - 390, user5.Name)
-        p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(150, height - 420, user4.Name)
-        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(150, height - 450, user3.Name)
-        p.drawString(320, height - 450, str(Document_no.GM_date))
-        p.drawString(150, height - 480, user2.Name)
-        p.drawString(320, height - 480, str(Document_no.HOD_date))
-        p.drawString(150, height - 510, user1.Name)
-        p.drawString(320, height - 510, str(Document_no.Staff_date))
+        p.drawString(100, height - 380, "Name")
+        # p.drawString(240, height - 380, "Remarks")
+        p.drawString(355, height - 380, "Date & Time")
+        p.drawString(60, height - 410, user5.Name)
+        p.drawString(360, height - 410, str(Document_no.principal_date))
+        p.drawString(50, height - 600, "Principal")
+        p.drawString(200, height - 600, Document_no.principal)
+        p.drawString(60, height - 440, user4.Name)
+        p.drawString(360, height - 440, str(Document_no.vice_principal_date))
+        p.drawString(50, height - 640, "Vice Principal")
+        p.drawString(200, height - 640, Document_no.vice_principal)
+        p.drawString(60, height - 470, user3.Name)
+        p.drawString(360, height - 470, str(Document_no.GM_date))
+        p.drawString(50, height - 680, "GM")
+        p.drawString(200, height - 680, Document_no.GM)
+        p.drawString(60, height - 500, user2.Name)
+        p.drawString(360, height - 500, str(Document_no.HOD_date))
+        p.drawString(50, height - 720, "HOD")
+        p.drawString(200, height - 720, Document_no.HOD)
 
-        p.line(100, height - 340, 500, height - 340)
-        p.line(100, height - 370, 500, height - 370)
-        p.line(100, height - 400, 500, height - 400)
-        p.line(100, height - 430, 500, height - 430)
-        p.line(100, height - 460, 500, height - 460)
-        p.line(100, height - 490, 500, height - 490)
-        p.line(100, height - 520, 500, height - 520)
+        p.drawString(60, height - 530, user1.Name)
+        p.drawString(360, height - 530, str(Document_no.Staff_date))
+        p.drawString(50, height - 760, "Staff")
+        p.drawString(200, height - 760, Document_no.Staff)
 
 
-        p.line(100, height - 340, 100, height - 520)
-        p.line(300, height - 340, 300, height - 520)
-        p.line(500, height - 340, 500, height - 520)
+        p.line(50, height - 360, 550, height - 360)
+        p.line(50, height - 390, 550, height - 390)
+        p.line(50, height - 420, 550, height - 420)
+        p.line(50, height - 450, 550, height - 450)
+        p.line(50, height - 480, 550, height - 480)
+        p.line(50, height - 510, 550, height - 510)
+        p.line(50, height - 540, 550, height - 540)
+
+
+        p.line(50, height - 360, 50, height - 540)
+        p.line(220, height - 360, 220, height - 540)
+        # p.line(350, height - 360, 350, height - 540)
+        p.line(550, height - 360, 550, height - 540)
     elif role=='Staff':
         p.setFont("Courier-Bold", 14)
-        p.drawString(200, height - 360, "Name")
-        p.drawString(302, height - 360, "")
-        p.drawString(150, height - 390, user5.Name)
-        p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(150, height - 420, user4.Name)
-        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(150, height - 450, user3.Name)
-        p.drawString(320, height - 450, str(Document_no.GM_date))
-        p.drawString(150, height - 480, user2.Name)
-        p.drawString(320, height - 480, str(Document_no.HOD_date))
+        p.drawString(100, height - 380, "Name")
+        # p.drawString(240, height - 380, "Remarks")
+        p.drawString(355, height - 380, "Date & Time")
+        p.drawString(60, height - 410, user5.Name)
+        p.drawString(360, height - 410, str(Document_no.principal_date))
+        p.drawString(60, height - 440, user4.Name)
+        p.drawString(360, height - 440, str(Document_no.vice_principal_date))
+        p.drawString(60, height - 470, user3.Name)
+        p.drawString(360, height - 470, str(Document_no.GM_date))
+        p.drawString(60, height - 500, user2.Name)
+        p.drawString(360, height - 500, str(Document_no.HOD_date))
+
+        p.line(50, height - 360, 550, height - 360)
+        p.line(50, height - 390, 550, height - 390)
+        p.line(50, height - 420, 550, height - 420)
+        p.line(50, height - 450, 550, height - 450)
+        p.line(50, height - 480, 550, height - 480)
+        p.line(50, height - 510, 550, height - 510)
 
 
-        p.line(100, height - 340, 500, height - 340)
-        p.line(100, height - 370, 500, height - 370)
-        p.line(100, height - 400, 500, height - 400)
-        p.line(100, height - 430, 500, height - 430)
-        p.line(100, height - 460, 500, height - 460)
-        p.line(100, height - 490, 500, height - 490)
 
-
-        p.line(100, height - 340, 100, height - 490)
-        p.line(300, height - 340, 300, height - 490)
-        p.line(500, height - 340, 500, height - 490)
+        p.line(50, height - 360, 50, height - 510)
+        p.line(220, height - 360, 220, height - 510)
+        # p.line(350, height - 360, 350, height - 510)
+        p.line(550, height - 360, 550, height - 510)
     elif role=='HOD':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
-        p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
-        p.drawString(150, height - 390, user5.Name)
-        p.drawString(320, height - 390, str(Document_no.principal_date))
-        p.drawString(150, height - 420, user4.Name)
-        p.drawString(320, height - 420, str(Document_no.vice_principal_date))
-        p.drawString(150, height - 450, user3.Name)
-        p.drawString(320, height - 450, str(Document_no.GM_date))
+        p.drawString(100, height - 380, "Name")
+        p.drawString(240, height - 380, "Remarks")
+        p.drawString(355, height - 380, "Date & Time")
+        p.drawString(60, height - 410, user5.Name)
+        p.drawString(360, height - 410, str(Document_no.principal_date))
+        p.drawString(60, height - 440, user4.Name)
+        p.drawString(360, height - 440, str(Document_no.vice_principal_date))
+        p.drawString(60, height - 470, user3.Name)
+        p.drawString(360, height - 470, str(Document_no.GM_date))
 
 
 
-        p.line(100, height - 340, 500, height - 340)
-        p.line(100, height - 370, 500, height - 370)
-        p.line(100, height - 400, 500, height - 400)
-        p.line(100, height - 430, 500, height - 430)
-        p.line(100, height - 460, 500, height - 460)
+        p.line(50, height - 360, 550, height - 360)
+        p.line(50, height - 390, 550, height - 390)
+        p.line(50, height - 420, 550, height - 420)
+        p.line(50, height - 450, 550, height - 450)
+        p.line(50, height - 480, 550, height - 480)
+  
 
 
-        p.line(100, height - 340, 100, height - 460)
-        p.line(300, height - 340, 300, height - 460)
-        p.line(500, height - 340, 500, height - 460)
+        p.line(50, height - 360, 50, height - 480)
+        p.line(220, height - 360, 220, height - 480)
+        p.line(350, height - 360, 350, height - 480)
+        p.line(550, height - 360, 550, height - 480)
     
 
 
     elif role=='office':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
-        p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
+        p.drawString(100, height - 380, "Name")
+        # p.drawString(240, height - 380, "Remarks")
+        p.drawString(355, height - 380, "Date & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -1016,22 +1032,24 @@ def generate_pdf(request,Tran_No):
 
 
 
-        p.line(100, height - 340, 500, height - 340)
-        p.line(100, height - 370, 500, height - 370)
-        p.line(100, height - 400, 500, height - 400)
-        p.line(100, height - 430, 500, height - 430)
-        p.line(100, height - 460, 500, height - 460)
+        p.line(50, height - 360, 550, height - 360)
+        p.line(50, height - 390, 550, height - 390)
+        p.line(50, height - 420, 550, height - 420)
+        p.line(50, height - 450, 550, height - 450)
+        p.line(50, height - 480, 550, height - 480)
 
 
-        p.line(100, height - 340, 100, height - 460)
-        p.line(300, height - 340, 300, height - 460)
-        p.line(500, height - 340, 500, height - 460)
-    
+
+        p.line(50, height - 360, 50, height - 540)
+        p.line(220, height - 360, 220, height - 540)
+        # p.line(350, height - 360, 350, height - 540)
+        p.line(550, height - 360, 550, height - 540)
     elif role=='GM':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
-        p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
+        p.drawString(100, height - 360, "Name")
+        p.drawString(200, height - 360, "Date & Time")
+        p.drawstring()
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
         p.drawString(150, height - 420, user4.Name)
@@ -1040,43 +1058,47 @@ def generate_pdf(request,Tran_No):
 
 
 
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
-        p.line(50, height - 430, 550, height - 430)
+        p.line(50, height - 360, 550, height - 360)
+        p.line(50, height - 390, 550, height - 390)
+        p.line(50, height - 420, 550, height - 420)
+        p.line(50, height - 450, 550, height - 450)
+  
 
 
-
-        p.line(100, height - 340, 100, height - 430)
-        p.line(300, height - 340, 300, height - 430)
-        p.line(500, height - 340, 500, height - 430)
+        p.line(50, height - 360, 50, height - 540)
+        p.line(220, height - 360, 220, height - 540)
+        p.line(350, height - 360, 350, height - 540)
+        p.line(550, height - 360, 550, height - 540)
     
     elif role=='vice_principal':
         p.setFont("Courier-Bold", 14)
         p.setFont("Courier-Bold", 14)
         p.drawString(200, height - 360, "Name")
-        p.drawString(350, height - 360, "Date(YYYY-mm-dd) & Time")
+        p.drawString(350, height - 360, "Date & Time")
         p.drawString(150, height - 390, user5.Name)
         p.drawString(320, height - 390, str(Document_no.principal_date))
 
 
 
 
-        p.line(50, height - 340, 550, height - 340)
-        p.line(50, height - 370, 550, height - 370)
-        p.line(50, height - 400, 550, height - 400)
+
+        p.line(50, height - 360, 550, height - 360)
+        p.line(50, height - 390, 550, height - 390)
+        p.line(50, height - 420, 550, height - 420)
 
 
 
-        p.line(100, height - 340, 100, height - 400)
-        p.line(300, height - 340, 300, height - 400)
-        p.line(500, height - 340, 500, height - 400)
+        p.line(50, height - 360, 50, height - 540)
+        p.line(220, height - 360, 220, height - 540)
+        p.line(350, height - 360, 350, height - 540)
+        p.line(550, height - 360, 550, height - 540)
+    
     
     
     # Footer
     p.setFont("Helvetica-Oblique", 10)
-    p.drawString(50, 50, "Created by E-approval System/")
-    p.drawString(190, 50, Generated_date_str)
+    p.drawString(30, 30, "Created by E-approval System/")
+    p.drawString(220, 80, Generated_date_str)
     p.drawString(420, 820, "DATE:")
     p.drawString(460, 820, Generated_date_str)
     # Close the PDF object cleanly.
@@ -1196,7 +1218,73 @@ def generate_pdf(request,Tran_No):
     # Get the value of the BytesIO buffer and write it to the response.
     pdf = buffer.getvalue()
     buffer.close()
+    
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="e_approval.pdf"'
     response.write(pdf)
     return response
+
+def temp_create_form(request):
+    doc_status="Fresher"
+    user_data=request.session.get('user_data', {})
+    staff_id=user_data["staff_id"]
+    Name=user_data["name"]
+    Department=user_data["Department"]
+    role=user_data["role"]
+    email=user_data['email']
+    dept_code={"ARTIFICIAL INTELLIGENCE AND DATA SCIENCE":"AD",
+                "CIVIL ENGINEERING":"CE",
+                "COMPUTER SCIENCE AND BUSINESS SYSTEM":"CB",
+                "COMPUTER SCIENCE AND ENGINEERING":"CSE",
+                "ELECRICAL AND ELECTRONICS ENGINEERING":"EEE",
+                "ELECTRONICS AND COMMUNICATION ENGINEERING":"ECE",
+                "INFORMATION TECHNOLOGY":"IT",
+                "MECHANICAL ENGINEERING":"MECH",}
+
+    excel_file_path = 'category.csv'
+    excel_file_path1 = 'Book1.csv'
+    try:
+        head = pd.read_csv(excel_file_path1)
+    except pd.errors.EmptyDataError:
+        # Handle the case where the Excel file is empty
+        head = pd.DataFrame(columns=['Head of account'])
+    # # Read the Excel file
+    try:
+        df = pd.read_csv(excel_file_path)
+    except pd.errors.EmptyDataError:
+        # Handle the case where the Excel file is empty
+        df = pd.DataFrame(columns=['Sub_category'])
+
+    category = df['Sub_category'].tolist()
+    
+    head_account =head['Head of account'].tolist()
+    print(head_account,'--------------------------------------------------')
+
+    if request.method == 'POST':
+        form = EApprovalForm(request.POST)
+        if form.is_valid():
+            Department = form.cleaned_data['Department']
+            Category = form.cleaned_data['Category']
+
+            count = e_approval.objects.count() + 1
+            print(count)
+            year = datetime.now().strftime("%Y")
+            count_no = f"{count:05d}"
+            tran_count = e_approval.objects.filter(Department=Department).count() + 1
+            tran_count_no = f"{tran_count:05d}"
+            if dept_code[Department] == dept_code[Department]:
+                doc_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{tran_count_no}'
+
+            staff = User.objects.get(staff_id=staff_id)
+            user = form.save(commit=False)
+            role = staff.role
+            user.staff_id = staff_id
+            user.Document_no = doc_no
+            user.Tran_No = tran_no
+            user.creator=role
+            
+
+            file_paths = save_uploaded_pdfs(request.FILES)
+
+            print(".......................................................",file_paths.get('Attachment'))
+            user.Attachment = file_paths.get('Attachment')

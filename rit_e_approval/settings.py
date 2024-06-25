@@ -77,9 +77,11 @@ WSGI_APPLICATION = 'rit_e_approval.wsgi.application'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
+EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ganeshperumal256@gmail.com'  # Your Gmail email address
-EMAIL_HOST_PASSWORD = 'idokrftlbpbnuhsx'
+EMAIL_HOST_USER = '953622243021@ritrjpm.ac.in'  # Your Gmail email address
+EMAIL_HOST_PASSWORD = 'ikeu sdqe ydrx jlwr'
+DEFAULT_FROM_EMAIL = '953622243021@ritrjpm.ac.in'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

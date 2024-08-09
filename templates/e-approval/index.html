@@ -188,9 +188,12 @@
           <span>{{tran_no}}</span>
 
       </div>
-        <form  method="POST"  id='create_form' class="border"  autocomplete="off" enctype="multipart/form-data">
+        <form  method="POST"  id='create_form' class="border" enctype="multipart/form-data">
           {% csrf_token %}
-
+          <div class="alert alert-success alert-dismissible">
+            <strong>Submitted!!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+          </div>
           <div class="container-fluid">
             <div class="container1 border">
               <div class="document-container col-md-6 .ms-md-auto border">
@@ -214,17 +217,24 @@
                       <option value="{{ c }}">{{ c }}</option>
                         {% endfor %}
                     </select>
-      
                   </div>
-                  <!-- <div class="detail-section">
+                  <div class="detail-section">
                     <label class="detail-label">Sub Category</label>
-                    <select class="detail-value col-md-5" name="Sub_Category">
-
-                      <option value="" disabled hidden selected>Select Category</option>
-                      {% for c in category %}
-                      <option value="{{ c }}">{{ c }}</option>
-                      {% endfor %}
+                    <select class="detail-value col-md-5" name="Sub_Category" id="subcategory-select">
+                        <option value="" disabled hidden selected>Select Sub Category</option>
                     </select>
+                </div>
+                  <!-- <div class="detail-section">
+                    <label class="detail-label">Head_of_account</label>
+                      <select class="detail-value col-md-5" name=" Head_of_account">
+  
+                        
+                        {% for c in head_account %}
+                        <option value="{{ c }}">{{ c }}</option>
+                          {% endfor %}
+  
+  
+                      </select>
                   </div> -->
                   <div class="detail-section">
                     <label class="detail-label">Priority</label>
@@ -261,18 +271,7 @@
               <div class="financial-details col-md-6 .ms-md-auto border">
                 <div class="heading">
                 <h3>Financial Details</h3></div>
-                <div class="detail-section">
-                  <label class="detail-label">Head_of_account</label>
-                    <select class="detail-value col-md-5" name=" Head_of_account">
 
-                      
-                      {% for c in head_account %}
-                      <option value="{{ c }}">{{ c }}</option>
-                        {% endfor %}
-
-
-                    </select>
-                </div>
                 <div class="detail-section">
                   <span class="detail-label">Fin.Commitment</span>
                   <select class="detail-value col-md-5" name="fin_commit">
@@ -308,10 +307,19 @@
             </div>
           
           </div class="border">
-          <div class="container my-3" style="text-align: center;">
-            <!-- Trigger the modal with a button -->
-            <button type="submit" class="btn btn-info btn-lg" style="background-color: #00407b;">Create</button>
-            <!-- Modal -->
+          <div class="row mt-12">
+            <div class="col-md-3 text-center">
+                <button type="submit" class="btn btn-primary" name="create">Create</button>
+            </div>
+            <div class="col-md-3 text-center">
+                <button type="button" class="btn btn-warning" name="edit">Edit</button>
+            </div>
+            <div class="col-md-3 text-center">
+                <button type="submit" class="btn btn-success" name="submit">Submit</button>
+            </div>
+            <div class="col-md-3 text-center">
+                <button type="submit" class="btn btn-danger" name="delete">Delete</button>
+            </div>
           </div>
         
       
@@ -404,21 +412,26 @@
         }
       });
     </script>
-
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('create_form');
-
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting
-
-            alert('Form submitted successfully!');
-
-                    // Optionally, you can submit the form programmatically here
-                    // form.submit();
-        });
+      $(document).ready(function() {
+          $('#category-select').change(function() {
+              var selectedCategory = $(this).val();
+              $.ajax({
+                  url: '/get_subcategories/' + selectedCategory + '/',
+                  method: 'GET',
+                  success: function(data) {
+                      var subcategorySelect = $('#subcategory-select');
+                      subcategorySelect.empty();
+                      subcategorySelect.append('<option value="" disabled hidden selected>Select Sub Category</option>');
+                      data.forEach(function(subcategory) {
+                          subcategorySelect.append('<option value="' + subcategory + '">' + subcategory + '</option>');
+                      });
+                  }
+              });
+          });
       });
     </script>
+
 
     <!-- <script>
         document.addEventListener("DOMContentLoaded", function(){

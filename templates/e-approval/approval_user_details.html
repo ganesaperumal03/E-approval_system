@@ -312,6 +312,10 @@
           $("#sidebar, #content").toggleClass("active");
         });
       });
+      function submitForm(status) {
+        document.getElementById('doc_status').value = status;
+        document.getElementById('create_form').submit();
+      }
     </script>
   </body>
 </html>

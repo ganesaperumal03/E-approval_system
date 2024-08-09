@@ -16,6 +16,10 @@ from django.db.models import Q  #type:ignore
 import pandas as pd  
 from num2words import num2words   
 from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+import pandas as pd
+from datetime import datetime
 
 def save_uploaded_pdfs(file_dict):
     profile_images_directory = os.path.join('media')
@@ -58,30 +62,23 @@ def create_form(request):
                 "INFORMATION TECHNOLOGY":"IT",
                 "MECHANICAL ENGINEERING":"MECH",}
 
-    excel_file_path = 'category.csv'
-    excel_file_path1 = 'Book1.csv'
-    try:
-        head = pd.read_csv(excel_file_path1)
-    except pd.errors.EmptyDataError:
-        # Handle the case where the Excel file is empty
-        head = pd.DataFrame(columns=['Head of account'])
-    # # Read the Excel file
+    excel_file_path = 'head_of_account.csv'
+
     try:
         df = pd.read_csv(excel_file_path)
     except pd.errors.EmptyDataError:
-        # Handle the case where the Excel file is empty
-        df = pd.DataFrame(columns=['Sub_category'])
-
-    category = df['Sub_category'].tolist()
+        df = pd.DataFrame(columns=['Category'])
+    cata=df['Category'].unique()
     
-    head_account =head['Head of account'].tolist()
-    print(head_account,'--------------------------------------------------')
+    category = cata.tolist()
+    print(category,"ooooooooooooooooooooooooooooooooooo")
 
     if request.method == 'POST':
         form = EApprovalForm(request.POST)
         if form.is_valid():
             Department = form.cleaned_data['Department']
             Category = form.cleaned_data['Category']
+            print(Category,"dfjsdfjfsadfjdsjfhsdjahfjdhfjhadfjhsj")
 
             count = e_approval.objects.count() + 1
             print(count)
@@ -95,10 +92,11 @@ def create_form(request):
             tran_no = f'RIT/AC/{year}/{dept_code[Department]}/{Category}/{count_no}'
             staff = User.objects.get(staff_id=staff_id)
             user = form.save(commit=False)
+            print(tran_no,"erererwerwreer")
             role = staff.role
             user.staff_id = staff_id
             user.Document_no = doc_no
-            print(user.Document_no,"erererwerwreer")
+            print(user.Document_no)
             user.Tran_No = tran_no
             user.creator=role
             
@@ -198,7 +196,7 @@ def create_form(request):
             return redirect('create_form')
 
         else:
-            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,"dept_code":dept_code})
+            return render(request, "e-approval/error.html", {'form': form,"category":category,"role":role,"Department":Department,"Name":Name,"dept_code":dept_code})
     else:
         form = EApprovalForm()
         staff_user = User.objects.get(staff_id=staff_id)
@@ -224,7 +222,7 @@ def create_form(request):
             #                                                 'principal_user': principal_user, 'HOD': HOD_user
             #                                              })
         print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name,"head_account":head_account,"dept_code":dept_code
+        return render(request, "e-approval/index.html", {'form': form, "approval_user":approval_user,"category":category,"role":role,"Department":Department,"Name":Name,"dept_code":dept_code
                                                          })
 
 
@@ -494,7 +492,17 @@ def auth_approval(request):
     return render(request, "e-approval/auth_approval.html",{"doc_data":doc_data,"Name":name,"role":staff_role,"department":department,'doc_data':doc_data})
 
 doc_no = None # Declare the global variable outside the function
+def get_subcategories(request, Category):
+    excel_file_path = 'head_of_account.csv'
 
+    try:
+        df = pd.read_csv(excel_file_path)
+        df['Category'] = df['Category'].fillna(method='ffill')
+    except pd.errors.EmptyDataError:
+        df = pd.DataFrame(columns=['Category', 'Subcategory'])
+
+    subcategories = df[df['Category'] == Category]['Subcategory'].dropna().unique().tolist()
+    return JsonResponse(subcategories, safe=False)
 def clarification(request):
     user_data=request.session.get('user_data', {})
     staff_role=user_data['role']
@@ -590,7 +598,7 @@ def form_approval(request):
     approval_Remarks = request.POST.get('approval_Remarks')
     Document_no = request.POST.get('Document_no')
     default=["GM",'vice_principal','Principal']
-    roles=['Technician','Staff','HOD']
+    roles=['Technician','Staff','HOD','office','Deputywarden','Transport_Incharge']
     if user_data['role'] in roles :
         start_index = roles.index(user_data['role'])
         toallist = [User.objects.filter(role=i, Department=user_data['Department']).values_list('email', flat=True).first() for i in roles[start_index+1:]]+[User.objects.filter(role=i).values_list('email', flat=True).first() for i in default]
@@ -897,7 +905,7 @@ def generate_pdf(request,Tran_No):
     p.drawString(180, height - 120, Document_no.Department)
     p.drawString(220, height - 150, Document_no.Tran_No)
     p.drawString(220, height - 190, Document_no.Category)
-    p.drawString(220, height - 290, Document_no.Head_of_account)
+    # p.drawString(220, height - 290, Document_no.Head_of_account)
     p.drawString(220, height - 210, Document_no.remarks_Subject)
     p.drawString(220, height - 250, str(Document_no.remarks_Subject1))
     p.drawString(220, height - 230, str(Document_no.date))

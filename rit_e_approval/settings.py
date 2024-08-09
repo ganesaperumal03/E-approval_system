@@ -80,7 +80,7 @@ EMAIL_PORT = 587
 EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = '953622243021@ritrjpm.ac.in'  # Your Gmail email address
-EMAIL_HOST_PASSWORD = 'iseg zfls vvkl rbmk'
+EMAIL_HOST_PASSWORD = 'baon yqiy oycc bsbd'
 DEFAULT_FROM_EMAIL = '953622243021@ritrjpm.ac.in'
 
 # Database

@@ -13,7 +13,9 @@ from application.views.approval import (
     process_department,
     pdf,
     generate_pdf,
-    logout
+    logout,
+    select,
+    javascript,
     
 )
 
@@ -30,7 +32,8 @@ __all__ = [
     pdf_show,
     send_email,
     process_department,
-    pdf
+    pdf,select,
+    javascript,
     
     
 ]

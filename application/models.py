@@ -12,7 +12,7 @@ class e_approval(models.Model):
     remarks_Subject = models.CharField(max_length=100)
     remarks_Subject1 = models.CharField(max_length=100,blank=True,null=True)
     Priority = models.CharField(max_length=100)
-    Tran_No = models.CharField(max_length=200)
+    Tran_No = models.CharField(max_length=200,null=True)
     fin_commit = models.CharField(max_length=100)
     staff_id = models.CharField(max_length=10,blank=True,null=True)
     Tolerance = models.CharField(max_length=100)

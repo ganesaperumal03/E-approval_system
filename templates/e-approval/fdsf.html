@@ -3,41 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Load JSON Data</title>
+    <title>Create Resource Button</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
-    <h1>Categories and Subcategories</h1>
-    <div id="content"></div>
 
-    <script>
-        // Function to fetch and display the data
-        async function loadData() {
-            try {
-                const response = await fetch('data.json');
-                const data = await response.json();
-                
-                const contentDiv = document.getElementById('content');
-                for (const category in data) {
-                    const categoryTitle = document.createElement('h2');
-                    categoryTitle.textContent = category;
-                    contentDiv.appendChild(categoryTitle);
 
-                    const subcategories = data[category];
-                    const subcategoryList = document.createElement('ul');
-                    subcategories.forEach(subcategory => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = subcategory;
-                        subcategoryList.appendChild(listItem);
-                    });
-                    contentDiv.appendChild(subcategoryList);
-                }
-            } catch (error) {
-                console.error('Error loading the data:', error);
-            }
-        }
 
-        // Load the data when the page is loaded
-        window.onload = loadData;
-    </script>
 </body>
 </html>

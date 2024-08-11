@@ -137,7 +137,7 @@
                   </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'create_form' %}" class="nav-link bg-info text-white" >
+            <a href="{% url 'select' %}" class="nav-link bg-info text-white" >
                       <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
                       Create 
                   </a>
@@ -179,16 +179,12 @@
       </div>
       <div>
         <div class="doc col">
-            <label class="detail">DOC NO:</label>
-            <span>fdggfdg</span>
+            <label class="detail">DOC No:</label>
+            
+            <span>{{doc_no}}</span>
 
         </div>
-        <div class="doc col">
-          <label class="detail">Trans NO:</label>
-          <span>{{tran_no}}</span>
-
-      </div>
-        <form  method="POST"  id='create_form' class="border" enctype="multipart/form-data">
+        <form  method="POST"  id='create_form' class="border" enctype="multipart/form-data" action="">
           {% csrf_token %}
 
           <div class="container-fluid">
@@ -206,19 +202,17 @@
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Category</label>
-                    <select class="detail-value col-md-5" id="category" onchange="ChangeCategoryList()" name="Category">
+                    <select class="detail-value col-md-5" id="category" onchange="ChangeCategoryList()" name="Category" >
 
                       <option value="" disabled hidden selected>Select Category</option>
-      
-                        {% for c in category %}
-                      <option value="{{ c }}">{{ c }}</option>
-                        {% endfor %}
                     </select>
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Sub Category</label>
-                    <select class="detail-value col-md-5" name="sub_category" id="subcategory-select">
-                        <option value="" disabled hidden selected>Select Sub Category</option>
+                    <select class="detail-value col-md-5" name="sub_category" id="subcategory-select" value="{{form.sub_category}}">
+                      {% for sub_c in sub_category %}
+                      <option value="{{ sub_c }}" {% if form.sub_category == sub_c %}selected{% endif %}>{{ sub_c }}</option>
+                      {% endfor %}
                     </select>
                 </div>
                   <!-- <div class="detail-section">
@@ -235,19 +229,20 @@
                   </div> -->
                   <div class="detail-section">
                     <label class="detail-label">Priority</label>
-                    <select class="detail-value col-md-5" name="Priority" required>
+                    <select class="detail-value col-md-5" name="Priority" required value="{{form.Priority}}">
   
-                      <option value="" disabled hidden selected>Select Priority</option>
-        
-                      <option value="Standard">Standard</option>
-                      <option value="High">High</option>
-                      <option value="Low">Low</option>
+                      <option value=""  hidden selected>Select Priority</option>
+                      <option value="Standard" {% if form.Priority == "Standard" %}selected{% endif %}>Standard</option>
+                      <option value="High" {% if form.Priority == "High" %}selected{% endif %}>High</option>
+                      <option value="Low" {% if form.Priority == "Low" %}selected{% endif %}>Low</option>
                     </select>
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Date</label>
-                    <input type="date" name='date'class="detail-value col-md-5" required/>
-                  </div>
+                    
+                    <input type="date" name="date" id="date-input" class="detail-value col-md-5" required value="{{date}}" />
+                </div>
+                
                 </div>
               </div>
               <div class="document-remarks col-md-6 .ms-md-auto border">
@@ -255,11 +250,11 @@
                 <h3>Document remarks</h3></div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Subject</label>
-                  <textarea type="text" name="remarks_Subject" class="detail-value col-md-7" required style="resize: none;"></textarea>
+                  <textarea type="text" name="remarks_Subject" class="detail-value col-md-7"  required style="resize: none;">{{form.remarks_Subject}}</textarea>
                 </div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Remarks</label>
-                  <textarea type="text" name="remarks_Subject1" class="detail-value col-md-7" required style="resize: none;"></textarea>
+                  <textarea type="text" name="remarks_Subject1" class="detail-value col-md-7"  required style="resize: none;">{{form.remarks_Subject1}}</textarea>
                 </div>
 
               </div>
@@ -271,21 +266,21 @@
 
                 <div class="detail-section">
                   <span class="detail-label">Fin.Commitment</span>
-                  <select class="detail-value col-md-5" name="fin_commit">
-
-                    <option value="" disabled hidden selected>Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </select>
+                  <select class="detail-value col-md-5" name="fin_commit" required>
+                    <option value=""  hidden>Select</option>
+                    <option value="Yes" {% if form.fin_commit == "Yes" %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form.fin_commit == "No" %}selected{% endif %}>No</option>
+                </select>
+                
                 </div>
 
                 <div class="detail-section">
                   <label class="detail-label">Tolerance</label>
-                  <input type="text" name='Tolerance'class="detail-value col-md-5" required/>
+                  <input type="text" name='Tolerance'class="detail-value col-md-5" value="{{form.Tolerance}}" required/>
                 </div>
                 <div class="detail-section">
                   <label class="detail-label">Amount (INR) </label>
-                  <input type="text" name="Total_Value" class="detail-value col-md-5" required/>
+                  <input type="text" name="Total_Value" class="detail-value col-md-5" value="{{form.Total_Value}}" required/>
                 </div>
               </div>
 
@@ -294,29 +289,37 @@
                 <h3>Attachment Details</h3></div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Attachment</label>
-                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" accept=".pdf" style="border: none;" />
+                  {% if form.Attachment %}
+                  {{form.Attachment}}
+                  {% endif %}
+                  
+                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" value="{{form.Attachment}}" accept=".pdf" style="border: none;" />
                 </div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Attachment-details</label>
-                  <textarea type="text" name='Attachment_details'class="detail-value col-md-7" required style="resize: none;"></textarea>
+                  <textarea type="text" name='Attachment_details' class="detail-value col-md-7"  required style="resize: none;">{{form.Attachment_details}}</textarea>
                 </div>
               </div>
             </div>
           
           </div class="border">
           <div class="row mt-12">
+            {% if creadte_button %}
             <div class="col-md-3 text-center">
-                <button type="submit" class="btn btn-primary" name="create">Create</button>
+              <button type="submit" class="btn btn-primary" name="Create" id="create-btn">Create</button>
             </div>
+            {% endif %}
             <div class="col-md-3 text-center">
-                <button type="button" class="btn btn-warning" name="edit">Edit</button>
+                <button type="reset" class="btn btn-warning" name="Reset">Reset</button>
             </div>
+            {% if submit_button %}
             <div class="col-md-3 text-center">
-                <button type="submit" class="btn btn-success" name="submit">Submit</button>
+                <button type="submit" class="btn btn-secondary" name="submit" id="submit-btn">Submit</button>
             </div>
-            <div class="col-md-3 text-center">
+            {% endif %}
+            <!-- <div class="col-md-3 text-center">
                 <button type="submit" class="btn btn-danger" name="delete">Delete</button>
-            </div>
+            </div> -->
           </div>
         
       
@@ -431,6 +434,57 @@
                   categoryList.options.add(option);
               }
           }
+          function populateCategoryList() {
+        const categorySelect = document.getElementById('category');
+        const selectedCategory = "{{form.Category}}"; // Retrieve the selected category from the form
+
+        // Clear existing options
+        categorySelect.innerHTML = '<option value="" disabled hidden>Select Category</option>';
+
+        // Populate categories
+        for (let category in categoriesAndSubcategories) {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+
+            // Check if this category should be selected
+            if (category === selectedCategory) {
+                option.selected = true;
+            }
+
+            categorySelect.appendChild(option);
+        }
+
+        // Populate subcategories based on the selected category
+        populateSubcategoryList();
+      }
+
+      function populateSubcategoryList() {
+          const categorySelect = document.getElementById('category');
+          const subcategorySelect = document.getElementById('subcategory-select');
+          const selectedCategory = categorySelect.value;
+          const selectedSubCategory = "{{form.sub_category}}"; // Retrieve the selected subcategory from the form
+
+          // Clear existing options
+          subcategorySelect.innerHTML = '<option value="" disabled hidden>Select Sub Category</option>';
+
+          if (selectedCategory) {
+              const subcategories = categoriesAndSubcategories[selectedCategory];
+
+              subcategories.forEach(subcategory => {
+                  const option = document.createElement('option');
+                  option.value = subcategory;
+                  option.textContent = subcategory;
+
+                  // Check if this subcategory should be selected
+                  if (subcategory === selectedSubCategory) {
+                      option.selected = true;
+                  }
+
+                  subcategorySelect.appendChild(option);
+              });
+          }
+        }
 
           function ChangeCategoryList() {
               var categoryList = document.getElementById("category");
@@ -455,7 +509,35 @@
           // Expose the ChangeCategoryList function to the global scope
           window.ChangeCategoryList = ChangeCategoryList;
       });
-  </script>
+      const formDate = "{{ form.date }}";  // Replace with the actual value from your backend
+
+      // Function to format date to YYYY-MM-DD
+      function formatDateToYYYYMMDD(dateStr) {
+          const date = new Date(dateStr);
+          const year = date.getFullYear();
+          const month = ('0' + (date.getMonth() + 1)).slice(-2); // Adding leading zero
+          const day = ('0' + date.getDate()).slice(-2);          // Adding leading zero
+          return `${year}-${month}-${day}`;
+      }
+
+// Set the formatted date value to the input field
+      document.getElementById('date-input').value = formatDateToYYYYMMDD(formDate);
+
+
+      // this block of code button when click the the from action url is dynamicaly change
+        document.getElementById('create-btn').addEventListener('click', function(event) {
+              document.getElementById('create_form').action = "{% url 'create_form' %}";
+              alert("working")
+          });
+
+          document.getElementById('submit-btn').addEventListener('click', function(event) {
+              document.getElementById('create_form').action = "{% url 'create_save' %}?doc_no={{doc_no}}";
+              alert("working!!!!!!!!!!!!")
+          });
+// end block
+    </script>
+    {% url 'create_form' %}
+    {% url 'create_save' %}
     <!-- <script>
       $(document).ready(function() {
           $('#category-select').change(function() {
@@ -503,6 +585,6 @@
     </script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
-    <script src="{% url 'javascript' %}"></script>
+
   </body>
 </html>

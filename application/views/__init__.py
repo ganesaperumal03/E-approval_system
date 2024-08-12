@@ -16,6 +16,7 @@ from application.views.approval import (
     logout,
     select,
     create_save,
+    form_delete,
 
     
 )
@@ -35,6 +36,7 @@ __all__ = [
     process_department,
     pdf,select,
     create_save,
+    form_delete,
 
     
     

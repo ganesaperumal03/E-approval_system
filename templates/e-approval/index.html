@@ -308,13 +308,22 @@
             <div class="col-md-3 text-center">
               <button type="submit" class="btn btn-primary" name="Create" id="create-btn">Create</button>
             </div>
-            {% endif %}
             <div class="col-md-3 text-center">
-                <button type="reset" class="btn btn-warning" name="Reset">Reset</button>
+              <button type="reset" class="btn btn-warning" name="Reset">Reset</button>
             </div>
+            {% endif %}
+            
+            
             {% if submit_button %}
             <div class="col-md-3 text-center">
+              <a href="{% url 'select' %}" class="nav-link">
                 <button type="submit" class="btn btn-secondary" name="submit" id="submit-btn">Submit</button>
+              </a>
+                
+            </div>
+            <div class="col-md-3 text-center">
+              <A></A>
+              <button type="submit" class="btn btn-danger" name="delete">Delete</button>
             </div>
             {% endif %}
             <!-- <div class="col-md-3 text-center">
@@ -525,15 +534,17 @@
 
 
       // this block of code button when click the the from action url is dynamicaly change
-        document.getElementById('create-btn').addEventListener('click', function(event) {
-              document.getElementById('create_form').action = "{% url 'create_form' %}";
-              alert("working")
-          });
+      document.getElementById('create-btn').addEventListener('click', function(event) {
+        document.getElementById('create_form').action = "{% url 'create_form' %}";
 
-          document.getElementById('submit-btn').addEventListener('click', function(event) {
-              document.getElementById('create_form').action = "{% url 'create_save' %}?doc_no={{doc_no}}";
-              alert("working!!!!!!!!!!!!")
-          });
+      });
+
+      
+      // document.getElementById('submit-btn').addEventListener('click', function(event) {
+      //   alert("working!!!!!!!!!!!!")
+      //   document.getElementById('create_form').action = "{% url 'create_save' %}?doc_no={{doc_no}}";
+        
+      // });
 // end block
     </script>
     {% url 'create_form' %}

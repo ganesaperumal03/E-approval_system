@@ -255,6 +255,15 @@ def create_save(request):
     #     return redirect('select')
     # else:
     return render(request, "e-approval/select.html", {"role":role,"Department":Department,"Name":Name,"dept_code":dept_code,"doc_no":doc_no})
+def form_delete(request):
+    user_data=request.session.get('user_data', {})
+    staff_id=user_data["staff_id"]
+    Name=user_data["name"]
+    Department=user_data["Department"]
+    role=user_data["role"]
+    return(request,"e-approval/select.html",{"role":role,"Department":Department,"Name":Name,"doc_no":doc_no})
+
+
 
 def encrypt_password(raw_password):
     # Implement your password encryption algorithm (e.g., using hashlib)

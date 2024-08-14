@@ -178,10 +178,21 @@
         </ul>
       </div>
       <div>
+        
         <div class="doc col">
-            <label class="detail">DOC No:</label>
             
+            {% if submit_button %}
+            <label class="detail">DOC No:</label>
             <span>{{doc_no}}</span>
+            {% endif %}
+            
+            
+            {% if edit_button %}
+            <label class="detail">DOC No:</label>
+            <span>{{doc_no}}</span>
+            <label class="detail">Trans No:</label>
+            <span>{{form.Tran_No}}</span>
+            {% endif %}
 
         </div>
         <form  method="POST"  id='create_form' class="border" enctype="multipart/form-data" action="">
@@ -202,14 +213,15 @@
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Category</label>
-                    <select class="detail-value col-md-5" id="category" onchange="ChangeCategoryList()" name="Category" >
+                    <select class="detail-value col-md-5" id="category" onchange="ChangeCategoryList()" name="Category" {% if submit_button or edit_button %} disabled {% endif %}>
 
                       <option value="" disabled hidden selected>Select Category</option>
                     </select>
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Sub Category</label>
-                    <select class="detail-value col-md-5" name="sub_category" id="subcategory-select" value="{{form.sub_category}}">
+                    <select class="detail-value col-md-5" name="sub_category" id="subcategory-select" value="{{form.sub_category}}" {% if submit_button or edit_button %} disabled {% endif %}>
+                      <option value=""  hidden selected>Select Sub Category</option>
                       {% for sub_c in sub_category %}
                       <option value="{{ sub_c }}" {% if form.sub_category == sub_c %}selected{% endif %}>{{ sub_c }}</option>
                       {% endfor %}
@@ -284,21 +296,29 @@
                 </div>
               </div>
 
-              <div class="attachment-details col-md-6 .ms-md-auto border">
+              <div class="attachment-details.ms-md-auto border col-md-6 ">
                 <div class="heading">
                 <h3>Attachment Details</h3></div>
                 <div class="detail-section">
-                  <label class="detail-label col-md-3">Attachment</label>
+                  <label class="detail-label col-md-4">Attachment</label>
                   {% if form.Attachment %}
-                  {{form.Attachment}}
+                    <button id="attachment-btn" class=" btn btn-danger ml-2">
+                    <i class="bi bi-file-pdf"></i> FILE
+                    </button>                  
                   {% endif %}
-                  
-                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" value="{{form.Attachment}}" accept=".pdf" style="border: none;" />
+                  {% if form.Attachment == None %}
+                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" accept=".pdf" style="border: none;" />{% endif %}
                 </div>
                 <div class="detail-section">
-                  <label class="detail-label col-md-3">Attachment-details</label>
+                  <label class="detail-label col-md-4">Attachment-details</label>
                   <textarea type="text" name='Attachment_details' class="detail-value col-md-7"  required style="resize: none;">{{form.Attachment_details}}</textarea>
                 </div>
+                {% if form.Attachment %}
+                <div class="detail-section">
+                  <label  class="detail-label col-md-4" for="re_upload_attachment">Re-Attachment(if needed)</label>
+                  <input type="file" name="Attachment" id="re_upload_attachment" accept=".pdf" style="border: none;" />
+                </div>
+                {% endif %}
               </div>
             </div>
           
@@ -316,14 +336,20 @@
             
             {% if submit_button %}
             <div class="col-md-3 text-center">
-              <a href="{% url 'select' %}" class="nav-link">
-                <button type="submit" class="btn btn-secondary" name="submit" id="submit-btn">Submit</button>
-              </a>
-                
+              <button type="submit" class="btn btn-secondary" name="submit" id="submit-btn">Submit</button>
             </div>
             <div class="col-md-3 text-center">
               <A></A>
-              <button type="submit" class="btn btn-danger" name="delete">Delete</button>
+              <button type="submit" class="btn btn-danger" name="delete" id="delete-btn">Delete</button>
+            </div>
+            {% endif %}
+            {% if edit_button %}
+            <div class="col-md-3 text-center">
+              <button type="submit" class="btn btn-secondary" name="submit" id="edit-btn">Submit</button>
+            </div>
+            <div class="col-md-3 text-center">
+              <A></A>
+              <button type="submit" class="btn btn-danger" name="delete" id="delete-btn">Delete</button>
             </div>
             {% endif %}
             <!-- <div class="col-md-3 text-center">
@@ -423,101 +449,98 @@
     </script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-          let categoriesAndSubcategories = {};
+        let categoriesAndSubcategories = {};
 
-          // Load data from data.json
-          fetch("{% static 'data.json' %}")
-              .then(response => response.json())
-              .then(data => {
-                  categoriesAndSubcategories = data;
-                  populateCategoryList();
-              })
-              .catch(error => {
-                  console.error('Error loading the data:', error);
-              });
+        // Load data from data.json
+        fetch("{% static 'data.json' %}")
+            .then(response => response.json())
+            .then(data => {
+                categoriesAndSubcategories = data;
+                populateCategoryList();
+            })
+            .catch(error => {
+                console.error('Error loading the data:', error);
+            });
 
-          function populateCategoryList() {
-              var categoryList = document.getElementById("category");
-              for (const category in categoriesAndSubcategories) {
-                  var option = new Option(category, category);
-                  categoryList.options.add(option);
-              }
-          }
-          function populateCategoryList() {
-        const categorySelect = document.getElementById('category');
-        const selectedCategory = "{{form.Category}}"; // Retrieve the selected category from the form
+        function populateCategoryList() {
+            const categorySelect = document.getElementById('category');
+            const selectedCategory = "{{ form.Category }}"; // Retrieve the selected category from the form
+            console.log(selectedCategory)
 
-        // Clear existing options
-        categorySelect.innerHTML = '<option value="" disabled hidden>Select Category</option>';
+            // Clear existing options and set the default option
+            categorySelect.innerHTML = '<option value="" disabled Selected hidden>Select Category</option>';
 
-        // Populate categories
-        for (let category in categoriesAndSubcategories) {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
+            // Populate categories
+            for (let category in categoriesAndSubcategories) {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
 
-            // Check if this category should be selected
-            if (category === selectedCategory) {
-                option.selected = true;
+                // Check if this category should be selected
+                if (category === selectedCategory) {
+                    option.selected = true;
+                }
+
+                categorySelect.appendChild(option);
             }
 
-            categorySelect.appendChild(option);
+            // Populate subcategories based on the selected category
+            populateSubcategoryList();
         }
 
-        // Populate subcategories based on the selected category
-        populateSubcategoryList();
-      }
+        function populateSubcategoryList() {
+            const categorySelect = document.getElementById('category');
+            
+            const subcategorySelect = document.getElementById('subcategory-select');
+            const selectedCategory = categorySelect.value;
+            const selectedSubCategory = "{{ form.sub_category }}"; // Retrieve the selected subcategory from the form
 
-      function populateSubcategoryList() {
-          const categorySelect = document.getElementById('category');
-          const subcategorySelect = document.getElementById('subcategory-select');
-          const selectedCategory = categorySelect.value;
-          const selectedSubCategory = "{{form.sub_category}}"; // Retrieve the selected subcategory from the form
+            // Clear existing options and set the default option
+            subcategorySelect.innerHTML = '<option value="" disabled Selected hidden>Select Sub Category</option>';
 
-          // Clear existing options
-          subcategorySelect.innerHTML = '<option value="" disabled hidden>Select Sub Category</option>';
+            if (selectedCategory) {
+                const subcategories = categoriesAndSubcategories[selectedCategory];
 
-          if (selectedCategory) {
-              const subcategories = categoriesAndSubcategories[selectedCategory];
+                subcategories.forEach(subcategory => {
+                    const option = document.createElement('option');
+                    option.value = subcategory;
+                    option.textContent = subcategory;
 
-              subcategories.forEach(subcategory => {
-                  const option = document.createElement('option');
-                  option.value = subcategory;
-                  option.textContent = subcategory;
+                    // Check if this subcategory should be selected
+                    if (subcategory === selectedSubCategory) {
+                        option.selected = true;
+                    }
 
-                  // Check if this subcategory should be selected
-                  if (subcategory === selectedSubCategory) {
-                      option.selected = true;
-                  }
-
-                  subcategorySelect.appendChild(option);
-              });
-          }
+                    subcategorySelect.appendChild(option);
+                });
+            }
         }
 
-          function ChangeCategoryList() {
-              var categoryList = document.getElementById("category");
-              var subcategoryList = document.getElementById("subcategory-select");
-              var selCategory = categoryList.options[categoryList.selectedIndex].value;
+        function ChangeCategoryList() {
+            const categoryList = document.getElementById("category");
+            const subcategoryList = document.getElementById("subcategory-select");
+            const selCategory = categoryList.options[categoryList.selectedIndex].value;
+            console.log(selCategory)
 
-              // Clear the subcategory list
-              while (subcategoryList.options.length) {
-                  subcategoryList.remove(0);
-              }
 
-              // Get the selected category's subcategories
-              var subcategories = categoriesAndSubcategories[selCategory];
-              if (subcategories) {
-                  for (var i = 0; i < subcategories.length; i++) {
-                      var subcategory = new Option(subcategories[i], subcategories[i]);
-                      subcategoryList.options.add(subcategory);
-                  }
-              }
-          }
+            // Clear the subcategory list and set the default option
+            subcategoryList.innerHTML = '<option value="" disabled Selected hidden>Select Sub Category</option>';
 
-          // Expose the ChangeCategoryList function to the global scope
-          window.ChangeCategoryList = ChangeCategoryList;
+            // Get the selected category's subcategories
+            const subcategories = categoriesAndSubcategories[selCategory];
+            if (subcategories) {
+                for (let subcategory of subcategories) {
+                    const option = new Option(subcategory, subcategory);
+                    subcategoryList.options.add(option);
+                }
+            }
+        }
+
+        // Expose the ChangeCategoryList function to the global scope
+        window.ChangeCategoryList = ChangeCategoryList;
       });
+
+
       const formDate = "{{ form.date }}";  // Replace with the actual value from your backend
 
       // Function to format date to YYYY-MM-DD
@@ -531,24 +554,30 @@
 
 // Set the formatted date value to the input field
       document.getElementById('date-input').value = formatDateToYYYYMMDD(formDate);
-
+      document.getElementById('delete-btn').addEventListener('click', function(event) {
+        document.getElementById('create_form').action = "{% url 'form_delete' %}?doc_no={{doc_no}}";
+        
+      });
+      document.getElementById('attachment-btn').addEventListener('click', function(event) {
+      document.getElementById('create_form').action = "{% url 'create_pdf_show' %}?doc_no={{doc_no}}";
+      
+    });
 
       // this block of code button when click the the from action url is dynamicaly change
-      document.getElementById('create-btn').addEventListener('click', function(event) {
-        document.getElementById('create_form').action = "{% url 'create_form' %}";
-
+      document.getElementById('submit-btn').addEventListener('click', function(event) {
+          document.getElementById('create_form').action = "{% url 'create_save' %}?doc_no={{doc_no}}";
       });
 
+    document.getElementById('edit-btn').addEventListener('click', function(event) {
+          document.getElementById('create_form').action = "{% url 'form_edit' %}?Doc_no={{doc_no}}";
+      });
       
-      // document.getElementById('submit-btn').addEventListener('click', function(event) {
-      //   alert("working!!!!!!!!!!!!")
-      //   document.getElementById('create_form').action = "{% url 'create_save' %}?doc_no={{doc_no}}";
-        
-      // });
 // end block
     </script>
-    {% url 'create_form' %}
-    {% url 'create_save' %}
+
+      
+
+
     <!-- <script>
       $(document).ready(function() {
           $('#category-select').change(function() {

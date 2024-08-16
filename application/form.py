@@ -6,10 +6,11 @@ class EApprovalForm(forms.ModelForm):
         model = e_approval
         fields = [
             'Document_no', 'Department', 'Org_Unit', 'Category',"staff_id","Attachment",'Department_code','Head_of_account','remarks_Subject1',
-            'remarks_Subject', 'Priority', 'Tolerance', 'sub_category','Attachment_details', 'Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
-            "GM_date","vice_principal","vice_principal_date","principal","principal_date"
+            'remarks_Subject', 'Priority', 'Tolerance', 'sub_category','Attachment_details','Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
+            "GM_date","Vice_Principal","Vice_Principal_date","Principal","Principal_date"
  ]
         exclude=['Document_no',"Tran_No","Attachment",'Department_code']
+        Attachment = forms.FileField(required=False)
 
 class userform(forms.ModelForm):
     class Meta:
@@ -26,9 +27,9 @@ class auth_form(forms.ModelForm):
         fields = [
             'Document_no', 'hod', 'hod_date', 'hod_remarks', 'hod_reason',
             'hod_clarification', 'gm', 'gm_date', 'gm_remarks', 'gm_reason',
-            'gm_clarification', 'vice_principal', 'vice_principal_date', 'vice_principal_remarks', 'vice_principal_reason',
-            'vice_principal_clarification', 'principal', 'principal_date', 'principal_remarks', 'principal_reason',
-            'principal_clarification',
+            'gm_clarification', 'Vice_Principal', 'Vice_Principal_date', 'Vice_Principal_remarks', 'Vice_Principal_reason',
+            'Vice_Principal_clarification', 'Principal', 'Principal_date', 'Principal_remarks', 'Principal_reason',
+            'Principal_clarification',
         ]
 
 

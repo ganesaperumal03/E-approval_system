@@ -19,6 +19,7 @@ from application.views.approval import (
     form_delete,
     create_pdf_show,
     form_edit,
+    reject_approval,
 
     
 )
@@ -41,6 +42,7 @@ __all__ = [
     form_delete,
     create_pdf_show,
     form_edit,
+    reject_approval,
 
 
     

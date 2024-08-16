@@ -213,7 +213,7 @@
                   </div>
                   <div class="detail-section">
                     <label class="detail-label">Category</label>
-                    <select class="detail-value col-md-5" id="category" onchange="ChangeCategoryList()" name="Category" {% if submit_button or edit_button %} disabled {% endif %}>
+                    <select class="detail-value col-md-5" id="category" onchange="ChangeCategoryList()" value="{{form.Category}}" name="Category" {% if submit_button or edit_button %} disabled {% endif %}>
 
                       <option value="" disabled hidden selected>Select Category</option>
                     </select>
@@ -277,8 +277,8 @@
                 <h3>Financial Details</h3></div>
 
                 <div class="detail-section">
-                  <span class="detail-label">Fin.Commitment</span>
-                  <select class="detail-value col-md-5" name="fin_commit" required>
+                  <span class="detail-label" >Fin.Commitment</span>
+                  <select class="detail-value col-md-5" name="fin_commit"  id="fin_commit" required>
                     <option value=""  hidden>Select</option>
                     <option value="Yes" {% if form.fin_commit == "Yes" %}selected{% endif %}>Yes</option>
                     <option value="No" {% if form.fin_commit == "No" %}selected{% endif %}>No</option>
@@ -288,11 +288,11 @@
 
                 <div class="detail-section">
                   <label class="detail-label">Tolerance</label>
-                  <input type="text" name='Tolerance'class="detail-value col-md-5" value="{{form.Tolerance}}" required/>
+                  <input type="text" name='Tolerance' id="Tolerance" class="detail-value col-md-5" value="{{form.Tolerance}}" />
                 </div>
                 <div class="detail-section">
                   <label class="detail-label">Amount (INR) </label>
-                  <input type="text" name="Total_Value" class="detail-value col-md-5" value="{{form.Total_Value}}" required/>
+                  <input type="text" name="Total_Value" id="Total_Value" class="detail-value col-md-5" value="{{form.Total_Value}}" />
                 </div>
               </div>
 
@@ -305,23 +305,23 @@
                     <button id="attachment-btn" class=" btn btn-danger ml-2">
                     <i class="bi bi-file-pdf"></i> FILE
                     </button>                  
+                  {% else %}
+                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" accept=".pdf" style="border: none;" />
                   {% endif %}
-                  {% if form.Attachment == None %}
-                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" accept=".pdf" style="border: none;" />{% endif %}
                 </div>
                 <div class="detail-section">
                   <label class="detail-label col-md-4">Attachment-details</label>
-                  <textarea type="text" name='Attachment_details' class="detail-value col-md-7"  required style="resize: none;">{{form.Attachment_details}}</textarea>
+                  <textarea type="text" name='Attachment_details' class="detail-value col-md-7" style="resize: none;">{{form.Attachment_details}}</textarea>
                 </div>
                 {% if form.Attachment %}
                 <div class="detail-section">
                   <label  class="detail-label col-md-4" for="re_upload_attachment">Re-Attachment(if needed)</label>
-                  <input type="file" name="Attachment" id="re_upload_attachment" accept=".pdf" style="border: none;" />
+                  <input type="file" name="Attachment" class="detail-value col-md-5" id="re_upload_attachment" accept=".pdf" style="border: none;" />
                 </div>
                 {% endif %}
               </div>
             </div>
-          
+   
           </div class="border">
           <div class="row mt-12">
             {% if creadte_button %}
@@ -574,7 +574,61 @@
       
 // end block
     </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var finCommit = document.getElementById("fin_commit");
+          var tolerance = document.getElementById("Tolerance");
+          var totalValue = document.getElementById("Total_Value");
+  
+          function toggleFields() {
+              if (finCommit.value === "Yes") {
+                  tolerance.disabled = false;
+                  totalValue.disabled = false;
+              } else {
+                  tolerance.disabled = true;
+                  totalValue.disabled = true;
+              }
+          }
+  
+          // Initialize the fields on page load
+          toggleFields();
+  
+          // Add an event listener to update fields on change
+          finCommit.addEventListener("change", toggleFields);
+      });
+  </script>
+  <!-- {% if submit_button %}
+  <script> -->
+        <!-- // window.addEventListener("beforeunload", function (e) {
+        // Prevent the default action (e.g., navigating away)
+        // e.preventDefault();
 
+    // });
+//     window.onpopstate = function(event) {
+//     if (event) {
+//         // This will be triggered on back or forward navigation
+//         triggerDjangoFunction();
+//     }
+// };
+
+// function triggerDjangoFunction() {
+//     fetch('/select/', {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     .then(response => response.text())
+//     .then(html => {
+//         // Replace the current page's content with the response HTML
+//         document.body.innerHTML = html;
+//     })
+//     .catch(error => console.error('Error:', error));
+// } -->
+
+
+<!-- //   </script>
+//   {% endif %} -->
       
 
 

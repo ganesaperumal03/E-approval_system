@@ -204,7 +204,7 @@
             </li>
           {% endif %}
           <li class="nav-item">
-            <a href="{% url 'login' %}" class="nav-link text-dark">
+            <a href="{% url 'logout' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
               Log Out
             </a>
@@ -283,13 +283,13 @@
             </tr>
         </thead>
         <tbody id="approvalTableBody">
-          {% for p in doc_no %}
+          {% for p in Doc_no %}
           <tr>
             <td>{{p.Document_no}}</td>
             <td>{{p.Category}}</td>
             <td>{{p.sub_category}}</td>
             <td>{{p.date}}</td>
-            <td>{{p.principal}}</td>
+            <td>{{p.Principal}}</td>
 
 
           </tr>

@@ -170,7 +170,7 @@
             </li>
           {% endif %}
           <li class="nav-item">
-            <a href="{% url 'login' %}" class="nav-link text-dark">
+            <a href="{% url 'logout' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
               Log Out
             </a>
@@ -212,7 +212,7 @@
                     <div class="doc-con form-group  align-items justify content-between row">
                       <label id="tags" class="col-sm-4 col-form-label">Status:</label>
                       <div>
-                        <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.principal}}</span>
+                        <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{Document_no.Principal}}</span>
                       </div>
                     </div>
                   </div>
@@ -307,6 +307,7 @@
                         <textarea id="tag-ans" class="form-control" name="doc_remarks" required style="resize: none;"></textarea>
                       </div>
                     </div>
+                    {% if Document_no.Attachment %}
                     <div class="doc-remarks-con form-group row">
                       <label class="col-sm-2 col-form-label" id="tags">Attachment</label>
                       <div class="col-sm-8">
@@ -319,6 +320,7 @@
                         {% endif %}
                       </div>
                     </div>
+                    {% endif %}
                   </div>
                 </div>
                 <div class="clarification my-5 form-group col-md-2 my-2">
@@ -391,7 +393,7 @@
                 </div>
                 <div class="approve-row form-group row">
                   <div class="form-inline col">
-                    <form action="{% url 'form_approval' %}" id="auth_option" class="col-md-12" method="POST">
+                    <form action="{% url 'reject_approval' %}" id="auth_option" class="col-md-12" method="POST">
                       {% csrf_token %}
                       <input type="text"hidden name="Document_no" value="{{Document_no.Document_no}}"  >
                       <textarea type='text' class="form-control mt-2 col" name='approval_Reason' placeholder="Reason" style="height: 70px; width:85%; resize: none;"></textarea>

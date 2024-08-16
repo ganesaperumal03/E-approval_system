@@ -32,6 +32,7 @@ urlpatterns = [
     path('approval_user_details',views.approval_user_details,name="approval_user_details"),
     path('updateapproval',views.updateapproval,name="updateapproval"),
     path('form_approval',views.form_approval,name="form_approval"),
+    path('reject_approval',views.reject_approval,name="reject_approval"),
     path('form_edit',views.form_edit,name="form_edit"),
     path('pdf_show',views.pdf_show,name="pdf_show"),
     path('create_pdf_show',views.create_pdf_show,name="create_pdf_show"),

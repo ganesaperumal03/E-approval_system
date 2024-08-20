@@ -169,6 +169,14 @@
                     </a>
             </li>
           {% endif %}
+          {% if "Principal" == role or "GM" == role %}
+          <li class="nav-item">
+            <a href="{% url 'allotting' %}" class="nav-link text-dark">
+              <i class="bi bi-clipboard-check text-primary fa-fw"></i> <i class="fas fa-rupee-sign text-primary fa-fw"></i> <!-- Logout Icon -->
+              Allotment
+            </a>
+          </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{% url 'logout' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
@@ -186,13 +194,13 @@
             <span>{{doc_no}}</span>
             {% endif %}
             
-            
+<!--             
             {% if edit_button %}
             <label class="detail">DOC No:</label>
             <span>{{doc_no}}</span>
             <label class="detail">Trans No:</label>
             <span>{{form.Tran_No}}</span>
-            {% endif %}
+            {% endif %} -->
 
         </div>
         <form  method="POST"  id='create_form' class="border" enctype="multipart/form-data" action="">
@@ -227,18 +235,7 @@
                       {% endfor %}
                     </select>
                 </div>
-                  <!-- <div class="detail-section">
-                    <label class="detail-label">Head_of_account</label>
-                      <select class="detail-value col-md-5" name=" Head_of_account">
-  
-                        
-                        {% for c in head_account %}
-                        <option value="{{ c }}">{{ c }}</option>
-                          {% endfor %}
-  
-  
-                      </select>
-                  </div> -->
+
                   <div class="detail-section">
                     <label class="detail-label">Priority</label>
                     <select class="detail-value col-md-5" name="Priority" required value="{{form.Priority}}">
@@ -252,13 +249,14 @@
                   <div class="detail-section">
                     <label class="detail-label">Date</label>
                     
-                    <input type="date" name="date" id="date-input" class="detail-value col-md-5" required value="{{date}}" />
+                    <input type="date" name="date" id="date-input" class="detail-value col-md-5" required value="{{form.date}}" />
                 </div>
                 
                 </div>
               </div>
               <div class="document-remarks col-md-6 .ms-md-auto border">
                 <div class="heading">
+                
                 <h3>Document remarks</h3></div>
                 <div class="detail-section">
                   <label class="detail-label col-md-3">Subject</label>
@@ -275,7 +273,12 @@
               <div class="financial-details col-md-6 .ms-md-auto border">
                 <div class="heading">
                 <h3>Financial Details</h3></div>
-
+                {% if submit_button %}
+                <div class="detail-section">
+                  <label class="detail-label">Head_of_account</label>
+                  <span class='detail-value col-md-5'>{{form.Head_of_account}}</span>
+                </div>
+                {% endif %}
                 <div class="detail-section">
                   <span class="detail-label" >Fin.Commitment</span>
                   <select class="detail-value col-md-5" name="fin_commit"  id="fin_commit" required>
@@ -288,11 +291,11 @@
 
                 <div class="detail-section">
                   <label class="detail-label">Tolerance</label>
-                  <input type="text" name='Tolerance' id="Tolerance" class="detail-value col-md-5" value="{{form.Tolerance}}" />
+                  <input type="number" name='Tolerance' id="Tolerance" class="detail-value col-md-5" min="1" max="200000" value="{{form.Tolerance}}" />
                 </div>
                 <div class="detail-section">
                   <label class="detail-label">Amount (INR) </label>
-                  <input type="text" name="Total_Value" id="Total_Value" class="detail-value col-md-5" value="{{form.Total_Value}}" />
+                  <input type="number" name="Total_Value" id="Total_Value" class="detail-value col-md-5" min="1" value="{{form.Total_Value}}" />
                 </div>
               </div>
 
@@ -311,12 +314,12 @@
                 </div>
                 <div class="detail-section">
                   <label class="detail-label col-md-4">Attachment-details</label>
-                  <textarea type="text" name='Attachment_details' class="detail-value col-md-7" style="resize: none;">{{form.Attachment_details}}</textarea>
+                  <textarea type="text" name='Attachment_details' class="detail-value col-md-7" required style="resize: none;">{{form.Attachment_details}}</textarea>
                 </div>
                 {% if form.Attachment %}
                 <div class="detail-section">
                   <label  class="detail-label col-md-4" for="re_upload_attachment">Re-Attachment(if needed)</label>
-                  <input type="file" name="Attachment" class="detail-value col-md-5" id="re_upload_attachment" accept=".pdf" style="border: none;" />
+                  <input type="file" name="Attachment" class="detail-value col-md-5" required id="re_upload_attachment" value="{{form.Attachment}}" accept=".pdf" style="border: none;" />
                 </div>
                 {% endif %}
               </div>
@@ -336,7 +339,7 @@
             
             {% if submit_button %}
             <div class="col-md-3 text-center">
-              <button type="submit" class="btn btn-secondary" name="submit" id="submit-btn">Submit</button>
+              <button type="submit" class="btn btn-success" name="submit" id="submit-btn">Submit</button>
             </div>
             <div class="col-md-3 text-center">
               <A></A>
@@ -412,7 +415,43 @@
     pop up
     {% endif %}
   </div>
-    <script>
+  <script> // Function to push a new state to the history
+    // let isFormSubmitted = false;
+    // let isDataConfirmed = false;
+
+// Listen for the form submission
+      // document.querySelector('form').addEventListener('submit', function () {
+      //     isFormSubmitted = true;
+      // });
+
+      // // Trigger when the page loads data back for confirmation
+      // function onDataLoaded() {
+      //     isFormSubmitted = false; // Reset the flag for the confirmation phase
+      //     isDataConfirmed = false; // Ensure confirmation is tracked
+      // }
+
+      // // Handle the click event on the confirmation button
+      // document.querySelector('#submit-btn').addEventListener('click', function () {
+      //     if (isFormSubmitted) {
+      //         // If the form has already been submitted and user clicks the button again, it's for confirmation
+      //         isDataConfirmed = true;
+      //     }
+      // });
+
+      // Handle the navigation warning
+      window.addEventListener('beforeunload', function (event) {
+          if (!isDataConfirmed) {
+              const message = "You have unsaved changes. Are you sure you want to leave?";
+              event.returnValue = message; // For older browsers
+              return message; // For modern browsers
+          }
+      });
+
+
+
+
+    
+
       $(function() { 
         $('#sidebarCollapse').on('click', function() {
           $('#sidebar, #content').toggleClass('active');
@@ -596,7 +635,77 @@
           // Add an event listener to update fields on change
           finCommit.addEventListener("change", toggleFields);
       });
+
+
+      // Check if the value is less than the minimum
+      
+
+      document.getElementById('category').addEventListener('change', function() {
+            var amountInput = document.getElementById('Total_Value');
+            var selectedCategory = this.value;
+
+            switch (selectedCategory) {
+                case 'Capital Goods':
+                    amountInput.max = '{{allot_amount.capitalGoods}}'; // Set the max limit for advertisement
+                    break;
+                case 'Academic':
+                    amountInput.max = '{{allot_amount.academic}}'; // Set the max limit for service
+                    break;
+                case 'Research and Development':
+                    amountInput.max = '{{allot_amount.rnd}}'; // Set the max limit for product
+                    break;
+                case 'Recurring items':
+                    amountInput.max = '{{allot_amount.recurringItems}}'; // Set the max limit for product
+                    break;
+                case 'Co-Curricular activities':
+                    amountInput.max = '{{allot_amount.coCurricular}}'; // Set the max limit for product
+                    break;
+                case 'Faculty Competency':
+                    amountInput.max = '{{allot_amount.facultyCompetency}}'; // Set the max limit for product
+                    break;
+                case 'Training and Placement':
+                    amountInput.max = '{{allot_amount.trainingPlacement}}'; // Set the max limit for product
+                    break;
+                case 'Extra-curricular':
+                    amountInput.max = '{{allot_amount.extraCurricular}}'; // Set the max limit for product
+                    break;
+                case 'Governance/Admin':
+                    amountInput.max = '{{allot_amount.governanceAdmin}}'; // Set the max limit for product
+                    break;
+                case 'Others':
+                    amountInput.max = '{{allot_amount.others}}'; // Set the max limit for product
+                    break;
+                case 'Transport':
+                    amountInput.max = '{{allot_amount.transport}}'; // Set the max limit for product
+                    break;
+                case 'Expenditure':
+                    amountInput.max = '{{allot_amount.expenditure}}'; // Set the max limit for product
+                    break;
+                default:
+                    amountInput.max = ''; // Remove max limit for other categories
+            }
+            // if (parseInt(amountInput) > parseInt(amountInput.max)) {
+            //   console.log(amountInput.value,"hsdafkjhasfkjhjkfhjkasfhjkhfsdjkhjkhs");
+            //     amountInput.setCustomValidity("The amount exceeds the maximum allowed for the selected category.");
+            // } 
+            // else {
+            //   amountInput.setCustomValidity()
+            // }
+            // Check if the value is greater than the maximu
+            
+            
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('date-input');
+            dateInput.value = today;
+            dateInput.setAttribute('min', today);
+            dateInput.setAttribute('max', today);
+        });
+
+        
   </script>
+
   <!-- {% if submit_button %}
   <script> -->
         <!-- // window.addEventListener("beforeunload", function (e) {
@@ -677,6 +786,8 @@
 
 
     </script> -->
+    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
 

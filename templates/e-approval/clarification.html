@@ -156,8 +156,16 @@
                     </a>
             </li>
           {% endif %}
+          {% if "Principal" == role or "GM" == role %}
           <li class="nav-item">
-            <a href="{% url 'login' %}" class="nav-link text-dark">
+            <a href="{% url 'allotting' %}" class="nav-link text-dark">
+              <i class="bi bi-clipboard-check text-primary fa-fw"></i> <i class="fas fa-rupee-sign text-primary fa-fw"></i> <!-- Logout Icon -->
+              Allotment
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link text-dark">
               <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i> <!-- Logout Icon -->
               Log Out
             </a>
@@ -210,11 +218,16 @@
 
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Date-</label>
-                  <input id="tag-ans" name='date' class="mt-2"value="{{document_data.date}}">
+                  <input id="tag-ans" name='date' class="mt-2" disabled value="{{document_data.date}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
-                  <label class="col-sm-4 col-form-label" id="tags">Priority</label>
-                  <input id="tag-ans"name='date'  class="mt-2" name="Priority" value="{{document_data.Priority}}">
+                  <label class="col-md-4 col-form-label" id="tags">Priority</label>
+                  <select id="tag-ans"  class="mt-2" name="Priority" value="{{document_data.Priority}}">
+                      <option value=""  hidden selected>Select Priority</option>
+                      <option value="Standard" {% if document_data.Priority == "Standard" %}selected{% endif %}>Standard</option>
+                      <option value="High" {% if document_data.Priority == "High" %}selected{% endif %}>High</option>
+                      <option value="Low" {% if document_data.Priority == "Low" %}selected{% endif %}>Low</option>
+                  </select>
                 </div>
 
 
@@ -222,11 +235,11 @@
               <div class="doc col-md-4">
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Status</label>
-                  <span type="text" id="date" name="date" class="col-md-6" aria-label="Date" aria-describedby="date-addon" >{{document_data.principal}}</span>
+                  <span type="text" id="date" name="date" class="col-md-6" aria-label="Date"  aria-describedby="date-addon" >{{document_data.Principal}}</span>
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Category</label>
-                  <input id="tag-ans" name='Category'  class="mt-2" name="Category" value="{{document_data.Category}}">
+                  <input id="tag-ans" name='Category' disabled  class="mt-2" name="Category" value="{{document_data.Category}}">
                 </div>
                 <div class="doc-con form-group row mt-2">
                   <label class="col-sm-4 col-form-label" id="tags">Upadate the document</label>
@@ -244,6 +257,10 @@
                 <div class="doc-con form-group row mt-2">
                       <label class="col-sm-4 col-form-label" id="tags"> Amount (INR) </label>
                     <input id="tag-ans" class="mt-2" name="Total_Value" value="{{document_data.Total_Value}}">
+                </div>
+                <div class="doc-con form-group row mt-2">
+                      <label class="col-sm-4 col-form-label" id="tags">Tolerance </label>
+                    <input id="tag-ans" class="mt-2" name="Tolerance" value="{{document_data.Tolerance}}">
                 </div>
                
               </div>
@@ -370,5 +387,10 @@
         });
       });
     </script>
+    <script> window.history.pushState(null, null, window.location.href);
+      window.onpopstate = function () {
+          window.history.go(0);
+      };
+  </script>
   </body>
 </html>

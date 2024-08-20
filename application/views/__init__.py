@@ -5,7 +5,7 @@ from application.views.approval import (
     view_approval,
     auth_approval,
     clarification,
-    approval_user_details,
+    allotting,
     updateapproval,
     form_approval,
     pdf_show,
@@ -20,6 +20,8 @@ from application.views.approval import (
     create_pdf_show,
     form_edit,
     reject_approval,
+    update_allotment,
+    allottment,
 
     
 )
@@ -31,7 +33,7 @@ __all__ = [
     view_approval,
     auth_approval,
     clarification,
-    approval_user_details,
+    allotting,
     updateapproval,
     form_approval,
     pdf_show,
@@ -43,6 +45,8 @@ __all__ = [
     create_pdf_show,
     form_edit,
     reject_approval,
+    update_allotment,
+    allottment,
 
 
     

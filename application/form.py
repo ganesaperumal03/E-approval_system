@@ -1,5 +1,5 @@
 from django import forms #type:ignore
-from .models import e_approval,User,auth_list,doc_remarks
+from .models import e_approval,User,auth_list,doc_remarks,allotment
 # forms.py
 class EApprovalForm(forms.ModelForm):
     class Meta:
@@ -9,8 +9,8 @@ class EApprovalForm(forms.ModelForm):
             'remarks_Subject', 'Priority', 'Tolerance', 'sub_category','Attachment_details','Total_Value',"date","Tran_No","fin_commit","Technician","HOD","HOD_date","GM",
             "GM_date","Vice_Principal","Vice_Principal_date","Principal","Principal_date"
  ]
-        exclude=['Document_no',"Tran_No","Attachment",'Department_code']
-        Attachment = forms.FileField(required=False)
+        exclude=['Document_no',"Tran_No","Attachment",'Department_code','Head_of_account']
+    
 
 class userform(forms.ModelForm):
     class Meta:
@@ -54,4 +54,13 @@ class DocRemarksUpdateForm(forms.ModelForm):
         fields = [
             'doc_clarification_status'
         ]
+# l
+class Allottment(forms.ModelForm):
+    class Meta:
+        model = allotment
+        fields = [
+            'Department','expenditure','transport','others','generalAmenities','governanceAdmin','extraCurricular',
+            'trainingPlacement','facultyCompetency','capitalGoods','coCurricular','recurringItems','rnd','academic','acyear','total_amount','balance_amount'
+        ]
+
 # l

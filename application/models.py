@@ -160,3 +160,4 @@ class allotment(models.Model):
     expenditure=models.IntegerField( blank=True, null=True)
     total_amount=models.IntegerField( blank=True, null=True)
     balance_amount=models.IntegerField( blank=True, null=True)
+    allot_expenditure=models.IntegerField( blank=True, null=True)

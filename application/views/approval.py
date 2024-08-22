@@ -13,7 +13,7 @@ from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,D
 from application.models import e_approval,User,doc_remarks,status,allotment#type:ignore
 from django.contrib import messages #type:ignore
 
-from django.db.models import Q  #type:ignore
+from django.db.models import Q ,Sum #type:ignore
 import pandas as pd  
 from num2words import num2words   
 from django.core.mail import send_mail
@@ -204,10 +204,14 @@ def create_form(request):
         print(cat_dept_allot)
         current_datetime = datetime.now()
         year_allot=str(current_datetime.year)
-        cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year_allot)
+        print("--------------------",cat_dept_allot,year_allot)
+        try:
+            cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year_allot)
+        except Exception:
+           return render(request, "e-approval/select.html",{"role":role,"Department":Department,"Name":Name,'messages':'Amount is not alloted Plz contact admin'})
         if cate_allot:
             allot_amount=cate_allot
-
+        
         if request.method == 'POST':
             form = EApprovalForm(request.POST, request.FILES)
             if form.is_valid():
@@ -341,6 +345,7 @@ def create_save(request):
             if data.Total_Value:
                 cate_allot=get_object_or_404(allotment,Department=cat_dept_allot,acyear=year_allot)
                 cate_allot.balance_amount=cate_allot.total_amount-data.Total_Value
+                cate_allot.allot_expenditure=cate_allot.allot_expenditure+data.Total_Value
                 cate_allot_update=data.Category
                 if cate_allot_update=="Capital Goods":
                     cate_allot.capitalGoods=cate_allot.capitalGoods - data.Total_Value
@@ -903,8 +908,8 @@ def auth_approval(request):
 
                 user.save()
                 doc_no_data=get_object_or_404(e_approval,Document_no=Document_no)
-                remarks=get_object_or_404()
-
+                docremarks=get_object_or_404(doc_remarks,Document_no=doc_no)
+              
 
                 clar_subject=f"Clarification Required for Document Approval-{doc_no_data.Document_no}"
                 clar_remarks=f"""
@@ -915,7 +920,7 @@ def auth_approval(request):
 
                     Before we can proceed further, we need the following details or corrections:
 
-                                {remarks}
+                                {docremarks.doc_remarks}
                     
                     Please provide the necessary information at your earliest convenience to avoid any delays in the approval process.
 
@@ -1522,6 +1527,7 @@ def reject_approval(request):
                 allot_amount=cate_allot
             cate_allot=get_object_or_404(allotment,Department=cat_dept_allot,acyear=year_allot)
             cate_allot.balance_amount=cate_allot.balance_amount+approval_data.Total_Value
+            cate_allot.allot_expenditure=cate_allot.allot_expenditure-approval_data.Total_Value
             cate_allot_update=approval_data.Category
             if cate_allot_update=="Capital Goods":
                 cate_allot.capitalGoods=cate_allot.capitalGoods + approval_data.Total_Value
@@ -2165,3 +2171,91 @@ def generate_pdf(request,Tran_No):
         return response
     else:
         return redirect('login')
+def table(request):
+    user_data=request.session.get('user_data', {})
+    staff_id=user_data["staff_id"]
+    Name=user_data["name"]
+    Department=user_data["Department"]
+    role=user_data["role"]
+    staff_id=user_data["staff_id"]
+    if role not in ["Principal","Vice_Principal","GM"]  :
+        if dept_code[Department] == dept_code[Department]:
+                    print('**********',role)
+                    cat_dept_allot=dept_code[Department]
+                    print(cat_dept_allot)
+                    current_datetime = datetime.now()
+                    year=str(current_datetime.year)
+            
+                    allot=[]
+                    cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year)
+                    if cate_allot:
+                        allot_amount=cate_allot
+                        print(allot_amount.transport)
+    elif role in ["Principal","Vice_Principal","GM"]:
+        print("workig",role)
+
+
+# Sum the total_amount and balance_amount columns
+        allot_amount = allotment.objects.aggregate(
+            total_amount=Sum('total_amount'),
+            balance_amount=Sum('balance_amount'),
+            allot_expenditure=Sum('allot_expenditure')
+        )
+
+        # Access the summed values
+        # total_amount_sum = allot_amount['total_amount_sum']
+        # balance_amount_sum = allot_amount['balance_amount_sum']
+
+
+        # # Print or use the summed values as needed
+        # print(total_amount_sum, balance_amount_sum)
+
+        # total_amount = allot_amount['total_amount']
+        # balance_amount = allot_amount['balance_amount']
+        # allot_expenditure = allot_amount['allot_expenditure']
+
+        # Now you can use these variables as needed
+        # print(total_amount)
+    if request.method == 'POST':
+        department = request.POST.get('department')
+        Category = request.POST.get('Category')
+        filters = {'Department': department}
+        if Category=="Capital Goods":
+            Category='capitalGoods'
+        elif Category =="Academic":
+           Category='academic'
+        elif Category =="Research and Development":
+            Category='rnd'
+        elif Category =="Co-Curricular activities":
+            Category='coCurricular'
+        elif Category =="Faculty Competency":
+            Category='facultyCompetency'
+        elif Category =="Training and Placement":
+            Category='trainingPlacement'
+        elif Category =="Extra-curricular":
+            Category='extraCurricular'
+        elif Category =="Governance/Admin":
+            Category='governanceAdmin'
+        elif Category =="General Amenities/Maintenance":
+            Category='generalAmenities'
+        elif Category =="Others":
+            Category='others'
+        elif Category =="Transport":
+            Category='transport'
+        elif Category =="Expenditure":
+            Category='expenditure'
+        
+        
+        # Convert the QuerySet to a list of dictionaries
+        if department == 'All':
+            data = allotment.objects.all()
+        else:
+            data = list(allotment.objects.filter(**filters).values())
+            for item in data:
+                item['dynamic_value'] = item.get(Category, None)
+        
+        
+        return render(request, "e-approval/data_table.html", {"allot_amount":allot_amount,"role":role,"Department":Department,"Name":Name,'data': data, 'Category': Category})
+    
+    return render(request, "e-approval/data_table.html",{"allot_amount":allot_amount,"role":role,"Department":Department,"Name":Name,})
+

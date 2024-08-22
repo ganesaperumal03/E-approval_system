@@ -22,7 +22,7 @@ from application.views.approval import (
     reject_approval,
     update_allotment,
     allottment,
-
+table,
     
 )
 
@@ -47,7 +47,7 @@ __all__ = [
     reject_approval,
     update_allotment,
     allottment,
-
+table,
 
     
     

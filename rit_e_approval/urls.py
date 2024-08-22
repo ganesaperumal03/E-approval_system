@@ -36,6 +36,7 @@ urlpatterns = [
     path('form_approval',views.form_approval,name="form_approval"),
     path('reject_approval',views.reject_approval,name="reject_approval"),
     path('form_edit',views.form_edit,name="form_edit"),
+    path('table', views.table, name='table'),
     path('pdf_show',views.pdf_show,name="pdf_show"),
     path('create_pdf_show',views.create_pdf_show,name="create_pdf_show"),
     path('form_delete',views.form_delete,name="form_delete"),
@@ -45,6 +46,7 @@ urlpatterns = [
     path('pdf/', views.pdf, name='pdf'),
     path('pdf_show/<path:Tran_No>/', views.pdf_show, name='pdf_show'),
     path('generate_pdf/<path:Tran_No>/', views.generate_pdf, name='generate_pdf'),
+
     # path('get_subcategories/<str:category>/', views.get_subcategories, name='get_subcategories'),
 
 

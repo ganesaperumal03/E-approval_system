@@ -117,12 +117,14 @@
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
       
         <ul class="nav flex-column bg-white mb-0">
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
           <li class="nav-item">
-            <a href="#" class="nav-link text-dark ">
-                      <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
-                      home
-                  </a>
+            <a href="{% url 'table' %}" class="nav-link text-dark">
+              <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+              home
+            </a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{% url 'select' %}" class="nav-link text-dark" >
                       <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
@@ -148,15 +150,15 @@
                       View Appoval
                   </a>
           </li>
-          {% if "Principal" == role or "GM" == role %}
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
             <li class="nav-item">
-                <a href="{% url 'view_approval' %}"class="nav-link text-dark">
+                <a href="{% url 'dashboard' %}"class="nav-link text-dark">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
                         Analysis Report
                     </a>
             </li>
           {% endif %}
-          {% if "Principal" == role or "GM" == role %}
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
           <li class="nav-item">
             <a href="{% url 'allotting' %}" class="nav-link text-dark">
               <i class="bi bi-clipboard-check text-primary fa-fw"></i> <i class="fas fa-rupee-sign text-primary fa-fw"></i> <!-- Logout Icon -->

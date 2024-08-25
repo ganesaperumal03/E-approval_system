@@ -42,6 +42,7 @@ urlpatterns = [
     path('form_delete',views.form_delete,name="form_delete"),
     path('send_email',views.send_email,name="send_email"),
     path('create_save',views.create_save,name="create_save"),
+    path('dashboard',views.dashboard,name="dashboard"),
     path('process_department/', views.process_department, name='process_department'),
     path('pdf/', views.pdf, name='pdf'),
     path('pdf_show/<path:Tran_No>/', views.pdf_show, name='pdf_show'),

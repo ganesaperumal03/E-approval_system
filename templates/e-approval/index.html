@@ -130,12 +130,14 @@
       
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
           <li class="nav-item">
             <a href="{% url 'table' %}" class="nav-link text-dark">
                       <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
                       home
                   </a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{% url 'select' %}" class="nav-link bg-info text-white" >
                       <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
@@ -161,9 +163,9 @@
                       View Appoval
                   </a>
           </li>
-          {% if "Principal" == role or "GM" == role %}
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
             <li class="nav-item">
-                <a href="{% url 'view_approval' %}"class="nav-link text-dark">
+                <a href="{% url 'dashboard' %}"class="nav-link text-dark">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
                         Analysis Report
                     </a>
@@ -314,7 +316,7 @@
                     <i class="bi bi-file-pdf"></i> FILE
                     </button>                  
                   {% else %}
-                  <input type="file" name='Attachment' id="filetype" class="detail-value col-md-5" accept=".pdf" style="border: none;" />
+                  <input type="file" name='Attachment' id="filetype" required class="detail-value col-md-5" accept=".pdf" style="border: none;" />
                   {% endif %}
                 </div>
                 <div class="detail-section">
@@ -324,7 +326,7 @@
                 {% if form.Attachment %}
                 <div class="detail-section">
                   <label  class="detail-label col-md-4" for="re_upload_attachment">Re-Attachment(if needed)</label>
-                  <input type="file" name="Attachment" class="detail-value col-md-5" required id="re_upload_attachment" value="{{form.Attachment}}" accept=".pdf" style="border: none;" />
+                  <input type="file" name="Attachment" class="detail-value col-md-5" id="re_upload_attachment" value="{{form.Attachment}}" accept=".pdf" style="border: none;" />
                 </div>
                 {% endif %}
               </div>

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-w#=8plo*p30=bg$xs9f7c1j2jo%&k)-5l#tl8udi(6v__v30y=
 DEBUG = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.16.71.3']
 
 
 # Application definition
@@ -79,9 +79,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '953622243021@ritrjpm.ac.in'  # Your Gmail email address
-EMAIL_HOST_PASSWORD = 'baon yqiy oycc bsbd'
-DEFAULT_FROM_EMAIL = '953622243021@ritrjpm.ac.in'
+EMAIL_HOST_USER = 'riteapproval@gmail.com'  # Your Gmail email address
+EMAIL_HOST_PASSWORD = 'axrg ptzp xvgz gxpj'
+DEFAULT_FROM_EMAIL = 'riteapproval@gmail.com'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

@@ -10,7 +10,7 @@ import os
 from django.core.paginator import Paginator    #type:ignore
 from django.conf import settings     #type:ignore
 from application.form import EApprovalForm,userform,auth_form,doc_remarks_form,DocRemarksUpdateForm,ClarificationUpdateForm,Allottment#type:ignore
-from application.models import e_approval,User,doc_remarks,status,allotment#type:ignore
+from application.models import e_approval,User,doc_remarks,status,allotment,new_user_verification#type:ignore
 from django.contrib import messages #type:ignore
 
 from django.db.models import Q ,Sum #type:ignore
@@ -137,20 +137,31 @@ def select(request):
                 Doc_no.append(i)
                 print("updating....")
         try:
-            if dept_code[Department] == dept_code[Department]:
-                cat_dept_allot=dept_code[Department]
-                print(cat_dept_allot)
-                current_datetime = datetime.now()
-                year=str(current_datetime.year)
-        
-                allot=[]
-                cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year)
-                if cate_allot:
-                    allot_amount=cate_allot
-                    print(allot_amount.transport)
-                    return render(request, "e-approval/select.html",{'doc_no':Doc_no,"role":role,"Department":Department,"Name":Name,"Doc_no":doc_no,'allot_amount':allot_amount})
-                else:
-                    return redirect('allotting')
+            if role not in ["Principal","Vice_Principal","GM"]  :
+                if dept_code[Department] == dept_code[Department]:
+                            print('**********',role)
+                            cat_dept_allot=dept_code[Department]
+                            print(cat_dept_allot)
+                            current_datetime = datetime.now()
+                            year=str(current_datetime.year)
+                    
+                            allot=[]
+                            cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year)
+                            if cate_allot:
+                                allot_amount=cate_allot
+                                print(allot_amount.transport)
+            elif role in ["Principal","Vice_Principal","GM"]:
+                print("workig",role)
+
+
+        # Sum the total_amount and balance_amount columns
+                allot_amount = allotment.objects.aggregate(
+                    total_amount=Sum('total_amount'),
+                    balance_amount=Sum('balance_amount'),
+                    allot_expenditure=Sum('allot_expenditure')
+                )
+            return render(request, "e-approval/select.html",{'doc_no':Doc_no,"role":role,"Department":Department,"Name":Name,"Doc_no":doc_no,'allot_amount':allot_amount})
+           
         except:
             return render(request, "e-approval/select.html",{'doc_no':Doc_no,"role":role,"Department":Department,"Name":Name,"Doc_no":doc_no})
 
@@ -208,7 +219,7 @@ def create_form(request):
         try:
             cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year_allot)
         except Exception:
-           return render(request, "e-approval/select.html",{"role":role,"Department":Department,"Name":Name,'messages':'Amount is not alloted Plz contact admin'})
+           return render(request, "e-approval/select.html",{"role":role,"Department":Department,"Name":Name,'messages':'Amount is not alloted Please contact admin'})
         if cate_allot:
             allot_amount=cate_allot
         
@@ -344,8 +355,9 @@ def create_save(request):
             data.Tran_No = tran_no
             if data.Total_Value:
                 cate_allot=get_object_or_404(allotment,Department=cat_dept_allot,acyear=year_allot)
-                cate_allot.balance_amount=cate_allot.total_amount-data.Total_Value
-                cate_allot.allot_expenditure=cate_allot.allot_expenditure+data.Total_Value
+                cate_allot.balance_amount=cate_allot.total_amount-int(data.Total_Value)
+                cate_allot.allot_expenditure=cate_allot.allot_expenditure+int(data.Total_Value)
+                print(cate_allot.allot_expenditure)
                 cate_allot_update=data.Category
                 if cate_allot_update=="Capital Goods":
                     cate_allot.capitalGoods=cate_allot.capitalGoods - data.Total_Value
@@ -383,7 +395,7 @@ def create_save(request):
                 data.Attachment = file_paths.get('Attachment')
 
 
-            
+            data.Status="Pending"
 
             if role == 'Technician':
                 data.Technician = None
@@ -601,7 +613,7 @@ def form_delete(request):
         Department=user_data["Department"]
         role=user_data["role"]
         data=e_approval.objects.get(Document_no=doc_no)
-
+        data.Status="Deleted"
         if data:
             if role == 'Technician':
                 data.Technician = None
@@ -775,11 +787,16 @@ def signup(request):
     if request.method == 'POST':
         form = userform(request.POST)
         if form.is_valid():
+            department=request.GET.get('Department')
             password = form.cleaned_data['Password']
             confirm_password = form.cleaned_data['confirm_Password']
 
             if password == confirm_password:
                 encrypted_password = encrypt_password(password)
+                alloted_users=new_user_verification.objects.filter(department=department)
+                for i in alloted_users:
+                    print(i)
+                
 
                 # Save the encrypted password to your user model
                 user = form.save(commit=False)  # Don't save the form yet
@@ -937,8 +954,7 @@ def auth_approval(request):
                 receiver=doc_no_data.creator_mail
                 send_email(clar_subject,clar_remarks,request,receiver)
             else:
-                return render(request, "e-approval/error.html", {'form': form})
-
+                return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"doc_data":doc_data,"department":department,'messages':'Document number is not Selected.'})
 
         Document_no = request.GET.get('Document_no')
 
@@ -953,20 +969,7 @@ def auth_approval(request):
             date=None
 
             auth_list = e_approval.objects.filter(Document_no=Document_no)
-            # table=get_object_or_404(e_approval,Document_no=Document_no)
-            # if table.creator == 'OfficeStaff' or 'Transport_Incharge' or 'Deputywarden':
-            #     for i,j in enumerate(auth_list):
-            #         if j.GM!='Pending':
-            #             approval_user.append({"date":j.GM_date,'Approval':'GM','name':j.GM_name,
-            #             'remarks':j.GM})
-            #         if j.Vice_Principal!='Pending':
-            #             approval_user.append({"date":j.Vice_Principal_date,'Approval':'Vice_Principal','name':j.Vice_Principal_name,
-            #             'remarks':j.Vice_Principal})
-            #         if j.Principal!='Pending':
-            #             approval_user.append({"date":j.Principal_date,'Approval':'Principal','name':j.Principal_name,
-            #             'remarks':j.Principal})
-            #     print(approval_user,"new_approval")
-            # else:
+
             for i,j in enumerate(auth_list):
                 if j.Staff!='Pending':
                     approval_user.append({"date":j.Staff_date,'Approval':'Staff','name':j.Staff_name,
@@ -993,7 +996,7 @@ def auth_approval(request):
             else:
                 number_in_words=None
             return render(request, "e-approval/auth_approval.html",{"Document_no":document_data,"approval_user":approval_user,"doc":Document_no,"Name":name,"role":staff_role,"department":department,"number_in_words":number_in_words,'doc_data':doc_data})
-
+        
 
         user_data=request.session.get('user_data', {})
         print(user_data['role'])
@@ -1195,6 +1198,7 @@ def allotting(request):
                 print(amount)
                 user.total_amount=amount
                 user.balance_amount=amount
+                user.allot_expenditure=0
                 user.save()
                 return redirect('select')
 
@@ -1221,7 +1225,7 @@ def updateapproval(request):
             Document_no = request.POST.get('Document_no')
             remarks_Document_no = request.POST.get('remarks_document_data')
 
-            Category = request.POST.get('Category')
+            # Category = request.POST.get('Category')
             # Sub_Category = request.POST.get('Sub_Category')
             fin_commit = request.POST.get('fin_commit')
             Total_Value = request.POST.get('Total_Value')
@@ -1230,17 +1234,24 @@ def updateapproval(request):
             approval_data = get_object_or_404(e_approval,Document_no=Document_no)
             doc_data = get_object_or_404(doc_remarks,Document_no=remarks_Document_no)
             approval_data.Priority = Priority
-            approval_data.Category = Category
+            # approval_data.Category = Category
             # approval_data.Sub_Category = Sub_Category
             approval_data.fin_commit = fin_commit
             approval_data.Total_Value = Total_Value
-            approval_data.Attachment = file_paths.get('Attachment')
+
+            if 'Attachment' in request.FILES:
+                if approval_data.Attachment:
+                    delete_previous_file(approval_data.Attachment.path)
+                file_paths = save_uploaded_pdfs(request.FILES)
+                approval_data.Attachment = file_paths.get('Attachment')
 
             approval_data.save()
 
             doc_data.doc_clarifictaions_reason = doc_clarifictaions_reason
             doc_data.doc_clarification_status = 'verified'
             doc_data.save()
+
+            
 
             # if docremarksform.is_valid():
             #     doc_data.doc_clarifictaions_reason = doc_clarifictaions_reason
@@ -1259,315 +1270,333 @@ def javascript(request):
 
 def form_approval(request):
     if request.session.get('user_auth'):
-        Tran_No = request.GET.get('Tran_No')
         user_data=request.session.get('user_data', {})
-        approval_Remarks = request.POST.get('approval_Remarks')
-        Document_no = request.POST.get('Document_no')
-        default=["GM",'Vice_Principal','Principal']
-        roles=['Technician','Staff','HOD']
-        if user_data['role'] in roles :
-            start_index = roles.index(user_data['role'])
-            toallist = [User.objects.filter(role=i, Department=user_data['Department']).values_list('email', flat=True).first() for i in roles[start_index+1:]]+[User.objects.filter(role=i).values_list('email', flat=True).first() for i in default]
-        else:
-            # Handle the case where user_role is not in the roles list
-            start_index = default.index(user_data['role'])
-            print('***************')
-            toallist = [User.objects.filter(role=i).values_list('email', flat=True).first() for i in default[start_index+1:]]
-        print('$$$$$$$$$',toallist)
-        now = datetime.now()
-        print("dsd------------------------------------------------------------")
         staff_role=user_data['role']
         department=user_data['Department']
         name=user_data["name"]
         user_name=user_data["user_name"]
         Department=user_data['Department']
-        print(user_name,"approval")
-        # Format the date and time as a string
-        current_date_time = now.strftime("%d-%m-%Y %H:%M:%S")
+        Tran_No = request.GET.get('Tran_No')
 
-        approval_Reason = request.POST.get('approval_Reason')
-        print(approval_Remarks,Document_no,approval_Reason)
-        user_data=request.session.get('user_data', {})
-        role=user_data["role"]
-        approval_data = get_object_or_404(e_approval,Document_no=Document_no)
-        subject_approver=f"Document Approval Request-{approval_data.Document_no}"
-        message_approver=f"""
-            Dear Sir/Madam,
-
-            Ref: Transaction No.{approval_data.Tran_No}
-
-            Mr./Ms. {approval_data.creator_name} has created an approval request for the purpose of [{approval_data.Category} / {approval_data.sub_category}]. We kindly seek your approval.
-
-            If you require any further assistance or have any questions, please do not hesitate to contact us.
-
-            Thank you.
-
-            Best regards,
-            RIT E-approval
-            RAMCO INSTITUTE OF TECHNOLOGY,
-            RAJAPALAYAM
-            """
-        completion_subject=f"All Approvals Received-{approval_data.Document_no}"
-        completion_message=f"""
-            Dear {approval_data.creator_name},
-
-            We are pleased to inform you that all the necessary authorities have approved the document/approval request for [{approval_data.Category} / {approval_data.sub_category}] under the reference number [Transaction No.{approval_data.Tran_No}].
-
-            You may proceed with the next steps as required.
-
-            Thank you for your diligent work.
-
-            Best regards,
-            RIT E-approval
-            RAMCO INSTITUTE OF TECHNOLOGY,
-            RAJAPALAYAM
-            """
-
-        if approval_Remarks and role=='Staff':
-            approval_data.Staff_name=user_name
-            approval_data.Staff = approval_Remarks
-            approval_data.Staff_date = current_date_time
-            approval_data.save()
-
-        if approval_Remarks and role=='HOD':
-            approval_data.HOD_name=user_name
-            approval_data.HOD = approval_Remarks
-            approval_data.HOD_date = current_date_time
-            approval_data.save()
-
-        if approval_Remarks and role=='GM':
-            approval_data.GM_name=user_name
-            approval_data.GM = approval_Remarks
-            approval_data.GM_date = current_date_time
-            approval_data.save()
-
-        if approval_Remarks and role=='Vice_Principal':
-            approval_data.Vice_Principal_name=user_name
-            approval_data.Vice_Principal = approval_Remarks
-            approval_data.Vice_Principal_date = current_date_time
-            approval_data.save()
-
-        if approval_Remarks and role=='Principal':
-            approval_data.Principal_name=user_name
-            approval_data.Principal = approval_Remarks
-            approval_data.Principal_date = current_date_time
-            approval_data.save()
-        
-        if approval_Reason and role=='Staff':
-            approval_data.Staff_name=user_name
-            approval_data.Staff = approval_Reason
-            approval_data.Staff_date = current_date_time
-            approval_data.save()
-
-        if approval_Reason and role=='HOD':
-            approval_data.HOD_name=user_name
-            approval_data.HOD = approval_Reason
-            approval_data.HOD_date = current_date_time
-            approval_data.save()
-
-        if approval_Reason and role=='GM':
-            approval_data.GM_name=user_name
-            approval_data.GM = approval_Reason
-            approval_data.GM_date = current_date_time
-            approval_data.save()
-
-        if approval_Reason and role=='Vice_Principal':
-            approval_data.Vice_Principal_name=user_name
-            approval_data.Principal = approval_Reason
-            approval_data.Vice_Principal_date = current_date_time
-            approval_data.save()
-
-        if approval_Reason and role=='Principal':
-            approval_data.Principal_name=user_name
-            approval_data.Principal = approval_Reason
-            approval_data.Principal_date = current_date_time
-            approval_data.save()
-        if role != 'Principal':
-            print('wewwwewewewewewewewewe',toallist[0])
-            send_email(subject_approver,message_approver,request,toallist[0])
-        if role == 'Principal':
+        approval_Remarks = request.POST.get('approval_Remarks')
+        Document_no = request.POST.get('Document_no')
+        if Document_no:
+            default=["GM",'Vice_Principal','Principal']
+            roles=['Technician','Staff','HOD']
+            if user_data['role'] in roles :
+                start_index = roles.index(user_data['role'])
+                toallist = [User.objects.filter(role=i, Department=user_data['Department']).values_list('email', flat=True).first() for i in roles[start_index+1:]]+[User.objects.filter(role=i).values_list('email', flat=True).first() for i in default]
+            else:
+                # Handle the case where user_role is not in the roles list
+                start_index = default.index(user_data['role'])
+                print('***************')
+                toallist = [User.objects.filter(role=i).values_list('email', flat=True).first() for i in default[start_index+1:]]
+            print('$$$$$$$$$',toallist)
+            now = datetime.now()
+            print("dsd------------------------------------------------------------")
             
+            print(user_name,"approval")
+            # Format the date and time as a string
+            current_date_time = now.strftime("%d-%m-%Y %H:%M:%S")
+
+            approval_Reason = request.POST.get('approval_Reason')
+            print(approval_Remarks,Document_no,approval_Reason)
+            user_data=request.session.get('user_data', {})
+            role=user_data["role"]
+            approval_data = get_object_or_404(e_approval,Document_no=Document_no)
+            subject_approver=f"Document Approval Request-{approval_data.Document_no}"
+            message_approver=f"""
+                Dear Sir/Madam,
+
+                Ref: Transaction No.{approval_data.Tran_No}
+
+                Mr./Ms. {approval_data.creator_name} has created an approval request for the purpose of [{approval_data.Category} / {approval_data.sub_category}]. We kindly seek your approval.
+
+                If you require any further assistance or have any questions, please do not hesitate to contact us.
+
+                Thank you.
+
+                Best regards,
+                RIT E-approval
+                RAMCO INSTITUTE OF TECHNOLOGY,
+                RAJAPALAYAM
+                """
+            completion_subject=f"All Approvals Received-{approval_data.Document_no}"
+            completion_message=f"""
+                Dear {approval_data.creator_name},
+
+                We are pleased to inform you that all the necessary authorities have approved the document/approval request for [{approval_data.Category} / {approval_data.sub_category}] under the reference number [Transaction No.{approval_data.Tran_No}].
+
+                You may proceed with the next steps as required.
+
+                Thank you for your diligent work.
+
+                Best regards,
+                RIT E-approval
+                RAMCO INSTITUTE OF TECHNOLOGY,
+                RAJAPALAYAM
+                """
+
+            if approval_Remarks and role=='Staff':
+                approval_data.Staff_name=user_name
+                approval_data.Staff = approval_Remarks
+                approval_data.Staff_date = current_date_time
+                approval_data.save()
+
+            if approval_Remarks and role=='HOD':
+                approval_data.HOD_name=user_name
+                approval_data.HOD = approval_Remarks
+                approval_data.HOD_date = current_date_time
+                approval_data.save()
+
+            if approval_Remarks and role=='GM':
+                approval_data.GM_name=user_name
+                approval_data.GM = approval_Remarks
+                approval_data.GM_date = current_date_time
+                approval_data.save()
+
+            if approval_Remarks and role=='Vice_Principal':
+                approval_data.Vice_Principal_name=user_name
+                approval_data.Vice_Principal = approval_Remarks
+                approval_data.Vice_Principal_date = current_date_time
+                approval_data.save()
+
+            if approval_Remarks and role=='Principal':
+                approval_data.Principal_name=user_name
+                approval_data.Principal = approval_Remarks
+                approval_data.Principal_date = current_date_time
+                approval_data.Status="Approved"
+                approval_data.save()
             
-            creator_mail=approval_data.creator_mail
-            send_email(completion_subject,completion_message,request,creator_mail)
+            if approval_Reason and role=='Staff':
+                approval_data.Staff_name=user_name
+                approval_data.Staff = approval_Reason
+                approval_data.Staff_date = current_date_time
+                approval_data.save()
+
+            if approval_Reason and role=='HOD':
+                approval_data.HOD_name=user_name
+                approval_data.HOD = approval_Reason
+                approval_data.HOD_date = current_date_time
+                approval_data.save()
+
+            if approval_Reason and role=='GM':
+                approval_data.GM_name=user_name
+                approval_data.GM = approval_Reason
+                approval_data.GM_date = current_date_time
+                approval_data.save()
+
+            if approval_Reason and role=='Vice_Principal':
+                approval_data.Vice_Principal_name=user_name
+                approval_data.Principal = approval_Reason
+                approval_data.Vice_Principal_date = current_date_time
+                approval_data.save()
+
+            if approval_Reason and role=='Principal':
+                approval_data.Principal_name=user_name
+                approval_data.Principal = approval_Reason
+                approval_data.Principal_date = current_date_time
+                approval_data.save()
+            if role != 'Principal':
+                print('wewwwewewewewewewewewe',toallist[0])
+                send_email(subject_approver,message_approver,request,toallist[0])
+            if role == 'Principal':
+                
+                
+                creator_mail=approval_data.creator_mail
+                send_email(completion_subject,completion_message,request,creator_mail)
 
 
-        return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name,"doc_data":doc_data})
+            return redirect('select')
+        else:
+            return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"doc_data":doc_data,"department":department,'messages':'Document number is not Selected.'})
+
     else:
         return redirect('login')
 
 def reject_approval(request):
+    
     if request.session.get('user_auth'):
-        Tran_No = request.GET.get('Tran_No')
         user_data=request.session.get('user_data', {})
-        approval_Remarks = request.POST.get('approval_Remarks')
-        Document_no = request.POST.get('Document_no')
-        default=["GM",'Vice_Principal','Principal']
-        roles=['Technician','Staff','HOD']
-        if user_data['role'] in roles :
-            start_index = roles.index(user_data['role'])
-            toallist = [User.objects.filter(role=i, Department=user_data['Department']).values_list('email', flat=True).first() for i in roles[start_index+1:]]+[User.objects.filter(role=i).values_list('email', flat=True).first() for i in default]
-        else:
-            # Handle the case where user_role is not in the roles list
-            start_index = default.index(user_data['role'])
-            print('***************')
-            toallist = [User.objects.filter(role=i).values_list('email', flat=True).first() for i in default[start_index+1:]]
-        print('$$$$$$$$$',toallist)
-        now = datetime.now()
-        print("dsd------------------------------------------------------------")
         staff_role=user_data['role']
         department=user_data['Department']
         name=user_data["name"]
         user_name=user_data["user_name"]
         Department=user_data['Department']
-        print(user_name,"approval")
-        # Format the date and time as a string
-        current_date_time = now.strftime("%d-%m-%Y %H:%M:%S")
+        Tran_No = request.GET.get('Tran_No')
+        
+           
+        approval_Remarks = request.POST.get('approval_Remarks')
+        Document_no = request.POST.get('Document_no')
+        default=["GM",'Vice_Principal','Principal']
+        if Document_no:
 
-        approval_Reason = request.POST.get('approval_Reason')
-        print(approval_Remarks,Document_no,approval_Reason)
-        user_data=request.session.get('user_data', {})
-        role=user_data["role"]
-        approval_data = get_object_or_404(e_approval,Document_no=Document_no)
-        subject_approver=f"Document Approval Request-{approval_data.Document_no}"
-        message_approver=f"""
-            Dear Sir/Madam,
-
-            Ref: Transaction No.{approval_data.Tran_No}
-
-            Mr./Ms. {approval_data.creator_name} has created an approval request for the purpose of [{approval_data.Category} / {approval_data.sub_category}]. We kindly seek your approval.
-
-            If you require any further assistance or have any questions, please do not hesitate to contact us.
-
-            Thank you.
-
-            Best regards,
-            RIT E-approval
-            RAMCO INSTITUTE OF TECHNOLOGY,
-            RAJAPALAYAM
-            """
-        completion_subject=f"Document Rejection-{approval_data.Document_no}"
-        completion_message=f"""
-            Dear {approval_data.creator_name},
-
-            We regret to inform you that the document/approval request for [{approval_data.Category} / {approval_data.sub_category}] under the reference number [Transaction No.{approval_data.Tran_No}] has been rejected by the necessary authorities.
-
-            Please review the feedback and make the required revisions, or contact the relevant authority for further clarification.
-
-            Thank you for your understanding.
-
-            Best regards,
-            RIT E-approval
-            RAMCO INSTITUTE OF TECHNOLOGY,
-            RAJAPALAYAM
-            """
-
-        if approval_Reason and role=='Staff':
-            approval_data.Staff_name=user_name
-            approval_data.Staff = approval_Reason
-            approval_data.Staff_date = f'Rejected by {user_name}'
-            approval_data.HOD = f'Rejected by {user_name}'
-            approval_data.GM = f'Rejected by {user_name}'
-            approval_data.Vice_Principal = f'Rejected by {user_name}'
-            approval_data.Principal = f'Rejected by {user_name}'        
-            approval_data.HOD_date = f'Rejected by {user_name}'
-            approval_data.GM_date = f'Rejected by {user_name}'
-            approval_data.Vice_Principal_date = f'Rejected by {user_name}'
-            approval_data.Principal_date = f'Rejected by {user_name}'
-            approval_data.reject='True'
+            roles=['Technician','Staff','HOD']
+            if user_data['role'] in roles :
+                start_index = roles.index(user_data['role'])
+                toallist = [User.objects.filter(role=i, Department=user_data['Department']).values_list('email', flat=True).first() for i in roles[start_index+1:]]+[User.objects.filter(role=i).values_list('email', flat=True).first() for i in default]
+            else:
+                # Handle the case where user_role is not in the roles list
+                start_index = default.index(user_data['role'])
+                print('***************')
+                toallist = [User.objects.filter(role=i).values_list('email', flat=True).first() for i in default[start_index+1:]]
+            print('$$$$$$$$$',toallist)
+            now = datetime.now()
+            print("dsd------------------------------------------------------------")
             
-            approval_data.save()
+            print(user_name,"approval")
+            # Format the date and time as a string
+            current_date_time = now.strftime("%d-%m-%Y %H:%M:%S")
 
-        if approval_Reason and role=='HOD':
-            approval_data.HOD_name=user_name
-            approval_data.HOD = approval_Reason
-            approval_data.HOD_date = f'Rejected by {user_name}'
-            approval_data.GM = f'Rejected by {user_name}'
-            approval_data.Vice_Principal = f'Rejected by {user_name}'
-            approval_data.Principal = f'Rejected by {user_name}'
-            approval_data.GM_date = f'Rejected by {user_name}'
-            approval_data.Vice_Principal_date = f'Rejected by {user_name}'
-            approval_data.Principal_date = f'Rejected by {user_name}'
-            approval_data.reject='True'
-            approval_data.save()
+            approval_Reason = request.POST.get('approval_Reason')
+            print(approval_Remarks,Document_no,approval_Reason)
+            user_data=request.session.get('user_data', {})
+            role=user_data["role"]
+            approval_data = get_object_or_404(e_approval,Document_no=Document_no)
+            subject_approver=f"Document Approval Request-{approval_data.Document_no}"
+            message_approver=f"""
+                Dear Sir/Madam,
 
-        if approval_Reason and role=='GM':
-            approval_data.GM_name=user_name
-            approval_data.GM = approval_Reason
-            approval_data.GM_date = f'Rejected by {user_name}'
-            approval_data.Vice_Principal = f'Rejected by {user_name}'
-            approval_data.Principal = f'Rejected by {user_name}'
-            approval_data.Vice_Principal_date = f'Rejected by {user_name}'
-            approval_data.Principal_date = f'Rejected by {user_name}'
-            approval_data.reject='True'
-            approval_data.save()
+                Ref: Transaction No.{approval_data.Tran_No}
 
-        if approval_Reason and role=='Vice_Principal':
-            approval_data.Vice_Principal_name=user_name
-            approval_data.Principal = approval_Reason
-            approval_data.Vice_Principal_date = 'Reject'
-            approval_data.Principal = f'Rejected by {user_name}'
-            approval_data.Principal_date = f'Rejected by {user_name}'
-            approval_data.reject='True'
-            approval_data.save()
+                Mr./Ms. {approval_data.creator_name} has created an approval request for the purpose of [{approval_data.Category} / {approval_data.sub_category}]. We kindly seek your approval.
 
-        if approval_Reason and role=='Principal':
-            approval_data.Principal_name=user_name
-            approval_data.Principal = approval_Reason
-            approval_data.Principal_date = 'Rejected'
-            approval_data.reject='True'
-            approval_data.save()
-        if approval_data.Total_Value:
-            cat_dept_allot=dept_code[approval_data.Department]
-            print(cat_dept_allot)
-            current_datetime = datetime.now()
-            year_allot=str(current_datetime.year)
-            cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year_allot)
-            if cate_allot:
-                allot_amount=cate_allot
-            cate_allot=get_object_or_404(allotment,Department=cat_dept_allot,acyear=year_allot)
-            cate_allot.balance_amount=cate_allot.balance_amount+approval_data.Total_Value
-            cate_allot.allot_expenditure=cate_allot.allot_expenditure-approval_data.Total_Value
-            cate_allot_update=approval_data.Category
-            if cate_allot_update=="Capital Goods":
-                cate_allot.capitalGoods=cate_allot.capitalGoods + approval_data.Total_Value
-            elif cate_allot_update=="Academic":
-                cate_allot.academic=cate_allot.academic - approval_data.Total_Value
-                print(cate_allot.academic,"working...........")
-            elif cate_allot_update=="Research and Development":
-                cate_allot.rnd=cate_allot.rnd - approval_data.Total_Value
-            elif cate_allot_update=="Recurring items":
-                cate_allot.recurringItems=cate_allot.recurringItems + approval_data.Total_Value
-            elif cate_allot_update=="Co-Curricular activities":
-                cate_allot.coCurricular=cate_allot.coCurricular + approval_data.Total_Value
-            elif cate_allot_update=="Faculty Competency":
-                cate_allot.facultyCompetency=cate_allot.facultyCompetency + approval_data.Total_Value
-            elif cate_allot_update=="Training and Placement":
-                cate_allot.trainingPlacement=cate_allot.trainingPlacement + approval_data.Total_Value
-            elif cate_allot_update=="Extra-curricular":
-                cate_allot.extraCurricular=cate_allot.extraCurricular + approval_data.Total_Value
-            elif cate_allot_update=="Governance/Admin":
-                cate_allot.governanceAdmin=cate_allot.governanceAdmin + approval_data.Total_Value
-            elif cate_allot_update=="General Amenities/Maintenance":
-                cate_allot.generalAmenities=cate_allot.generalAmenities + approval_data.Total_Value
-            elif cate_allot_update=="Others":
-                cate_allot.others=cate_allot.others + approval_data.Total_Value
-            elif cate_allot_update=="Transport":
-                cate_allot.expenditure=cate_allot.expenditure + approval_data.Total_Value
-            elif cate_allot_update=="Expenditure":
-                cate_allot.expenditure=cate_allot.expenditure + approval_data.Total_Value
-            cate_allot.save()
-        if role != 'Principal':
-            print('wewwwewewewewewewewewe',toallist[0])
-            # send_email(subject_approver,message_approver,request,toallist[0])
-        if role == 'Principal':
-            
-            
-            creator_mail=approval_data.creator_mail
-            # send_email(completion_subject,completion_message,request,creator_mail)
+                If you require any further assistance or have any questions, please do not hesitate to contact us.
 
+                Thank you.
 
-        return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"department":department,"user_name":user_name,"doc_data":doc_data})
+                Best regards,
+                RIT E-approval
+                RAMCO INSTITUTE OF TECHNOLOGY,
+                RAJAPALAYAM
+                """
+            completion_subject=f"Document Rejection-{approval_data.Document_no}"
+            completion_message=f"""
+                Dear {approval_data.creator_name},
+
+                We regret to inform you that the document/approval request for [{approval_data.Category} / {approval_data.sub_category}] under the reference number [Transaction No.{approval_data.Tran_No}] has been rejected by the necessary authorities.
+
+                Please review the feedback and make the required revisions, or contact the relevant authority for further clarification.
+
+                Thank you for your understanding.
+
+                Best regards,
+                RIT E-approval
+                RAMCO INSTITUTE OF TECHNOLOGY,
+                RAJAPALAYAM
+                """
+            approval_data.Status=f"Rejected by {user_name}"
+            if approval_Reason and role=='Staff':
+                approval_data.Staff_name=user_name
+                approval_data.Staff = approval_Reason
+                approval_data.Staff_date = f'Rejected by {user_name}'
+                approval_data.HOD = f'Rejected by {user_name}'
+                approval_data.GM = f'Rejected by {user_name}'
+                approval_data.Vice_Principal = f'Rejected by {user_name}'
+                approval_data.Principal = f'Rejected by {user_name}'        
+                approval_data.HOD_date = f'Rejected by {user_name}'
+                approval_data.GM_date = f'Rejected by {user_name}'
+                approval_data.Vice_Principal_date = f'Rejected by {user_name}'
+                approval_data.Principal_date = f'Rejected by {user_name}'
+                approval_data.reject='True'
+                
+                approval_data.save()
+
+            if approval_Reason and role=='HOD':
+                approval_data.HOD_name=user_name
+                approval_data.HOD = approval_Reason
+                approval_data.HOD_date = f'Rejected by {user_name}'
+                approval_data.GM = f'Rejected by {user_name}'
+                approval_data.Vice_Principal = f'Rejected by {user_name}'
+                approval_data.Principal = f'Rejected by {user_name}'
+                approval_data.GM_date = f'Rejected by {user_name}'
+                approval_data.Vice_Principal_date = f'Rejected by {user_name}'
+                approval_data.Principal_date = f'Rejected by {user_name}'
+                approval_data.reject='True'
+                approval_data.save()
+
+            if approval_Reason and role=='GM':
+                approval_data.GM_name=user_name
+                approval_data.GM = approval_Reason
+                approval_data.GM_date = f'Rejected by {user_name}'
+                approval_data.Vice_Principal = f'Rejected by {user_name}'
+                approval_data.Principal = f'Rejected by {user_name}'
+                approval_data.Vice_Principal_date = f'Rejected by {user_name}'
+                approval_data.Principal_date = f'Rejected by {user_name}'
+                approval_data.reject='True'
+                approval_data.save()
+
+            if approval_Reason and role=='Vice_Principal':
+                approval_data.Vice_Principal_name=user_name
+                approval_data.Principal = approval_Reason
+                approval_data.Vice_Principal_date = 'Reject'
+                approval_data.Principal = f'Rejected by {user_name}'
+                approval_data.Principal_date = f'Rejected by {user_name}'
+                approval_data.reject='True'
+                approval_data.save()
+
+            if approval_Reason and role=='Principal':
+                approval_data.Principal_name=user_name
+                approval_data.Principal = approval_Reason
+                approval_data.Principal_date = 'Rejected'
+                approval_data.reject='True'
+                approval_data.save()
+            if approval_data.Total_Value:
+                cat_dept_allot=dept_code[approval_data.Department]
+                print(cat_dept_allot)
+                current_datetime = datetime.now()
+                year_allot=str(current_datetime.year)
+                cate_allot=allotment.objects.get(Department=cat_dept_allot,acyear=year_allot)
+                if cate_allot:
+                    allot_amount=cate_allot
+                cate_allot=get_object_or_404(allotment,Department=cat_dept_allot,acyear=year_allot)
+                cate_allot.balance_amount=cate_allot.balance_amount+approval_data.Total_Value
+                cate_allot.allot_expenditure=cate_allot.allot_expenditure-approval_data.Total_Value
+                cate_allot_update=approval_data.Category
+                if cate_allot_update=="Capital Goods":
+                    cate_allot.capitalGoods=cate_allot.capitalGoods + approval_data.Total_Value
+                elif cate_allot_update=="Academic":
+                    cate_allot.academic=cate_allot.academic - approval_data.Total_Value
+                    print(cate_allot.academic,"working...........")
+                elif cate_allot_update=="Research and Development":
+                    cate_allot.rnd=cate_allot.rnd - approval_data.Total_Value
+                elif cate_allot_update=="Recurring items":
+                    cate_allot.recurringItems=cate_allot.recurringItems + approval_data.Total_Value
+                elif cate_allot_update=="Co-Curricular activities":
+                    cate_allot.coCurricular=cate_allot.coCurricular + approval_data.Total_Value
+                elif cate_allot_update=="Faculty Competency":
+                    cate_allot.facultyCompetency=cate_allot.facultyCompetency + approval_data.Total_Value
+                elif cate_allot_update=="Training and Placement":
+                    cate_allot.trainingPlacement=cate_allot.trainingPlacement + approval_data.Total_Value
+                elif cate_allot_update=="Extra-curricular":
+                    cate_allot.extraCurricular=cate_allot.extraCurricular + approval_data.Total_Value
+                elif cate_allot_update=="Governance/Admin":
+                    cate_allot.governanceAdmin=cate_allot.governanceAdmin + approval_data.Total_Value
+                elif cate_allot_update=="General Amenities/Maintenance":
+                    cate_allot.generalAmenities=cate_allot.generalAmenities + approval_data.Total_Value
+                elif cate_allot_update=="Others":
+                    cate_allot.others=cate_allot.others + approval_data.Total_Value
+                elif cate_allot_update=="Transport":
+                    cate_allot.expenditure=cate_allot.expenditure + approval_data.Total_Value
+                elif cate_allot_update=="Expenditure":
+                    cate_allot.expenditure=cate_allot.expenditure + approval_data.Total_Value
+                cate_allot.save()
+            if role != 'Principal':
+                print('wewwwewewewewewewewewe',toallist[0])
+                # send_email(subject_approver,message_approver,request,toallist[0])
+            if role == 'Principal':
+                
+                
+                creator_mail=approval_data.creator_mail
+                # send_email(completion_subject,completion_message,request,creator_mail)
+            return redirect('select')
+        
+        else:
+            return render(request, "e-approval/auth_approval.html",{"Name":name,"role":staff_role,"doc_data":doc_data,"department":department,'messages':'Document number is not Selected.'})
+# else:   
+        #     return redirect('auth_approval')
+
+        
     else:
         return redirect('login')
 
@@ -1588,13 +1617,24 @@ def view_approval(request):
         new_approval_user=[]
         date=None
 
-        auth_list = e_approval.objects.filter(Tran_No=Tran_No)
-        for i in auth_list:
-            print(i,"hhrrrrrrrrrrrrhrhrhrhrhrhrhrhhrh")
-        print(auth_list)
-        print(auth_list,"gfgdfgdsfgdfdfgdgf")
-        if role == 'OfficeStaff' or 'Transport_Incharge' or 'Deputywarden':
-            for i,j in enumerate(auth_list):
+        
+       
+        if Tran_No:
+            Tran_No = e_approval.objects.get(Tran_No=Tran_No)
+            print(Tran_No)
+            if role == "GM"or role == "Vice_Principal" or role == "Principal":
+                print('hhhhhhhhhhh')
+                tran_no=e_approval.objects.filter()
+            else:
+                tran_no=e_approval.objects.filter(Department=Department)
+            print(Tran_No,'!-------------------------2')
+            approval=e_approval.objects.filter(Tran_No=Tran_No.Tran_No)
+            for i in approval:
+                print(i,"hhrrrrrrrrrrrrhrhrhrhrhrhrhrhhrh")
+            print(approval)
+            print(approval,"gfgdfgdsfgdfdfgdgf")
+            
+            for i,j in enumerate(approval):
                 new_approval_user.append({"date":j.GM_date,'Approval':'GM',
                 'user':User.objects.filter( role='GM').first()})
                                         # if j.Vice_Principal!='Pending':
@@ -1603,10 +1643,6 @@ def view_approval(request):
                                         # if j.Principal!='Pending':
                 new_approval_user.append({"date":j.Principal_date,'Approval':'Principal',
                 'user':User.objects.filter( role='Principal').first()})
-                
-            for i,j in enumerate(auth_list):
-                # if j.Staff!='Pending':
-                
                 # if j.HOD!='Pending':
                 new_approval_user.append({"date":j.HOD_date,'Approval':'HOD',
                 'user':User.objects.filter( role='HOD').first()})
@@ -1623,28 +1659,26 @@ def view_approval(request):
                             approval_user.append(new_approval_user[i])
                     else:
                         break
-                    
-        print(approval_user,"000000000000000000000000000000000")
+                        
+                print(approval_user,"000000000000000000000000000000000")
+                print(new_approval_user,"1111111111111111111111111111")
 
-        if Tran_No:
-            Tran_No = e_approval.objects.get(Tran_No=Tran_No)
-            if role == "GM"or role == "Vice_Principal" or role == "Principal":
-                print('hhhhhhhhhhh')
-                tran_no=e_approval.objects.filter()
-            else:
-                tran_no=e_approval.objects.filter(Department=Department)
-            print(Tran_No,'!-------------------------2')
-            return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":new_approval_user,"Name":name,"role":role,"department":Department,"tran_no":tran_no})
-
+            return render(request, "e-approval/view_approval.html",{"Tran_No":Tran_No,"approval_user":new_approval_user,"Name":name,"role":role,"department":Department,"data":tran_no})
+        work="working"
         doc_data=[]
-        if role == "GM"or role == "Vice_Principal" or role == "Principal":
-                print('rrrrrrrrrrr')
-                tran_no=e_approval.objects.filter()
+        print(role)
+        if role in ["GM", "Vice_Principal" ,"Principal"]:
+            print('rrrrrrrrrrr')
+            data=e_approval.objects.filter()
+            print(data)
+           
         else:
-            tran_no=e_approval.objects.filter(Department=Department)
+            data=e_approval.objects.filter(Department=Department)
+        
 
-        print(tran_no,'-------------------------1')
-        return render(request, "e-approval/view_approval.html",{"tran_no":tran_no,"Name":name,"role":role,"department":Department})
+
+        return render(request, "e-approval/view_approval.html",{"data":data,"Name":name,"role":role,"department":Department})
+        
     else:
         return redirect('login')
 
@@ -1659,6 +1693,7 @@ logger = logging.getLogger(__name__)
 
 def pdf_show(request,Tran_No):
     if request.session.get('user_auth'):
+ 
         if Tran_No:
             print(Tran_No)
 
@@ -1773,7 +1808,7 @@ def generate_pdf(request,Tran_No):
         buffer = BytesIO()
         Document_no = e_approval.objects.get(Tran_No=Tran_No)
 
-        user = User.objects.get(Department=Document_no.Department,role='Technician')
+        # user = User.objects.get(Department=Document_no.Department,role='Technician')
         user1 = User.objects.get(Department=Document_no.Department,role='Staff')
         user2 = User.objects.get(Department=Document_no.Department,role='HOD')
         user3 = User.objects.get(role='GM')
@@ -1862,21 +1897,21 @@ def generate_pdf(request,Tran_No):
             p.drawString(200, height - 600, Document_no.Principal)
             p.drawString(60, height - 440, user4.Name)
             p.drawString(360, height - 440, str(Document_no.Vice_Principal_date))
-            p.drawString(50, height - 640, "Vice Principal")
-            p.drawString(200, height - 640, Document_no.Vice_Principal)
+            p.drawString(50, height - 630, "Vice Principal")
+            p.drawString(200, height - 630, Document_no.Vice_Principal)
             p.drawString(60, height - 470, user3.Name)
             p.drawString(360, height - 470, str(Document_no.GM_date))
-            p.drawString(50, height - 680, "GM")
-            p.drawString(200, height - 680, Document_no.GM)
+            p.drawString(50, height - 660, "GM")
+            p.drawString(200, height - 660, Document_no.GM)
             p.drawString(60, height - 500, user2.Name)
             p.drawString(360, height - 500, str(Document_no.HOD_date))
-            p.drawString(50, height - 720, "HOD")
-            p.drawString(200, height - 720, Document_no.HOD)
+            p.drawString(50, height - 690, "HOD")
+            p.drawString(200, height - 690, Document_no.HOD)
 
             p.drawString(60, height - 530, user1.Name)
             p.drawString(360, height - 530, str(Document_no.Staff_date))
-            p.drawString(50, height - 760, "Staff")
-            p.drawString(200, height - 760, Document_no.Staff)
+            p.drawString(50, height - 720, "Staff")
+            p.drawString(200, height - 720, Document_no.Staff)
 
 
             p.line(50, height - 360, 550, height - 360)
@@ -1919,7 +1954,7 @@ def generate_pdf(request,Tran_No):
             p.line(220, height - 360, 220, height - 510)
             # p.line(350, height - 360, 350, height - 510)
             p.line(550, height - 360, 550, height - 510)
-        elif role=='HOD':
+        elif role=='HOD' or 'OfficeStaff' or 'Transport_Incharge' or 'Deputywarden':
             p.setFont("Courier-Bold", 14)
             p.setFont("Courier-Bold", 14)
             p.drawString(100, height - 380, "Name")
@@ -2030,7 +2065,7 @@ def generate_pdf(request,Tran_No):
         # Footer
         p.setFont("Helvetica-Oblique", 10)
         p.drawString(30, 30, "Created by E-approval System/")
-        p.drawString(220, 80, Generated_date_str)
+        p.drawString(220, 30, Generated_date_str)
         p.drawString(420, 820, "DATE:")
         p.drawString(460, 820, Generated_date_str)
         # Close the PDF object cleanly.
@@ -2259,3 +2294,11 @@ def table(request):
     
     return render(request, "e-approval/data_table.html",{"allot_amount":allot_amount,"role":role,"Department":Department,"Name":Name,})
 
+def dashboard(request):
+    user_data=request.session.get('user_data', {})
+    staff_id=user_data["staff_id"]
+    Name=user_data["name"]
+    Department=user_data["Department"]
+    role=user_data["role"]
+    staff_id=user_data["staff_id"]
+    return render(request, "e-approval/dashboard.html",{"role":role,"Department":Department,"Name":Name,})

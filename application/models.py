@@ -41,6 +41,7 @@ class e_approval(models.Model):
     Vice_Principal_name=models.CharField(max_length=100,blank=True,null=True)
     Vice_Principal = models.CharField(max_length=100,blank=True,null=True)
     Vice_Principal_date = models.CharField(max_length=100,blank=True,null=True)
+    Status = models.CharField(max_length=100,blank=True,null=True)
     Principal_name=models.CharField(max_length=100,blank=True,null=True)
     reject=models.CharField(max_length=100,blank=True,null=True)
     Principal = models.CharField(max_length=100,blank=True,null=True)
@@ -161,3 +162,9 @@ class allotment(models.Model):
     total_amount=models.IntegerField( blank=True, null=True)
     balance_amount=models.IntegerField( blank=True, null=True)
     allot_expenditure=models.IntegerField( blank=True, null=True)
+class new_user_verification(models.Model):
+    staff_id=models.CharField(max_length=200,primary_key=True)
+    dept_code=models.CharField(max_length=500,null=True,blank=True)
+class departments(models.Model):
+    dept_code=models.CharField(max_length=200,primary_key=True)
+    department=models.CharField(max_length=500)

@@ -126,7 +126,7 @@
       .container {
         width: 100%;
       }
-      th {
+      .table_head {
         border: 1px solid #ccc;
         text-align: left;
         background-color: #00407b;
@@ -169,14 +169,16 @@
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
 
         <ul class="nav flex-column bg-white mb-0">
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
           <li class="nav-item">
             <a href="{% url 'table' %}" class="nav-link bg-info text-white">
               <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
               home
             </a>
           </li>
+          {% endif %}
           <li class="nav-item">
-            <a href="{% url 'select' %}" class="nav-link ">
+            <a href="{% url 'select' %}" class="nav-link text-dark">
               <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
               Create
             </a>
@@ -199,21 +201,16 @@
               View Appoval
             </a>
           </li>
-          {% if "Principal" == role or "GM" == role %}
+          {% if "Principal" == role or "Vice_Principal" == role or "GM" == role %}
             <li class="nav-item">
-                <a href="{% url 'view_approval' %}"class="nav-link text-dark">
+                <a href="{% url 'dashboard' %}"class="nav-link text-dark">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
                         Analysis Report
                     </a>
             </li>
             <li class="nav-item">
-            <a href="{% url 'table' %}" class="nav-link text-dark">
-              <i class="bi bi-clipboard-check text-primary fa-fw"></i> <i class="fas fa-rupee-sign text-primary fa-fw"></i> <!-- Logout Icon -->
-              E_APPROVAL DATA TABLE
-            </a>
-          </li>
-          {% endif %}
-          {% if "Principal" == role or "GM" == role %}
+
+   
           <li class="nav-item">
             <a href="{% url 'allotting' %}" class="nav-link text-dark">
               <i class="bi bi-clipboard-check text-primary fa-fw"></i> <i class="fas fa-rupee-sign text-primary fa-fw"></i> <!-- Logout Icon -->
@@ -258,153 +255,153 @@
 
         </div>
         
-    <div class="row">
-      <div class="container table_container">
-          <header>Filter Form</header>
-          <form method="POST"  autocomplete="off" enctype="multipart/form-data" id="filterForm">
-              {% csrf_token %}
-              <div class="form first">
-                  <div class="details personal">
-                      <div class="fields">
-                          <div class="availability-input-field">
-                              <label>Department</label>
-                              <select id="department" name="department" class="form-control" required>
-                                  <option value="" hidden selected>Select Department</option>
-                                  <option value="All">All Department</option>
-                                  <option value="AD">ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</option>
-                                  <option value="CE">CIVIL ENGINEERING</option>
-                                  <option value="CB">COMPUTER SCIENCE AND BUSINESS SYSTEM</option>
-                                  <option value="CSE">COMPUTER SCIENCE AND ENGINEERING</option>
-                                  <option value="EEE">ELECTRICAL AND ELECTRONICS ENGINEERING</option>
-                                  <option value="ECE">ELECTRONICS AND COMMUNICATION ENGINEERING</option>
-                                  <option value="IT">INFORMATION TECHNOLOGY</option>
-                                  <option value="MECH">MECHANICAL ENGINEERING</option>
-                                  <option value="TRANSPORT">TRANSPORT</option>
-                                  <option value="OFFICE">OFFICE</option>
-                                  <option value="HOSTEL">HOSTEL</option>
-                              </select>
-                          </div>
-                          <p>&nbsp;&nbsp;</p>
-                          <div class="availability-input-field">
-                              <label>Category</label>
-                              <!-- <select id="" name="" class="form-control" required>
-                                  <option value="" hidden selected>Select Category</option>
-                                  
-                              </select> -->
-                              <select class="form-control" id="category" onchange="ChangeCategoryList()" value="{{form.Category}}" name="Category" {% if submit_button or edit_button %} disabled {% endif %}>
+          <div class="row" style="margin: 0%; max-width: 100%; line-height: 2;">
+            <div class="container table_container">
+                <header>Filter Form</header>
+                <form method="POST"  autocomplete="off" enctype="multipart/form-data" id="filterForm">
+                    {% csrf_token %}
+                    <div class="form first">
+                        <div class="details personal">
+                            <div class="fields">
+                                <div class="availability-input-field">
+                                    <label>Department</label>
+                                    <select id="department" name="department" class="form-control" required>
+                                        <option value="" hidden selected>Select Department</option>
+                                        <option value="All">All Department</option>
+                                        <option value="AD">ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</option>
+                                        <option value="CE">CIVIL ENGINEERING</option>
+                                        <option value="CB">COMPUTER SCIENCE AND BUSINESS SYSTEM</option>
+                                        <option value="CSE">COMPUTER SCIENCE AND ENGINEERING</option>
+                                        <option value="EEE">ELECTRICAL AND ELECTRONICS ENGINEERING</option>
+                                        <option value="ECE">ELECTRONICS AND COMMUNICATION ENGINEERING</option>
+                                        <option value="IT">INFORMATION TECHNOLOGY</option>
+                                        <option value="MECH">MECHANICAL ENGINEERING</option>
+                                        <option value="TRANSPORT">TRANSPORT</option>
+                                        <option value="OFFICE">OFFICE</option>
+                                        <option value="HOSTEL">HOSTEL</option>
+                                    </select>
+                                </div>
+                                <p>&nbsp;&nbsp;</p>
+                                <div class="availability-input-field">
+                                    <label>Category</label>
+                                    <!-- <select id="" name="" class="form-control" required>
+                                        <option value="" hidden selected>Select Category</option>
+                                        
+                                    </select> -->
+                                    <select class="form-control" id="category" onchange="ChangeCategoryList()" value="{{form.Category}}" name="Category" {% if submit_button or edit_button %} disabled {% endif %}>
 
-                                  <option value="" disabled hidden selected>Select Category</option>
-                                 
-                                </select>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="details ID">
-                      <button type="submit" class="nextBtn" id="filterButton" disabled>
-                          <span class="btnText">Filter</span>
-                          <i class="uil uil-navigator"></i>
-                      </button>
-                  </div>
-              </div>
-          </form>
-
-
-          <main class="table" id="customers_table">
-              <section class="table__header">
-                  <div class="input-group">
-                      <input type="text" placeholder="Search Data...">
-                      <img src="{% static 'images/search.png' %}" alt="">
-                  </div>
-                  
-                  <div class="export__file" style="display: flex;">
-                      <P>Export   </P>
-                    <div class="">
-                        
-                      <label for="export-file" class="export__file-btn" title="Export File"> </label>
-                      <input type="checkbox" id="export-file">
-                      <div class="export__file-options" style="z-index: 2000;">
-                          <label>Export As &nbsp; &#10140;</label>
-                          <label for="export-file" class="btn btn-primary" style="color: black;" id="exportPdf">PDF <img src="{% static 'images/pdf.png' %}" alt=""></label>
-                          <label for="export-file" class="btn btn-primary" style="color: black;" id="exportExcel">EXCEL <img src="{% static 'images/excel.png' %}" alt=""></label>
-                      </div>
+                                        <option value="" disabled hidden selected>Select Category</option>
+                                      
+                                      </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="details ID">
+                            <button type="submit" class="nextBtn" id="filterButton" disabled>
+                                <span class="btnText">Filter</span>
+                                <i class="uil uil-navigator"></i>
+                            </button>
+                        </div>
                     </div>
-                  </div>
-              </section>
-              <section class="table__body">
-                  <table id="example" class="display nowrap" style="width:100% color:black; ">
-<thead>
-                      {% if Category == 'All' %}
-                          <tr>
-                              <th>Department</th>
-                              <th>acyear</th>
-                              <th>capitalGoods</th>
-                              <th>academic</th>
-                              <th>rnd</th>
-                              <th>recurringItems</th>
-                              <th>coCurricular</th>
-                              <th>facultyCompetency</th>
-                              <th>trainingPlacement</th>
-                              <th>extraCurricular</th>
-                              <th>governanceAdmin</th>
-                              <th>generalAmenities</th>
-                              <th>others</th>
-                              <th>expenditure</th>
-                              <th>total_amount</th>
-                              <th>balance_amount</th>
-                           </tr>
-                          {% endif %}
-                          {% if Category != 'All' %}
-                          <tr>
-                              <th>Department</th>
-                              <th>{{Category}}</th>
-                              
-                          </tr>
-                          {% endif %}
-                      </thead>
-                      <tbody>
-                          {% if Category == 'All' %}
-                          {% for value in data %}
-                          <tr>
-                              <td>{{ value.Department }}</td>
-                              <td>{{ value.acyear }}</td>
-                              <td>{{ value.capitalGoods }}</td>
-                              <td>{{ value.academic }}</td>
-                              <td>{{ value.rnd }}</td>
-                              <td>{{ value.recurringItems }}</td>
-                              <td>{{ value.coCurricular }}</td>
-                              <td>{{ value.facultyCompetency }}</td>
-                              <td>{{ value.trainingPlacement }}</td>
-                              <td>{{ value.extraCurricular }}</td>
-                              <td>{{value.governanceAdmin}}</td>
-                              <td>{{value.generalAmenities}}</td>
-                              <td>{{value.others}}</td>
-                              <td>{{value.expenditure}}</td>
-                              <td>{{value.total_amount}}</td>
-                              <td>{{value.balance_amount}}</td>
-                             
-                          </tr>
-                          {% endfor %}
-                          {% endif %}
-                          {% if Category != 'All' %}
-                         <tr>
-                          {% for key, value in data.0.items %}
-                              {% if key == 'Department' %}
-                                  <td>{{ value }}</td>  <!-- Display Department in the first column -->
-                              {% endif %}
-                              {% if key == Category %}
-                                  <td>{{ value }}</td>  <!-- Display Category value in the second column -->
-                              {% endif %}
-                          {% endfor %}
-                      </tr>
-                      {% endif %}
-                      
+                </form>
 
-                      </tbody>
-                  </table>
-              </section>
-          </main>
-      </div>
-  </div>
+
+                <main class="table" id="customers_table">
+                    <section class="table__header">
+                        <div class="input-group">
+                            <input type="text" placeholder="Search Data...">
+                            <img src="{% static 'images/search.png' %}" alt="">
+                        </div>
+                        
+                        <div class="export__file" style="display: flex;">
+                            <P>Export   </P>
+                          <div class="">
+                              
+                            <label for="export-file" class="export__file-btn" title="Export File"> </label>
+                            <input type="checkbox" id="export-file">
+                            <div class="export__file-options" style="z-index: 2000;">
+                                <label>Export As &nbsp; &#10140;</label>
+                                <label for="export-file" class="btn btn-primary" style="color: black;" id="exportPdf">PDF <img src="{% static 'images/pdf.png' %}" alt=""></label>
+                                <label for="export-file" class="btn btn-primary" style="color: black;" id="exportExcel">EXCEL <img src="{% static 'images/excel.png' %}" alt=""></label>
+                            </div>
+                          </div>
+                        </div>
+                    </section>
+                    <section class="table__body">
+                        <table id="example" class="display nowrap" style="width:100%; ">
+                          <thead class="table_head">
+                            {% if Category == 'All' %}
+                                <tr>
+                                    <th>Department</th>
+                                    <th>acyear</th>
+                                    <th>capitalGoods</th>
+                                    <th>academic</th>
+                                    <th>rnd</th>
+                                    <th>recurringItems</th>
+                                    <th>coCurricular</th>
+                                    <th>facultyCompetency</th>
+                                    <th>trainingPlacement</th>
+                                    <th>extraCurricular</th>
+                                    <th>governanceAdmin</th>
+                                    <th>generalAmenities</th>
+                                    <th>others</th>
+                                    <th>expenditure</th>
+                                    <th>total_amount</th>
+                                    <th>balance_amount</th>
+                                </tr>
+                                {% endif %}
+                                {% if Category != 'All' %}
+                                <tr>
+                                    <th>Department</th>
+                                    <th>{{Category}}</th>
+                                    
+                                </tr>
+                                {% endif %}
+                          </thead>
+                          <tbody>
+                                {% if Category == 'All' %}
+                                {% for value in data %}
+                                <tr>
+                                    <td>{{ value.Department }}</td>
+                                    <td>{{ value.acyear }}</td>
+                                    <td>{{ value.capitalGoods }}</td>
+                                    <td>{{ value.academic }}</td>
+                                    <td>{{ value.rnd }}</td>
+                                    <td>{{ value.recurringItems }}</td>
+                                    <td>{{ value.coCurricular }}</td>
+                                    <td>{{ value.facultyCompetency }}</td>
+                                    <td>{{ value.trainingPlacement }}</td>
+                                    <td>{{ value.extraCurricular }}</td>
+                                    <td>{{value.governanceAdmin}}</td>
+                                    <td>{{value.generalAmenities}}</td>
+                                    <td>{{value.others}}</td>
+                                    <td>{{value.expenditure}}</td>
+                                    <td>{{value.total_amount}}</td>
+                                    <td>{{value.balance_amount}}</td>
+                                  
+                                </tr>
+                                {% endfor %}
+                                {% endif %}
+                                {% if Category != 'All' %}
+                              <tr>
+                                {% for key, value in data.0.items %}
+                                    {% if key == 'Department' %}
+                                        <td>{{ value }}</td>  <!-- Display Department in the first column -->
+                                    {% endif %}
+                                    {% if key == Category %}
+                                        <td>{{ value }}</td>  <!-- Display Category value in the second column -->
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            {% endif %}
+                            
+
+                          </tbody>
+                        </table>
+                    </section>
+                </main>
+            </div>
+        </div>
 
       </div>
    
